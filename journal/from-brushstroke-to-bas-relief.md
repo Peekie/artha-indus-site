@@ -1,7 +1,7 @@
 ---
 title: "From Brushstroke to Bas-Relief"
 dek: "Translating South Asian Heritage Lineages into Restorative Architecture"
-date: 2026-08-23
+date: 2026-08-19
 author: "Preeti Padaley"
 authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
 image: "assets/img/story-6-cloudscapes.jpg"
