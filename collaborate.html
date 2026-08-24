@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Collaborate — Artha Indus Atelier</title>
+<meta name="description" content="Request the 2026 Executive Lookbook or open a conversation about a bespoke commission or enterprise digital-twin licensing engagement with Artha Indus Atelier." />
+<meta name="theme-color" content="#171f31" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=Archivo:wght@300..600&family=Noto+Serif+Devanagari:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body data-page="collaborate">
+
+<a class="skip-link" href="#top">Skip to content</a>
+
+<div id="site-nav"></div>
+
+<main id="top">
+
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="wrap">      <p class="page-hero__skt">Sa&#7749;gama <span class="deva">सङ्गम</span></p>
+      <p class="eyebrow">Collaborate &middot; a confluence</p>
+      <h1 class="page-hero__title">Begin a <em>commission.</em></h1>
+      <p class="page-hero__stand">Request our 2026 Executive Lookbook, or open a conversation about a bespoke commission or enterprise licensing engagement.</p>
+      <p class="page-hero__meta"><a href="mailto:preeti@arthaindus.com">preeti@arthaindus.com</a> <span class="crumb-sep">&middot;</span> <a href="https://www.arthaindus.com">www.arthaindus.com</a></p>
+    </div>
+  </section>
+
+  <!-- BODY -->
+  <section class="section">
+    <div class="wrap">
+      <div class="collab">
+        <div class="collab__intro reveal">
+          <h2 class="sec-title">Let&rsquo;s specify story-driven heritage into your next project.</h2>
+          <p class="lead">Authenticated originals and CAD-ready digital twins, delivered with full ESG provenance and named artisan attribution.</p>
+          <div class="collab__points">
+            <div><span class="dot"></span><div><h5>Architects &amp; Designers</h5><p>CAD-ready vector assets, CSI specifications, and code-compliant finishes engineered to your elevations.</p></div></div>
+            <div><span class="dot"></span><div><h5>Hospitality &amp; Corporate</h5><p>Signature feature walls, screens, and medallions with full ESG provenance and named artisan attribution.</p></div></div>
+            <div><span class="dot"></span><div><h5>Collectors</h5><p>Authenticated, museum-grade physical originals, float-mounted for executive and gallery collections.</p></div></div>
+          </div>
+
+          <p class="lookbook__meta" style="margin-top:1.6rem">Specification readiness: .DXF / .DWG / .AI geometries &middot; CSI Divisions 05, 06, 08, 09 &middot; 100% indemnified commercial IP</p>
+
+          <!-- Lookbook direct download -->
+          <div class="lookbook reveal">
+            <a class="lookbook__media" href="assets/downloads/Artha-Indus-Atelier-Lookbook-2026.pdf" download aria-label="Download the 2026 Executive Lookbook, PDF, 2.7 megabytes">
+              <img src="assets/img/lookbook-cover.jpg" alt="Cover of the Artha Indus Atelier 2026 Executive Lookbook, showing a bronze Madhubani peacock relief on a dark plaster wall." loading="lazy" />
+            </a>
+            <div class="lookbook__body">
+              <p class="eyebrow eyebrow--ink">2026 Executive Lookbook</p>
+              <h3>A Curatorial Perspective on South Asian Heritage Art &amp; Spatial Resonance</h3>
+              <p class="lookbook__desc">Our studio lookbook &mdash; commissions, architectural surface scaling, private masterworks acquisition, and the studio material sample box.</p>
+              <a class="btn" href="assets/downloads/Artha-Indus-Atelier-Lookbook-2026.pdf" download>
+                Download the Lookbook <span class="arrow" aria-hidden="true">&darr;</span>
+              </a>
+              <p class="lookbook__meta">PDF &middot; 6 pages &middot; 2.7&nbsp;MB &middot; no email required</p>
+            </div>
+          </div>
+        </div>
+
+        <form class="form reveal" id="inquiryForm" data-d="1" novalidate
+              name="collaborate" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="collaborate" />
+          <p hidden><label>Leave this empty: <input name="bot-field" /></label></p>
+          <div class="form__row">
+            <div class="field"><label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name" required /></div>
+            <div class="field"><label for="company">Company / Firm</label><input id="company" name="company" type="text" autocomplete="organization" /></div>
+          </div>
+          <div class="form__row">
+            <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required /></div>
+            <div class="field">
+              <label for="interest">I&rsquo;m interested in</label>
+              <select id="interest" name="interest">
+                <option>2026 Executive Lookbook</option>
+                <option>Bespoke Physical Commission</option>
+                <option>Enterprise Digital-Twin Licensing</option>
+                <option>Acoustic / Architectural Specification</option>
+                <option>General Inquiry</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label for="message">Project notes</label><textarea id="message" name="message" placeholder="Tell us about the space, typology, and timeline&hellip;"></textarea></div>
+          <button class="btn" type="submit">Request the Lookbook <span class="arrow" aria-hidden="true">&rarr;</span></button>
+          <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+          <p class="form__note">This form opens a pre-composed message in your email client. Prefer to write us directly? <a href="mailto:preeti@arthaindus.com" style="color:var(--gold-deep);text-decoration:underline">preeti@arthaindus.com</a></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDIO COLLABORATION & TRADE INTEGRATION (from the 2026 Lookbook) -->
+  <section class="section section--band">
+    <div class="wrap">
+      <div class="feature-head reveal" style="max-width:60ch">
+        <p class="eyebrow eyebrow--ink" style="margin-bottom:0.9rem">Ways to work with the atelier</p>
+        <h2 class="sec-title">Studio Collaboration &amp; Trade Integration</h2>
+        <p class="q">Preserving the soul and provenance of the artisan&rsquo;s hand while eliminating the technical friction of ethical sourcing, custom scaling, and architectural specification.</p>
+      </div>
+
+      <div class="services">
+        <article class="service reveal">
+          <p class="service__no">01</p>
+          <h3>Bespoke Masterwork Commissions</h3>
+          <p>Commission custom-sized original paintings from master lineage artisans tailored to your project&rsquo;s dimensions and palette.</p>
+        </article>
+        <article class="service reveal" data-d="1">
+          <p class="service__no">02</p>
+          <h3>Architectural Surface Scaling</h3>
+          <p>Send us your elevation or shop drawing and we will scale and calibrate the vector geometry to exact fabrication tolerances.</p>
+        </article>
+        <article class="service reveal" data-d="2">
+          <p class="service__no">03</p>
+          <h3>Private Masterworks Acquisition</h3>
+          <p>Private viewing of our original hand-painted archival masterworks for immediate client placement.</p>
+        </article>
+        <article class="service reveal" data-d="3">
+          <p class="service__no">04</p>
+          <h3>Studio Material Sample Box</h3>
+          <p>Request a curated sample box (laser-cut brass, acoustic felt, and archival paper swatches) for your studio library.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>

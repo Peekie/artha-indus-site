@@ -1,0 +1,759 @@
+/* ============================================================
+   ARTHA INDUS ATELIER — site chrome + interactions
+   Shared nav/footer are injected here so every page stays in
+   sync without a build step (works over file:// and on Squarespace).
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var PAGES = [
+    { id: "curator",      href: "curators-note.html",   label: "Curator’s Note" },
+    { id: "studies",      href: "spatial-studies.html", label: "Spatial Studies" },
+    { id: "perspectives", href: "perspectives.html",    label: "Perspectives" },
+    { id: "collaborate",  href: "collaborate.html",     label: "Collaborate" }
+  ];
+
+  var current = document.body.getAttribute("data-page") || "home";
+
+  /* ---------- NAV ---------- */
+  function buildNav() {
+    var links = PAGES.map(function (p, i) {
+      var active = p.id === current ? " is-active" : "";
+      var cta = p.id === "collaborate" ? " nav__cta" : "";
+      return '<a class="nav__link' + cta + active + '" href="' + p.href + '">' + p.label + "</a>";
+    }).join("");
+
+    var mobile = PAGES.map(function (p, i) {
+      var n = String(i + 1).padStart(2, "0");
+      return '<a href="' + p.href + '"><span class="m-num">' + n + "</span>" + p.label + "</a>";
+    }).join("");
+
+    var html =
+      '<header class="nav" id="nav">' +
+        '<a href="index.html" class="brand" aria-label="Artha Indus Atelier — home">' +
+          '<img class="brand__logo" src="assets/img/logo.png" srcset="assets/img/logo.png 1x, assets/img/logo@2x.png 2x" alt="" />' +
+          '<span class="brand__words">' +
+            '<span class="brand__mark">Artha Indus</span>' +
+            '<span class="brand__sub">Atelier</span>' +
+          '</span>' +
+        "</a>" +
+        '<nav class="nav__links" aria-label="Primary">' + links + "</nav>" +
+        '<button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">' +
+          '<svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="0" y1="1" x2="26" y2="1"/><line x1="0" y1="7" x2="26" y2="7"/><line x1="0" y1="13" x2="26" y2="13"/></svg>' +
+        "</button>" +
+      "</header>" +
+      '<nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">' + mobile + "</nav>";
+
+    var mount = document.getElementById("site-nav");
+    if (mount) mount.outerHTML = html;
+  }
+
+  /* ---------- FOOTER ---------- */
+  function buildFooter() {
+    var nav = PAGES.map(function (p) {
+      return "<li><a href=\"" + p.href + "\">" + p.label + "</a></li>";
+    }).join("");
+
+    var html =
+      '<footer class="footer">' +
+        '<div class="wrap">' +
+          '<div class="footer__top">' +
+            "<div>" +
+              '<div class="footer__mark">Artha Indus Atelier<span>Ancient Heritage. Modern Resonance.</span></div>' +
+              '<p class="footer__note" style="margin-top:1.4rem">A boutique curation house bridging ancient master lineages with modern corporate, hospitality, and healthcare environments — preserving the soul of the artisan’s hand.</p>' +
+            "</div>" +
+            "<div><h6>Navigate</h6><ul>" + nav + "</ul></div>" +
+            '<div><h6>Connect</h6><ul>' +
+              '<li><a href="mailto:preeti@arthaindus.com">preeti@arthaindus.com</a></li>' +
+              '<li><a href="https://www.arthaindus.com">www.arthaindus.com</a></li>' +
+              '<li>Chicago, IL</li>' +
+              '<li><a href="collaborate.html">Request 2026 Lookbook</a></li>' +
+            "</ul></div>" +
+          "</div>" +
+          '<div class="footer__bar">' +
+            "<span>© " + new Date().getFullYear() + " Artha Indus Atelier LLC. All rights reserved.</span>" +
+            "<span>Fair-wage · Direct-from-artisan · Full ESG provenance</span>" +
+          "</div>" +
+        "</div>" +
+      "</footer>";
+
+    var mount = document.getElementById("site-footer");
+    if (mount) mount.outerHTML = html;
+  }
+
+  /* ---------- Scroll state on nav ---------- */
+  function initNavScroll() {
+    var nav = document.getElementById("nav");
+    if (!nav) return;
+    var onScroll = function () {
+      if (window.scrollY > 40) nav.classList.add("is-scrolled");
+      else nav.classList.remove("is-scrolled");
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  /* ---------- Mobile menu ---------- */
+  function initMobileMenu() {
+    var toggle = document.getElementById("navToggle");
+    var menu = document.getElementById("mobileMenu");
+    if (!toggle || !menu) return;
+    var open = false;
+    var set = function (state) {
+      open = state;
+      menu.classList.toggle("is-open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      document.body.style.overflow = open ? "hidden" : "";
+    };
+    toggle.addEventListener("click", function () { set(!open); });
+    menu.querySelectorAll("a").forEach(function (a) {
+      a.addEventListener("click", function () { set(false); });
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && open) set(false); });
+  }
+
+  /* ---------- Scroll reveal ---------- */
+  function initReveal() {
+    var els = document.querySelectorAll(".reveal");
+    if (!("IntersectionObserver" in window) || !els.length) {
+      els.forEach(function (el) { el.classList.add("is-in"); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-in");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14, rootMargin: "0px 0px -8% 0px" });
+    els.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ---------- Inquiry form (no backend: composes an email) ---------- */
+  function initForm() {
+    var form = document.getElementById("inquiryForm");
+    if (!form) return;
+    var status = document.getElementById("formStatus");
+    var isNetlify = form.hasAttribute("data-netlify");
+    form.addEventListener("submit", function (e) {
+      // On Netlify the form posts natively — just hand over the Lookbook first.
+      if (isNetlify) {
+        if (!form.checkValidity()) return;
+        if (/lookbook/i.test(String(new FormData(form).get("interest") || ""))) {
+          var la = document.createElement("a");
+          la.href = "assets/downloads/Artha-Indus-Atelier-Lookbook-2026.pdf";
+          la.download = "Artha-Indus-Atelier-Lookbook-2026.pdf";
+          document.body.appendChild(la); la.click(); document.body.removeChild(la);
+        }
+        return; // let Netlify handle the POST
+      }
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        if (status) { status.style.color = "var(--terracotta)"; status.textContent = "Please add your name and a valid email."; }
+        form.reportValidity();
+        return;
+      }
+      var data = new FormData(form);
+      var name = (data.get("name") || "").toString();
+      var subject = "Artha Indus — " + (data.get("interest") || "Inquiry");
+      var bodyLines = [
+        "Name: " + name,
+        "Company: " + (data.get("company") || "—"),
+        "Email: " + (data.get("email") || "—"),
+        "Interest: " + (data.get("interest") || "—"),
+        "",
+        (data.get("message") || "").toString()
+      ];
+      var href = "mailto:preeti@arthaindus.com?subject=" +
+        encodeURIComponent(subject) + "&body=" + encodeURIComponent(bodyLines.join("\n"));
+
+      // If they asked for the Lookbook, hand it over immediately as well.
+      var wantsLookbook = /lookbook/i.test(String(data.get("interest") || ""));
+      if (wantsLookbook) {
+        var a = document.createElement("a");
+        a.href = "assets/downloads/Artha-Indus-Atelier-Lookbook-2026.pdf";
+        a.download = "Artha-Indus-Atelier-Lookbook-2026.pdf";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+
+      if (status) {
+        status.style.color = "var(--sage)";
+        status.textContent = wantsLookbook
+          ? "Your Lookbook is downloading — thank you, " + (name.split(" ")[0] || "there") + ". Opening your email client so we can follow up…"
+          : "Opening your email client… thank you, " + (name.split(" ")[0] || "there") + ".";
+      }
+      setTimeout(function () { window.location.href = href; }, wantsLookbook ? 900 : 0);
+    });
+  }
+
+  /* ---------- Study filter (application × lineage) ---------- */
+  function initStudyFilter() {
+    var index = document.querySelector(".study-index");
+    var storiesWrap = document.getElementById("stories");
+    if (!index || !storiesWrap) return;
+    var stories = Array.prototype.slice.call(storiesWrap.querySelectorAll(".plate"));
+    var countEl = document.getElementById("studyCount");
+    var emptyEl = document.getElementById("storiesEmpty");
+    var state = { app: "all", lineage: "all" };
+    var roman = ["", "I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII"];
+
+    function apply() {
+      var shown = 0;
+      stories.forEach(function (s) {
+        var apps = (s.getAttribute("data-app") || "").split(/\s+/);
+        var lin = s.getAttribute("data-lineage") || "";
+        var okApp = state.app === "all" || apps.indexOf(state.app) !== -1;
+        var okLin = state.lineage === "all" || lin === state.lineage;
+        var show = okApp && okLin;
+        s.classList.toggle("is-hidden", !show);
+        if (show) shown++;
+      });
+      if (emptyEl) emptyEl.hidden = shown !== 0;
+      if (countEl) {
+        if (state.app === "all" && state.lineage === "all") {
+          countEl.textContent = "Showing all eleven studies.";
+        } else {
+          countEl.textContent = "Showing " + shown + " of 11 studies.";
+        }
+      }
+    }
+
+    index.querySelectorAll(".study-index__row").forEach(function (row) {
+      var type = row.getAttribute("data-filter-type"); // "app" | "lineage"
+      row.querySelectorAll(".study-index__f").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          row.querySelectorAll(".study-index__f").forEach(function (b) { b.classList.remove("is-active"); });
+          btn.classList.add("is-active");
+          state[type] = btn.getAttribute("data-filter");
+          apply();
+        });
+      });
+    });
+
+    var reset = document.getElementById("resetFilters");
+    if (reset) reset.addEventListener("click", function () {
+      state.app = "all"; state.lineage = "all";
+      index.querySelectorAll(".study-index__row").forEach(function (row) {
+        row.querySelectorAll(".study-index__f").forEach(function (b) {
+          b.classList.toggle("is-active", b.getAttribute("data-filter") === "all");
+        });
+      });
+      apply();
+    });
+
+    apply();
+  }
+
+  /* ---------- Before/after compare slider ---------- */
+  function initCompareSlider() {
+    document.querySelectorAll(".compare").forEach(function (el) {
+      var range = el.querySelector(".compare__range");
+      if (!range) return;
+      var set = function (v) {
+        v = Math.max(0, Math.min(100, v));
+        el.style.setProperty("--pos", v + "%");
+        range.value = v;
+      };
+      range.addEventListener("input", function () { set(parseFloat(range.value)); });
+      var pointerFromX = function (clientX) {
+        var r = el.getBoundingClientRect();
+        set(((clientX - r.left) / r.width) * 100);
+      };
+      var dragging = false;
+      el.addEventListener("pointerdown", function (e) {
+        if (e.target === range) return; // native range handles it
+        dragging = true; el.setPointerCapture(e.pointerId); pointerFromX(e.clientX);
+      });
+      el.addEventListener("pointermove", function (e) { if (dragging) pointerFromX(e.clientX); });
+      el.addEventListener("pointerup", function () { dragging = false; });
+      el.addEventListener("pointercancel", function () { dragging = false; });
+    });
+  }
+
+  /* ---------- Lightbox ---------- */
+  function initLightbox() {
+    var triggers = document.querySelectorAll(".stage__media img, .study-overlay__media img");
+    if (!triggers.length) return;
+    var box = document.createElement("div");
+    box.className = "lightbox";
+    box.setAttribute("aria-hidden", "true");
+    box.innerHTML =
+      '<button class="lightbox__close" aria-label="Close">&times;</button>' +
+      '<img class="lightbox__img" alt="" />' +
+      '<p class="lightbox__cap"></p>';
+    document.body.appendChild(box);
+    var boxImg = box.querySelector(".lightbox__img");
+    var boxCap = box.querySelector(".lightbox__cap");
+    var lastFocus = null;
+
+    function open(img) {
+      lastFocus = document.activeElement;
+      boxImg.src = img.currentSrc || img.src;
+      boxImg.alt = img.alt || "";
+      var story = img.closest("article");
+      var label = "";
+      if (story) {
+        var eb = story.querySelector(".eyebrow, .stage__label");
+        var h = story.querySelector("h3, h4");
+        label = [eb && eb.textContent.trim(), h && h.textContent.trim()].filter(Boolean).join(" — ");
+      } else {
+        var cap = img.parentElement.querySelector(".typo__cap h4");
+        if (cap) label = cap.textContent.trim();
+      }
+      boxCap.textContent = label || img.alt || "";
+      box.classList.add("is-open");
+      box.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      box.querySelector(".lightbox__close").focus();
+    }
+    function close() {
+      box.classList.remove("is-open");
+      box.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+    triggers.forEach(function (img) {
+      img.addEventListener("click", function () { open(img); });
+    });
+    box.addEventListener("click", function (e) {
+      if (e.target === box || e.target.classList.contains("lightbox__close")) close();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && box.classList.contains("is-open")) close();
+    });
+  }
+
+  /* ---------- Copy-link on each study ---------- */
+  function initShareLinks() {
+    document.querySelectorAll(".story__link").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var id = btn.getAttribute("data-anchor");
+        var url = window.location.origin + window.location.pathname + "#" + id;
+        var done = function () {
+          btn.classList.add("is-copied");
+          history.replaceState(null, "", "#" + id);
+          setTimeout(function () { btn.classList.remove("is-copied"); }, 1400);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(done, done);
+        } else { done(); }
+      });
+    });
+  }
+
+  /* ---------- Markdown → HTML (hardened, prose-focused) ---------- */
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+  // Only permit safe URL schemes; everything else (javascript:, data:, etc.) is neutralised.
+  function safeUrl(u) {
+    u = String(u || "").trim();
+    if (/^(https?:|mailto:|tel:)/i.test(u)) return u;
+    if (/^(\/|\.|#|assets\/|journal\/)/.test(u)) return u; // relative
+    if (/^[a-z][a-z0-9+.-]*:/i.test(u)) return "#";        // unknown scheme → block
+    return u;
+  }
+  function inlineMd(s) {
+    // protect inline code first so its contents aren't treated as markdown
+    var codes = [];
+    s = s.replace(/`([^`]+)`/g, function (m, c) { codes.push(c); return " " + (codes.length - 1) + " "; });
+    // images  ![alt](src)
+    s = s.replace(/!\[([^\]]*)\]\(\s*([^)\s]+)[^)]*\)/g, function (m, alt, src) {
+      return '<img src="' + escapeHtml(safeUrl(src)) + '" alt="' + escapeHtml(alt) + '" loading="lazy" />';
+    });
+    // links  [text](href)
+    s = s.replace(/\[([^\]]+)\]\(\s*([^)\s]+)[^)]*\)/g, function (m, t, u) {
+      var href = safeUrl(u);
+      var ext = /^https?:/i.test(href);
+      return '<a href="' + escapeHtml(href) + '"' + (ext ? ' target="_blank" rel="noopener"' : "") + ">" + t + "</a>";
+    });
+    // bold then italic, for both * and _ , boundary-aware to avoid stray asterisks/underscores
+    s = s.replace(/\*\*(\S(?:[\s\S]*?\S)?)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/__(\S(?:[\s\S]*?\S)?)__/g, "<strong>$1</strong>");
+    s = s.replace(/(^|[\s(>])\*(\S(?:[^*]*?\S)?)\*(?=[\s).,!?;:]|$)/g, "$1<em>$2</em>");
+    s = s.replace(/(^|[\s(>])_(\S(?:[^_]*?\S)?)_(?=[\s).,!?;:]|$)/g, "$1<em>$2</em>");
+    // restore code
+    s = s.replace(/ (\d+) /g, function (m, i) { return "<code>" + escapeHtml(codes[+i]) + "</code>"; });
+    return s;
+  }
+  function slugify(s) { return String(s).toLowerCase().replace(/&[a-z]+;/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""); }
+  function stripFrontMatter(md) {
+    return String(md).replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, "");
+  }
+  function mdToHtml(md) {
+    var blocks = stripFrontMatter(String(md)).replace(/\r\n/g, "\n").trim().split(/\n{2,}/);
+    var html = "", inRefs = false;
+    blocks.forEach(function (raw) {
+      var b = raw.replace(/\n+$/, "");
+      if (/^```/.test(b)) { var code = b.replace(/^```[^\n]*\n?/, "").replace(/```$/, ""); html += "<pre class=\"post__code\"><code>" + escapeHtml(code) + "</code></pre>"; return; }
+      var hm = b.match(/^(#{1,4})\s+(.+)$/);
+      if (hm) {
+        var lvl = Math.min(Math.max(hm[1].length, 2), 4); // ## → h2 (page h1 is the title), ### → h3
+        var txt = escapeHtml(hm[2]);
+        inRefs = /references|citations|sources/i.test(hm[2]);
+        html += "<h" + lvl + ' id="' + slugify(hm[2]) + '">' + inlineMd(txt) + "</h" + lvl + ">";
+        return;
+      }
+      if (/^&gt;\s?/.test(escapeHtml(b).slice(0, 6)) || /^>\s?/.test(b)) {
+        var inner = b.replace(/^>\s?/gm, "");
+        var paras = inner.split(/\n{2,}/).map(function (p) { return "<p>" + inlineMd(escapeHtml(p).replace(/\n/g, " ")) + "</p>"; }).join("");
+        html += '<blockquote class="post__pull">' + paras + "</blockquote>"; return;
+      }
+      if (/^(-|\*|\+)\s+/.test(b)) { html += "<ul>" + b.split(/\n(?=(?:-|\*|\+)\s+)/).map(function (li) { return "<li>" + inlineMd(escapeHtml(li.replace(/^(-|\*|\+)\s+/, "")).replace(/\n\s+/g, " ")) + "</li>"; }).join("") + "</ul>"; return; }
+      if (/^\d+\.\s+/.test(b)) { html += "<ol>" + b.split(/\n(?=\d+\.\s+)/).map(function (li) { return "<li>" + inlineMd(escapeHtml(li.replace(/^\d+\.\s+/, "")).replace(/\n\s+/g, " ")) + "</li>"; }).join("") + "</ol>"; return; }
+      if (/^(---+|\*\*\*+|___+)$/.test(b)) { html += "<hr />"; return; }
+      var im = b.match(/^!\[([^\]]*)\]\(\s*([^)\s]+)[^)]*\)$/);
+      if (im) { html += '<figure class="post__figure"><img src="' + escapeHtml(safeUrl(im[2])) + '" alt="' + escapeHtml(im[1]) + '" loading="lazy" />' + (im[1] ? "<figcaption>" + escapeHtml(im[1]) + "</figcaption>" : "") + "</figure>"; return; }
+      html += '<p' + (inRefs ? ' class="post__ref"' : "") + ">" + inlineMd(escapeHtml(b).replace(/\n/g, " ")) + "</p>";
+    });
+    return html;
+  }
+  function readingTime(md) {
+    var words = stripFrontMatter(String(md)).replace(/[#>*_`\-\[\]()!]/g, " ").split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.round(words / 200)) + " min read";
+  }
+
+  function fmtDate(iso) {
+    var parts = (iso || "").split("-");
+    if (parts.length !== 3) return iso || "";
+    var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    return months[parseInt(parts[1], 10) - 1] + " " + parseInt(parts[2], 10) + ", " + parts[0];
+  }
+
+  function cardMarkup(p, cls, cta) {
+    var alt = escapeHtml(p.imageAlt || p.title || "");
+    return '<a class="' + cls + '" href="post.html?p=' + encodeURIComponent(p.slug) + '">' +
+      '<div class="' + cls + '__media">' + (p.image ? '<img src="' + escapeHtml(safeUrl(p.image)) + '" alt="' + alt + '" loading="lazy" />' : "") + "</div>" +
+      '<div class="' + cls + '__body">' +
+        '<p class="' + cls + '__meta">' + [fmtDate(p.date), p.readingTime].filter(Boolean).map(escapeHtml).join(" &middot; ") + "</p>" +
+        "<h3>" + escapeHtml(p.title) + "</h3>" +
+        (p.excerpt ? '<p class="' + cls + '__excerpt">' + escapeHtml(p.excerpt) + "</p>" : "") +
+        '<span class="link-arrow">' + cta + ' <span class="arrow" aria-hidden="true">&rarr;</span></span>' +
+      "</div></a>";
+  }
+
+  /* ---------- Journal index ---------- */
+  function initJournalIndex() {
+    var featured = document.getElementById("journalFeatured");
+    if (!featured) return;
+    var moreWrap = document.getElementById("journalMoreWrap");
+    var grid = document.getElementById("journalGrid");
+    var fallback = document.getElementById("journalFallback");
+
+    fetch("journal/posts.json").then(function (r) {
+      if (!r.ok) throw new Error("manifest");
+      return r.json();
+    }).then(function (posts) {
+      if (!Array.isArray(posts) || !posts.length) { if (fallback) { fallback.hidden = false; fallback.innerHTML = '<p>New musings are on their way.</p><a class="btn" href="collaborate.html">Collaborate with the Atelier <span class="arrow" aria-hidden="true">&rarr;</span></a>'; } return; }
+      var f = posts[0];
+      featured.innerHTML =
+        '<a class="featured" href="post.html?p=' + encodeURIComponent(f.slug) + '">' +
+          '<div class="featured__media">' + (f.image ? '<img src="' + escapeHtml(safeUrl(f.image)) + '" alt="' + escapeHtml(f.imageAlt || f.title || "") + '" loading="lazy" />' : "") + "</div>" +
+          '<div class="featured__body">' +
+            '<p class="eyebrow eyebrow--ink">Latest &middot; ' + escapeHtml(f.tags && f.tags[0] ? f.tags[0] : "Journal") + "</p>" +
+            "<h2>" + escapeHtml(f.title) + "</h2>" +
+            (f.dek ? '<p class="featured__dek">' + escapeHtml(f.dek) + "</p>" : "") +
+            '<p class="featured__meta">' + [f.author, fmtDate(f.date), f.readingTime].filter(Boolean).map(escapeHtml).join(" &middot; ") + "</p>" +
+            (f.excerpt ? '<p class="featured__excerpt">' + escapeHtml(f.excerpt) + "</p>" : "") +
+            '<span class="link-arrow">Read the essay <span class="arrow" aria-hidden="true">&rarr;</span></span>' +
+          "</div>" +
+        "</a>";
+
+      var rest = posts.slice(1);
+      if (rest.length && grid && moreWrap) {
+        moreWrap.hidden = false;
+        grid.innerHTML = rest.map(function (p) { return cardMarkup(p, "jcard", "Read"); }).join("");
+      }
+      initReveal();
+    }).catch(function () {
+      if (fallback) fallback.hidden = false; // keep the hardcoded featured-link fallback for file:// previews
+    });
+  }
+
+  /* ---------- Single post ---------- */
+  function initPost() {
+    var mount = document.getElementById("post");
+    if (!mount) return;
+    var params = new URLSearchParams(window.location.search);
+    var slug = (params.get("p") || "").toLowerCase().replace(/[^a-z0-9-]/g, "");
+    if (!slug) { mount.innerHTML = '<div class="wrap post__loading">Post not found. <a href="perspectives.html">Back to the Journal</a></div>'; return; }
+
+    Promise.all([
+      fetch("journal/posts.json").then(function (r) { return r.json(); }).catch(function () { return []; }),
+      fetch("journal/" + slug + ".md").then(function (r) { if (!r.ok) throw new Error("404"); return r.text(); })
+    ]).then(function (res) {
+      var list = Array.isArray(res[0]) ? res[0] : [];
+      var idx = -1;
+      list.forEach(function (p, i) { if ((p.slug || "").toLowerCase() === slug) idx = i; });
+      var meta = idx > -1 ? list[idx] : {};
+      var rawMd = res[1];
+      var body = mdToHtml(rawMd);
+      var rt = meta.readingTime || readingTime(rawMd);
+
+      // per-post metadata (helps JS-rendering crawlers; document limitation for social)
+      if (meta.title) document.title = meta.title + " — Perspectives | Artha Indus Atelier";
+      setMeta('meta[name="description"]', "content", meta.excerpt || meta.dek || "");
+      setMeta('meta[property="og:title"]', "content", (meta.title || "Perspectives") + " — Artha Indus Atelier");
+      setMeta('meta[property="og:description"]', "content", meta.excerpt || meta.dek || "");
+      if (meta.image) setMeta('meta[property="og:image"]', "content", meta.image);
+      setMeta('meta[property="og:url"]', "content", location.href);
+
+      // prev / next (list is newest-first: next = newer = idx-1, prev = older = idx+1)
+      var newer = idx > 0 ? list[idx - 1] : null;
+      var older = idx > -1 && idx < list.length - 1 ? list[idx + 1] : null;
+      var prevnext = (newer || older) ?
+        '<nav class="post__prevnext">' +
+          (older ? '<a class="post__pn" href="post.html?p=' + encodeURIComponent(older.slug) + '"><span>Older</span>' + escapeHtml(older.title) + "</a>" : "<span></span>") +
+          (newer ? '<a class="post__pn post__pn--next" href="post.html?p=' + encodeURIComponent(newer.slug) + '"><span>Newer</span>' + escapeHtml(newer.title) + "</a>" : "<span></span>") +
+        "</nav>" : "";
+
+      // related (share a tag)
+      var tags = meta.tags || [];
+      var related = list.filter(function (p, i) { return i !== idx && (p.tags || []).some(function (t) { return tags.indexOf(t) > -1; }); }).slice(0, 3);
+      var relatedHtml = related.length ?
+        '<section class="post__related"><div class="sec-head"><span class="eyebrow eyebrow--ink">Related musings</span></div><div class="journal-grid">' +
+          related.map(function (p) { return cardMarkup(p, "jcard", "Read"); }).join("") + "</div></section>" : "";
+
+      mount.setAttribute("aria-busy", "false");
+      mount.innerHTML =
+        '<div class="post__progress" aria-hidden="true"><span></span></div>' +
+        '<header class="post__hero">' +
+          '<div class="wrap">' +
+            '<a class="post__back" href="perspectives.html"><span aria-hidden="true">&larr;</span> Darśana &middot; The Journal</a>' +
+            (tags.length ? '<p class="eyebrow" style="margin-top:1.4rem">' + tags.map(escapeHtml).join(" &middot; ") + "</p>" : "") +
+            "<h1>" + escapeHtml(meta.title || "Untitled") + "</h1>" +
+            (meta.dek ? '<p class="post__dek">' + escapeHtml(meta.dek) + "</p>" : "") +
+            '<p class="post__byline">' + [meta.author, fmtDate(meta.date), rt].filter(Boolean).map(escapeHtml).join(" &middot; ") + "</p>" +
+          "</div>" +
+        "</header>" +
+        (meta.image ? '<div class="wrap"><figure class="post__cover"><img src="' + escapeHtml(safeUrl(meta.image)) + '" alt="' + escapeHtml(meta.imageAlt || meta.title || "") + '" /></figure></div>' : "") +
+        '<div class="wrap"><div class="post__layout">' +
+          '<aside class="post__toc" id="postToc" aria-label="On this page"></aside>' +
+          '<div class="post__body">' + body + "</div>" +
+        "</div>" +
+          '<div class="post__foot">' +
+            '<div class="post__author">' +
+              '<p class="post__sign">' + escapeHtml(meta.author || "Artha Indus Atelier") + "</p>" +
+              (meta.authorBio ? '<p class="post__bio">' + escapeHtml(meta.authorBio) + "</p>" : "") +
+            "</div>" +
+            '<button class="post__copy" type="button" data-anchor-url="1">Copy link</button>' +
+          "</div>" +
+          prevnext +
+          relatedHtml +
+        "</div>";
+
+      buildToc();
+      initPostProgress();
+      var copyBtn = mount.querySelector(".post__copy");
+      if (copyBtn) copyBtn.addEventListener("click", function () {
+        var done = function () { copyBtn.textContent = "Link copied"; setTimeout(function () { copyBtn.textContent = "Copy link"; }, 1400); };
+        if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(done, done); else done();
+      });
+      initReveal();
+    }).catch(function () {
+      mount.innerHTML = '<div class="wrap post__loading">This post could not be loaded. <a href="perspectives.html">Back to the Journal</a></div>';
+    });
+  }
+  function setMeta(sel, attr, val) { var el = document.querySelector(sel); if (el && val) el.setAttribute(attr, val); }
+  function buildToc() {
+    var toc = document.getElementById("postToc");
+    var heads = document.querySelectorAll(".post__body h2");
+    if (!toc || heads.length < 3) { if (toc) toc.remove(); return; }
+    var html = '<p class="post__toc-title">On this page</p><ul>';
+    heads.forEach(function (h) { html += '<li><a href="#' + h.id + '">' + h.textContent + "</a></li>"; });
+    toc.innerHTML = html + "</ul>";
+  }
+  function initPostProgress() {
+    var bar = document.querySelector(".post__progress span");
+    var body = document.querySelector(".post__body");
+    if (!bar || !body) return;
+    var onScroll = function () {
+      var total = body.offsetTop + body.offsetHeight - window.innerHeight;
+      var p = Math.min(1, Math.max(0, window.scrollY / Math.max(1, total)));
+      bar.style.transform = "scaleX(" + p + ")";
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  }
+
+
+  /* ---------- Flipbook (one motif, five typologies) ---------- */
+  function initFlipbook() {
+    var book = document.getElementById("flipbook");
+    if (!book) return;
+    var leaves = Array.prototype.slice.call(book.querySelectorAll(".leaf"));
+    var prev = document.getElementById("flipPrev");
+    var next = document.getElementById("flipNext");
+    var count = document.getElementById("flipCount");
+    var i = 0, n = leaves.length;
+    var pad = function (x) { return String(x).padStart(2, "0"); };
+
+    var TURN_MS = 1050;   // must match the .leaf transition duration in CSS
+    var Z_LIFT = 900;     // a turning page floats above the whole stack
+
+    function render(animate) {
+      leaves.forEach(function (leaf, idx) {
+        var turned = idx < i;
+        var was = leaf.classList.contains("is-turned");
+        leaf.classList.toggle("is-turned", turned);
+        leaf.setAttribute("aria-hidden", idx === i ? "false" : "true");
+
+        // resting stack: un-turned pages descend from the top,
+        // already-turned pages pile up on the left in turn order
+        var restZ = turned ? idx : (n - idx);
+
+        leaf._restZ = restZ;
+        if (animate && was !== turned) {
+          // this page is mid-turn — keep it above everything until it lands,
+          // otherwise it appears to rotate behind the page it is revealing
+          leaf._turning = true;
+          leaf.style.zIndex = String(Z_LIFT - idx);
+          clearTimeout(leaf._settle);
+          leaf._settle = setTimeout(function () {
+            leaf._turning = false;
+            leaf.style.zIndex = String(leaf._restZ);
+          }, TURN_MS);
+        } else if (!leaf._turning) {
+          // idle page — sit at its resting depth
+          leaf.style.zIndex = String(restZ);
+        }
+        // a page still in flight keeps its lift; its own timer settles it to the latest depth
+      });
+      if (count) count.textContent = pad(i + 1) + " / " + pad(n);
+      if (prev) prev.disabled = i === 0;
+      if (next) next.disabled = i === n - 1;
+    }
+    function go(d) { var t = Math.min(n - 1, Math.max(0, i + d)); if (t !== i) { i = t; render(true); } }
+
+    if (next) next.addEventListener("click", function () { go(1); });
+    if (prev) prev.addEventListener("click", function () { go(-1); });
+
+    // click the page itself to advance
+    book.querySelector(".flipbook__stage").addEventListener("click", function (e) {
+      var jump = e.target.closest("[data-goto]");
+      if (jump) { i = parseInt(jump.getAttribute("data-goto"), 10); render(true); return; }
+      if (e.target.closest("button")) return;
+      go(1);
+    });
+
+    // keyboard
+    book.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { go(1); }
+      else if (e.key === "ArrowLeft") { go(-1); }
+    });
+    book.setAttribute("tabindex", "0");
+
+    // swipe
+    var x0 = null;
+    book.addEventListener("pointerdown", function (e) { x0 = e.clientX; });
+    book.addEventListener("pointerup", function (e) {
+      if (x0 === null) return;
+      var dx = e.clientX - x0; x0 = null;
+      if (Math.abs(dx) > 45) go(dx < 0 ? 1 : -1);
+    });
+
+    render();
+  }
+
+
+  /* ---------- Study overlay (the dossier) ---------- */
+  function initStudyOverlay() {
+    var ov = document.getElementById("studyOverlay");
+    var grid = document.getElementById("stories");
+    if (!ov || !grid) return;
+    var plates = Array.prototype.slice.call(grid.querySelectorAll(".plate"));
+    var imgEl = document.getElementById("studyOverlayImg");
+    var txtEl = document.getElementById("studyOverlayText");
+    var idxEl = document.getElementById("studyOverlayIdx");
+    var specify = document.getElementById("studySpecify");
+    var copyBtn = document.getElementById("studyCopy");
+    var cur = -1, lastFocus = null;
+
+    function visible() { return plates.filter(function (p) { return !p.classList.contains("is-hidden"); }); }
+
+    function fill(p) {
+      var tpl = p.querySelector(".plate__dossier");
+      var img = p.querySelector(".plate__media img");
+      imgEl.src = img.getAttribute("src");
+      imgEl.alt = img.getAttribute("alt") || "";
+      txtEl.innerHTML = "";
+      txtEl.appendChild(tpl.content.cloneNode(true));
+      var h = txtEl.querySelector(".dossier__title");
+      if (h) h.id = "studyOverlayTitle";
+      idxEl.textContent = (p.querySelector(".plate__idx") || {}).textContent || "";
+      if (specify) specify.href = "collaborate.html?study=" + encodeURIComponent(p.id);
+      txtEl.scrollTop = 0;
+      history.replaceState(null, "", "#" + p.id);
+    }
+    function open(p) {
+      cur = plates.indexOf(p);
+      lastFocus = document.activeElement;
+      fill(p);
+      ov.hidden = false;
+      requestAnimationFrame(function () { ov.classList.add("is-open"); });
+      document.body.classList.add("overlay-open");
+      txtEl.focus();
+    }
+    function close() {
+      ov.classList.remove("is-open");
+      document.body.classList.remove("overlay-open");
+      setTimeout(function () { ov.hidden = true; }, 420);
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+    function step(d) {
+      var vis = visible();
+      if (!vis.length) return;
+      var i = vis.indexOf(plates[cur]);
+      var t = vis[(i + d + vis.length) % vis.length];
+      if (t) { cur = plates.indexOf(t); fill(t); }
+    }
+
+    plates.forEach(function (p) {
+      var face = p.querySelector(".plate__face");
+      if (face) face.addEventListener("click", function () { open(p); });
+    });
+    ov.addEventListener("click", function (e) {
+      if (e.target.hasAttribute("data-close-overlay")) close();
+    });
+    document.getElementById("studyClose").addEventListener("click", close);
+    document.getElementById("studyNext").addEventListener("click", function () { step(1); });
+    document.getElementById("studyPrev").addEventListener("click", function () { step(-1); });
+    document.addEventListener("keydown", function (e) {
+      if (ov.hidden) return;
+      if (e.key === "Escape") close();
+      else if (e.key === "ArrowRight") step(1);
+      else if (e.key === "ArrowLeft") step(-1);
+    });
+    if (copyBtn) copyBtn.addEventListener("click", function () {
+      var url = location.origin + location.pathname + "#" + (plates[cur] ? plates[cur].id : "");
+      var done = function () { copyBtn.textContent = "Link copied"; setTimeout(function(){ copyBtn.textContent = "Copy link"; }, 1400); };
+      if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, done); else done();
+    });
+    // deep link
+    var t = location.hash && document.getElementById(location.hash.slice(1));
+    if (t && t.classList.contains("plate")) open(t);
+  }
+
+  /* ---------- Boot ---------- */
+  buildNav();
+  buildFooter();
+  initNavScroll();
+  initMobileMenu();
+  initReveal();
+  initForm();
+  initStudyFilter();
+  initCompareSlider();
+  initLightbox();
+  initShareLinks();
+  initFlipbook();
+  initStudyOverlay();
+  initJournalIndex();
+  initPost();
+})();

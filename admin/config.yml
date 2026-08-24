@@ -1,0 +1,35 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Where Preeti's uploaded photographs are stored
+media_folder: "assets/img/journal"
+public_folder: "assets/img/journal"
+
+publish_mode: simple
+site_url: https://artha-indus.netlify.app
+logo_url: https://artha-indus.netlify.app/assets/img/logo.png
+
+collections:
+  - name: "posts"
+    label: "Journal Posts"
+    label_singular: "Post"
+    folder: "journal"
+    create: true
+    slug: "{{slug}}"
+    extension: "md"
+    format: "yaml-frontmatter"
+    summary: "{{title}} — {{date | date('MMM D, YYYY')}}"
+    sortable_fields: ["date", "title"]
+    view_filters: []
+    fields:
+      - { name: "title", label: "Title", widget: "string", hint: "The headline of your post." }
+      - { name: "dek", label: "Subtitle", widget: "string", required: false, hint: "One line under the title. Optional." }
+      - { name: "date", label: "Date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false, picker_utc: true }
+      - { name: "author", label: "Author", widget: "string", default: "Preeti Padaley" }
+      - { name: "authorBio", label: "Author note", widget: "string", required: false, default: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP." }
+      - { name: "image", label: "Cover image", widget: "image", required: false, hint: "Drag a photo here. It appears at the top of the post and on the Journal card." }
+      - { name: "imageAlt", label: "Cover image description", widget: "string", required: false, hint: "Describe the image for screen readers and Google." }
+      - { name: "excerpt", label: "Excerpt", widget: "text", required: false, hint: "A sentence or two shown on the Journal card." }
+      - { name: "tags", label: "Tags", widget: "list", required: false, default: ["Essay"] }
+      - { name: "body", label: "Post", widget: "markdown", hint: "Write here. Use the toolbar for headings, bold, quotes and images." }
