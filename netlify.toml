@@ -9,6 +9,9 @@
 # reachable by URL unless it is explicitly blocked. These are working
 # documents, not site content.
 #
+# `force = true` is required: without it Netlify serves the real file and
+# never consults the rule.
+#
 # NOTE: do NOT blanket-block "*.md" — the journal renderer fetches
 # /journal/<slug>.md at runtime and would break.
 # ---------------------------------------------------------------
@@ -16,31 +19,37 @@
   from = "/REVIEW-NOTES.md"
   to = "/404.html"
   status = 404
+  force = true
 
 [[redirects]]
   from = "/README.md"
   to = "/404.html"
   status = 404
+  force = true
 
 [[redirects]]
   from = "/journal/POSTING-GUIDE.md"
   to = "/404.html"
   status = 404
+  force = true
 
 [[redirects]]
   from = "/package.json"
   to = "/404.html"
   status = 404
+  force = true
 
 [[redirects]]
   from = "/package-lock.json"
   to = "/404.html"
   status = 404
+  force = true
 
 [[redirects]]
   from = "/scripts/*"
   to = "/404.html"
   status = 404
+  force = true
 
 [[headers]]
   for = "/assets/img/*"
