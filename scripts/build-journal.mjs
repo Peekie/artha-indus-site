@@ -61,3 +61,19 @@ for (const file of files) {
 posts.sort((a, b) => String(b.date).localeCompare(String(a.date)));   // newest first
 await writeFile(path.join(DIR, "posts.json"), JSON.stringify(posts, null, 2) + "\n");
 console.log(`journal: indexed ${posts.length} post(s)`);
+
+// Regenerate sitemap.xml from the same source, so publishing a post from the CMS
+// keeps the sitemap current instead of quietly leaving it stale.
+const SITE = "https://www.arthaindus.com";
+const PAGES = ["/", "/curators-note.html", "/spatial-studies.html", "/perspectives.html", "/collaborate.html"];
+const esc = (u) => u.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const urls = [
+  ...PAGES.map((p) => ({ loc: SITE + p })),
+  ...posts.map((p) => ({ loc: `${SITE}/post.html?p=${encodeURIComponent(p.slug)}`, lastmod: p.date }))
+];
+const sitemap =
+  '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+  urls.map((u) => `  <url><loc>${esc(u.loc)}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}</url>`).join("\n") +
+  "\n</urlset>\n";
+await writeFile("sitemap.xml", sitemap);
+console.log(`sitemap: ${urls.length} url(s)`);

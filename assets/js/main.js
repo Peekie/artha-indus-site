@@ -497,8 +497,16 @@
       setMeta('meta[name="description"]', "content", meta.excerpt || meta.dek || "");
       setMeta('meta[property="og:title"]', "content", (meta.title || "Perspectives") + " — Artha Indus Atelier");
       setMeta('meta[property="og:description"]', "content", meta.excerpt || meta.dek || "");
-      if (meta.image) setMeta('meta[property="og:image"]', "content", meta.image);
-      setMeta('meta[property="og:url"]', "content", location.href);
+      // Social crawlers cannot resolve a relative og:image — it must be absolute.
+      if (meta.image) setMeta('meta[property="og:image"]', "content", new URL(meta.image, location.href).href);
+      // Canonical/og:url must be the clean article URL: location.href would fold in
+      // whatever tracking or cache-busting params a visitor happened to arrive with,
+      // splitting one article across many canonicals.
+      var cleanUrl = location.origin + location.pathname + "?p=" + encodeURIComponent(slug);
+      setMeta('meta[property="og:url"]', "content", cleanUrl);
+      var canon = document.querySelector('link[rel="canonical"]');
+      if (!canon) { canon = document.createElement("link"); canon.rel = "canonical"; document.head.appendChild(canon); }
+      canon.href = cleanUrl;
 
       // prev / next (list is newest-first: next = newer = idx-1, prev = older = idx+1)
       var newer = idx > 0 ? list[idx - 1] : null;
