@@ -25,7 +25,7 @@ collections:
     fields:
       - { name: "title", label: "Title", widget: "string", hint: "The headline of your post." }
       - { name: "dek", label: "Subtitle", widget: "string", required: false, hint: "One line under the title. Optional." }
-      - { name: "date", label: "Date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false, picker_utc: true }
+      - { name: "date", label: "Order date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false, picker_utc: true, hint: "Not shown anywhere on the site. It only sets the running order of the Journal — the most recent date appears first." }
       - { name: "author", label: "Author", widget: "string", default: "Preeti Padaley" }
       - { name: "authorBio", label: "Author note", widget: "string", required: false, default: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP." }
       - { name: "image", label: "Cover image", widget: "image", required: false, hint: "Drag a photo here. It appears at the top of the post and on the Journal card." }

@@ -416,19 +416,18 @@
     return Math.max(1, Math.round(words / 200)) + " min read";
   }
 
-  function fmtDate(iso) {
-    var parts = (iso || "").split("-");
-    if (parts.length !== 3) return iso || "";
-    var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-    return months[parseInt(parts[1], 10) - 1] + " " + parseInt(parts[2], 10) + ", " + parts[0];
-  }
+  // Posting dates are deliberately not displayed anywhere in the Journal.
+  // The `date` field is still required in each post's front matter and still
+  // flows into posts.json — build-journal.mjs sorts on it (newest first), so
+  // removing it would scramble the running order. It is ordering data, not
+  // display data.
 
   function cardMarkup(p, cls, cta) {
     var alt = escapeHtml(p.imageAlt || p.title || "");
     return '<a class="' + cls + '" href="post.html?p=' + encodeURIComponent(p.slug) + '">' +
       '<div class="' + cls + '__media">' + (p.image ? '<img src="' + escapeHtml(safeUrl(p.image)) + '" alt="' + alt + '" loading="lazy" />' : "") + "</div>" +
       '<div class="' + cls + '__body">' +
-        '<p class="' + cls + '__meta">' + [fmtDate(p.date), p.readingTime].filter(Boolean).map(escapeHtml).join(" &middot; ") + "</p>" +
+        '<p class="' + cls + '__meta">' + [p.readingTime].filter(Boolean).map(escapeHtml).join(" &middot; ") + "</p>" +
         "<h3>" + escapeHtml(p.title) + "</h3>" +
         (p.excerpt ? '<p class="' + cls + '__excerpt">' + escapeHtml(p.excerpt) + "</p>" : "") +
         '<span class="link-arrow">' + cta + ' <span class="arrow" aria-hidden="true">&rarr;</span></span>' +
@@ -456,7 +455,7 @@
             '<p class="eyebrow eyebrow--ink">Latest &middot; ' + escapeHtml(f.tags && f.tags[0] ? f.tags[0] : "Journal") + "</p>" +
             "<h2>" + escapeHtml(f.title) + "</h2>" +
             (f.dek ? '<p class="featured__dek">' + escapeHtml(f.dek) + "</p>" : "") +
-            '<p class="featured__meta">' + [f.author, fmtDate(f.date), f.readingTime].filter(Boolean).map(escapeHtml).join(" &middot; ") + "</p>" +
+            '<p class="featured__meta">' + [f.author, f.readingTime].filter(Boolean).map(escapeHtml).join(" &middot; ") + "</p>" +
             (f.excerpt ? '<p class="featured__excerpt">' + escapeHtml(f.excerpt) + "</p>" : "") +
             '<span class="link-arrow">Read the essay <span class="arrow" aria-hidden="true">&rarr;</span></span>' +
           "</div>" +
@@ -526,7 +525,7 @@
             (tags.length ? '<p class="eyebrow" style="margin-top:1.4rem">' + tags.map(escapeHtml).join(" &middot; ") + "</p>" : "") +
             "<h1>" + escapeHtml(meta.title || "Untitled") + "</h1>" +
             (meta.dek ? '<p class="post__dek">' + escapeHtml(meta.dek) + "</p>" : "") +
-            '<p class="post__byline">' + [meta.author, fmtDate(meta.date), rt].filter(Boolean).map(escapeHtml).join(" &middot; ") + "</p>" +
+            '<p class="post__byline">' + [meta.author, rt].filter(Boolean).map(escapeHtml).join(" &middot; ") + "</p>" +
           "</div>" +
         "</header>" +
         (meta.image ? '<div class="wrap"><figure class="post__cover"><img src="' + escapeHtml(safeUrl(meta.image)) + '" alt="' + escapeHtml(meta.imageAlt || meta.title || "") + '" /></figure></div>' : "") +
