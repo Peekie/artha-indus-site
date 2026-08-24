@@ -192,7 +192,6 @@
     var countEl = document.getElementById("studyCount");
     var emptyEl = document.getElementById("storiesEmpty");
     var state = { app: "all", lineage: "all" };
-    var roman = ["", "I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII"];
 
     function apply() {
       var shown = 0;
@@ -207,10 +206,14 @@
       });
       if (emptyEl) emptyEl.hidden = shown !== 0;
       if (countEl) {
+        // Counts come from the DOM, never from a hard-coded total: adding a
+        // study to the markup is all it takes for these to stay correct.
+        var total = stories.length;
+        var noun = total === 1 ? " study." : " studies.";
         if (state.app === "all" && state.lineage === "all") {
-          countEl.textContent = "Showing all eleven studies.";
+          countEl.textContent = "Showing all " + total + noun;
         } else {
-          countEl.textContent = "Showing " + shown + " of 11 studies.";
+          countEl.textContent = "Showing " + shown + " of " + total + noun;
         }
       }
     }
@@ -665,7 +668,6 @@
     var plates = Array.prototype.slice.call(grid.querySelectorAll(".plate"));
     var imgEl = document.getElementById("studyOverlayImg");
     var txtEl = document.getElementById("studyOverlayText");
-    var idxEl = document.getElementById("studyOverlayIdx");
     var specify = document.getElementById("studySpecify");
     var copyBtn = document.getElementById("studyCopy");
     var cur = -1, lastFocus = null;
@@ -681,7 +683,6 @@
       txtEl.appendChild(tpl.content.cloneNode(true));
       var h = txtEl.querySelector(".dossier__title");
       if (h) h.id = "studyOverlayTitle";
-      idxEl.textContent = (p.querySelector(".plate__idx") || {}).textContent || "";
       if (specify) specify.href = "collaborate.html?study=" + encodeURIComponent(p.id);
       txtEl.scrollTop = 0;
       history.replaceState(null, "", "#" + p.id);

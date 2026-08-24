@@ -565,16 +565,6 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 350; line-height: 1.05;
 .plate__face:hover .plate__media::after,
 .plate__face:focus-visible .plate__media::after { opacity: 1; transform: none; }
 
-/* archival plate numeral — always present, like a catalogue mark */
-.plate__idx {
-  position: absolute; top: 0.9rem; left: 0.9rem; z-index: 3;
-  font-family: var(--serif); font-size: 0.8rem; letter-spacing: 0.1em;
-  background: rgba(244,239,230,0.92); color: var(--ink);
-  padding: 0.25rem 0.6rem; border-radius: 2px;
-  transition: background 0.5s var(--ease);
-}
-.plate__face:hover .plate__idx { background: transparent; }
-
 /* revealed over the veil */
 .plate__cap {
   position: absolute; inset: auto 0 0 0; z-index: 2;
@@ -623,7 +613,6 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 350; line-height: 1.05;
      the plate at rest, and the full study is one tap away. */
   .plate__media::after { opacity: 0; }
   .plate__cap { opacity: 0; }
-  .plate__idx { background: rgba(244,239,230,0.92); }
   /* make the invitation explicit, since there is no hover to discover it */
   .plate__label::after { transform: scaleX(1); }
   .plate__label .plate__title::after {
@@ -686,11 +675,11 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 350; line-height: 1.05;
 }
 .study-overlay.is-open .study-overlay__panel { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 .study-overlay__bar {
-  display: flex; align-items: center; justify-content: space-between;
+  /* only the nav lives here now that the catalogue numeral is gone */
+  display: flex; align-items: center; justify-content: flex-end;
   padding: 0.9rem clamp(1rem, 2.5vw, 1.8rem);
   border-bottom: 1px solid var(--rule);
 }
-.study-overlay__idx { font-family: var(--serif); font-size: 1rem; color: var(--gold-deep); letter-spacing: 0.12em; }
 .study-overlay__nav { display: flex; gap: 0.5rem; }
 .study-overlay__nav .flip-btn { width: 2.5rem; height: 2.5rem; font-size: 0.95rem; }
 .study-overlay__body {
