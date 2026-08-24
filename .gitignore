@@ -4,3 +4,6 @@ node_modules/
 
 # agent tooling state — not site content
 .omc/
+
+# internal working notes — never publish
+REVIEW-NOTES.md
