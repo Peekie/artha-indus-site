@@ -65,7 +65,7 @@
             "<div><h6>Navigate</h6><ul>" + nav + "</ul></div>" +
             '<div><h6>Connect</h6><ul>' +
               '<li><a href="mailto:preeti@arthaindus.com">preeti@arthaindus.com</a></li>' +
-              '<li><a href="https://www.arthaindus.com">www.arthaindus.com</a></li>' +
+              '<li><a href="https://arthaindus.com">www.arthaindus.com</a></li>' +
               '<li>Chicago, IL</li>' +
               '<li><a href="collaborate.html">Request 2026 Lookbook</a></li>' +
             "</ul></div>" +
