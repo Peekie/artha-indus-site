@@ -3,6 +3,45 @@
   command = "npm run build"
   publish = "."
 
+# ---------------------------------------------------------------
+# Keep repo-internal files out of the public site.
+# `publish = "."` serves the whole repo, so anything committed here is
+# reachable by URL unless it is explicitly blocked. These are working
+# documents, not site content.
+#
+# NOTE: do NOT blanket-block "*.md" — the journal renderer fetches
+# /journal/<slug>.md at runtime and would break.
+# ---------------------------------------------------------------
+[[redirects]]
+  from = "/REVIEW-NOTES.md"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/README.md"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/journal/POSTING-GUIDE.md"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/package.json"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/package-lock.json"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/scripts/*"
+  to = "/404.html"
+  status = 404
+
 [[headers]]
   for = "/assets/img/*"
   [headers.values]
