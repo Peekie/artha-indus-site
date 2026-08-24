@@ -139,8 +139,16 @@
     form.addEventListener("submit", function (e) {
       // On Netlify the form posts natively — just hand over the Lookbook first.
       if (isNetlify) {
-        if (!form.checkValidity()) return;
-        return; // let Netlify handle the POST
+        // A bare `return` would NOT stop the submission: without preventDefault the
+        // browser posts anyway, and the form carries `novalidate` so it will not
+        // block invalid input either. Invalid enquiries were reaching Netlify.
+        if (!form.checkValidity()) {
+          e.preventDefault();
+          if (status) { status.style.color = "var(--terracotta)"; status.textContent = "Please add your name and a valid email."; }
+          form.reportValidity();
+          return;
+        }
+        return; // valid — let Netlify handle the POST
       }
       e.preventDefault();
       if (!form.checkValidity()) {

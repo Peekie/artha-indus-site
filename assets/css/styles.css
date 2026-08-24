@@ -761,7 +761,12 @@ body.overlay-open { overflow: hidden; }
 .collab__points h5 { font-size: 1rem; }
 .collab__points p { font-size: 0.9rem; color: var(--ink-mute); }
 
-.form { display: grid; gap: 1.2rem; }
+.form {
+  /* align-content:start is load-bearing. .collab stretches this column to the
+     height of the (taller) left column; without it the surplus height is shared
+     out among the form's auto rows and the submit button inflates to ~190px. */
+  display: grid; gap: 1.2rem; align-content: start;
+}
 .field { display: grid; gap: 0.45rem; }
 .field label { font-size: 0.64rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-mute); }
 .field input, .field select, .field textarea {
