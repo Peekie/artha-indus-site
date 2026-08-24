@@ -671,9 +671,13 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 350; line-height: 1.05;
 }
 .study-overlay.is-open .study-overlay__scrim { opacity: 1; }
 .study-overlay__panel {
-  position: absolute; inset: 0; margin: auto;
+  /* Centred by transform alone. Do NOT reintroduce `inset: 0` + `margin: auto`
+     here: with a fixed width/height it over-constrains the box, CSS resolves the
+     auto margins to negative values, and the panel's header bar gets dragged off
+     the top of the viewport. */
+  position: absolute; top: 50%; left: 50%; right: auto; bottom: auto; margin: 0;
   width: min(1180px, 100%); height: min(92vh, 100%);
-  top: 50%; left: 50%; transform: translate(-50%, -46%) scale(0.99);
+  transform: translate(-50%, -46%) scale(0.99);
   background: var(--paper); border-radius: 3px;
   display: grid; grid-template-rows: auto 1fr auto;
   overflow: hidden; opacity: 0;
