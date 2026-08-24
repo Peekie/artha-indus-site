@@ -140,12 +140,6 @@
       // On Netlify the form posts natively — just hand over the Lookbook first.
       if (isNetlify) {
         if (!form.checkValidity()) return;
-        if (/lookbook/i.test(String(new FormData(form).get("interest") || ""))) {
-          var la = document.createElement("a");
-          la.href = "assets/downloads/Artha-Indus-Atelier-Lookbook-2026.pdf";
-          la.download = "Artha-Indus-Atelier-Lookbook-2026.pdf";
-          document.body.appendChild(la); la.click(); document.body.removeChild(la);
-        }
         return; // let Netlify handle the POST
       }
       e.preventDefault();
