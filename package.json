@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/build-journal.mjs"
+    "build": "node scripts/build-journal.mjs",
+    "preview": "node scripts/build-journal.mjs && python3 -m http.server 8899"
   }
 }
