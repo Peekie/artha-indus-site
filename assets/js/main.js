@@ -30,7 +30,7 @@
 
     var html =
       '<header class="nav" id="nav">' +
-        '<a href="index.html" class="brand" aria-label="Artha Indus Atelier — home">' +
+        '<a href="index.html" class="brand" aria-label="Artha Indus Atelier home">' +
           '<img class="brand__logo" src="assets/img/logo.png" srcset="assets/img/logo.png 1x, assets/img/logo@2x.png 2x" alt="" />' +
           '<span class="brand__words">' +
             '<span class="brand__mark">Artha Indus</span>' +
@@ -60,7 +60,7 @@
           '<div class="footer__top">' +
             "<div>" +
               '<div class="footer__mark">Artha Indus Atelier<span>Ancient Heritage. Modern Resonance.</span></div>' +
-              '<p class="footer__note" style="margin-top:1.4rem">A boutique curation house bridging ancient master lineages with modern corporate, hospitality, and healthcare environments — preserving the soul of the artisan’s hand.</p>' +
+              '<p class="footer__note" style="margin-top:1.4rem">A boutique curation house bridging ancient master lineages with modern corporate, hospitality, and healthcare environments, preserving the soul of the artisan’s hand.</p>' +
             "</div>" +
             "<div><h6>Navigate</h6><ul>" + nav + "</ul></div>" +
             '<div><h6>Connect</h6><ul>' +
@@ -158,12 +158,12 @@
       }
       var data = new FormData(form);
       var name = (data.get("name") || "").toString();
-      var subject = "Artha Indus — " + (data.get("interest") || "Inquiry");
+      var subject = "Artha Indus: " + (data.get("interest") || "Inquiry");
       var bodyLines = [
         "Name: " + name,
-        "Company: " + (data.get("company") || "—"),
-        "Email: " + (data.get("email") || "—"),
-        "Interest: " + (data.get("interest") || "—"),
+        "Company: " + (data.get("company") || "not given"),
+        "Email: " + (data.get("email") || "not given"),
+        "Interest: " + (data.get("interest") || "not given"),
         "",
         (data.get("message") || "").toString()
       ];
@@ -184,7 +184,7 @@
       if (status) {
         status.style.color = "var(--sage)";
         status.textContent = wantsLookbook
-          ? "Your Lookbook is downloading — thank you, " + (name.split(" ")[0] || "there") + ". Opening your email client so we can follow up…"
+          ? "Your Lookbook is downloading. Thank you, " + (name.split(" ")[0] || "there") + ". Opening your email client so we can follow up…"
           : "Opening your email client… thank you, " + (name.split(" ")[0] || "there") + ".";
       }
       setTimeout(function () { window.location.href = href; }, wantsLookbook ? 900 : 0);
@@ -303,7 +303,7 @@
       if (story) {
         var eb = story.querySelector(".eyebrow, .stage__label");
         var h = story.querySelector("h3, h4");
-        label = [eb && eb.textContent.trim(), h && h.textContent.trim()].filter(Boolean).join(" — ");
+        label = [eb && eb.textContent.trim(), h && h.textContent.trim()].filter(Boolean).join(" · ");
       } else {
         var cap = img.parentElement.querySelector(".typo__cap h4");
         if (cap) label = cap.textContent.trim();
@@ -501,9 +501,9 @@
       var rt = meta.readingTime || readingTime(rawMd);
 
       // per-post metadata (helps JS-rendering crawlers; document limitation for social)
-      if (meta.title) document.title = meta.title + " — Perspectives | Artha Indus Atelier";
+      if (meta.title) document.title = meta.title + " | Perspectives | Artha Indus Atelier";
       setMeta('meta[name="description"]', "content", meta.excerpt || meta.dek || "");
-      setMeta('meta[property="og:title"]', "content", (meta.title || "Perspectives") + " — Artha Indus Atelier");
+      setMeta('meta[property="og:title"]', "content", (meta.title || "Perspectives") + " | Artha Indus Atelier");
       setMeta('meta[property="og:description"]', "content", meta.excerpt || meta.dek || "");
       // Social crawlers cannot resolve a relative og:image — it must be absolute.
       if (meta.image) setMeta('meta[property="og:image"]', "content", new URL(meta.image, location.href).href);

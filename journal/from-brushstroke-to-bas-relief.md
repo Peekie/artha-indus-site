@@ -6,7 +6,7 @@ author: "Preeti Padaley"
 authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
 image: "assets/img/story-6-cloudscapes.jpg"
 imageAlt: "Sweeping Himalayan Thangka celestial cloudscapes in sage green and liquid-gold linework across a curved wellness-spa sanctuary wall."
-excerpt: "When ancestral art moves beyond decoration, it ceases to sit passively on a wall—it becomes the architectural skin of the room, shaping light, sound, and emotional stillness."
+excerpt: "When ancestral art moves beyond decoration, it ceases to sit passively on a wall; it becomes the architectural skin of the room, shaping light, sound, and emotional stillness."
 tags: ["Essay", "Heritage", "Architecture"]
 ---
 
@@ -14,15 +14,15 @@ tags: ["Essay", "Heritage", "Architecture"]
 
 At daybreak, low-raking sunlight cuts across an expansive, double-height volume, grazing the low relief of a carved timber wall. What could have been flat ink on parchment transforms into an architectural landscape of shifting light and shadow. The organic geometry carved into the walnut grain gently scatters ambient acoustics, turning sharp echoes into a hushed, contemplative stillness.
 
-There is an unmistakable presence to the room—the grounding tactility of natural grain, the cool permanence of honed stone underfoot, and a visual cadence that encourages the mind to settle. This is the intersection where architectural volume and ancestral craft cease to be separate disciplines; the surface itself becomes a medium of spatial resonance.
+There is an unmistakable presence to the room: the grounding tactility of natural grain, the cool permanence of honed stone underfoot, and a visual cadence that encourages the mind to settle. This is the intersection where architectural volume and ancestral craft cease to be separate disciplines; the surface itself becomes a medium of spatial resonance.
 
-> When ancestral art moves beyond decoration, it ceases to sit passively on a wall—it becomes the architectural skin of the room, shaping light, sound, and emotional stillness.
+> When ancestral art moves beyond decoration, it ceases to sit passively on a wall; it becomes the architectural skin of the room, shaping light, sound, and emotional stillness.
 
 ## The Curatorial Friction
 
 Contemporary architecture frequently finds itself navigating between two aesthetic extremes: folkloric saturation on one end, and rootless minimalism on the other.
 
-South Asian heritage traditions—from Gond and Warli to Madhubani, Pattachitra, and Kalamkari—carry millennia of sophisticated narrative composition and biophilic geometry. Historically, however, these forms evolved within sacred murals, temple architecture, and communal storytelling traditions where dense visual layering and unmediated palettes were central to their devotional purpose. When placed unaltered into contemporary interiors, this visual density can overwhelm modern sightlines and clash with clean structural proportions.
+South Asian heritage traditions, from Gond and Warli to Madhubani, Pattachitra, and Kalamkari, carry millennia of sophisticated narrative composition and biophilic geometry. Historically, however, these forms evolved within sacred murals, temple architecture, and communal storytelling traditions where dense visual layering and unmediated palettes were central to their devotional purpose. When placed unaltered into contemporary interiors, this visual density can overwhelm modern sightlines and clash with clean structural proportions.
 
 Conversely, modern luxury architecture often overcorrects by defaulting to an austere vocabulary of bare concrete, flat drywall, and sterile stone. While disciplined, these environments frequently feel emotionally detached, devoid of tactile warmth, and stripped of cultural narrative.
 
@@ -32,7 +32,7 @@ The essential curatorial question is not whether heritage belongs in modern arch
 
 Elevating traditional lineages into architectural environments requires a philosophy of distillation rather than mere reproduction. It demands viewing ancient compositions not as static decorative artifacts, but as living systems of geometry, rhythm, and intention.
 
-**Isolating the Essential Line:** Every heritage lineage begins with an elemental gesture—the rhythmic stippling of a Gond forest canopy, the sacred geometry of a Warli communal circle, or the fluid continuous curves of Kalamkari flora. By deconstructing complex figurative scenes down to their foundational strokes, the pure structural power of the lineage is brought forward.
+**Isolating the Essential Line:** Every heritage lineage begins with an elemental gesture: the rhythmic stippling of a Gond forest canopy, the sacred geometry of a Warli communal circle, or the fluid continuous curves of Kalamkari flora. By deconstructing complex figurative scenes down to their foundational strokes, the pure structural power of the lineage is brought forward.
 
 **The Architecture of the Void (Shunya):** Where traditional craft historically celebrated dense detail, contemporary architecture relies on space. Introducing generous negative space allows the visual narrative to breathe. This intentional spatial pause provides the eye a place to rest, framing sightlines and complementing vertical proportions.
 
@@ -66,7 +66,7 @@ Enduring luxury is defined by authenticity, provenance, and spatial harmony. Whe
 
 Visual neuroscience and environmental design principles consistently highlight that balanced visual complexity, organic geometry, and tactile natural materials support cognitive ease and reduce environmental fatigue. By honoring the origins of these ancient traditions while refining their spatial expression, we create environments that feel grounded, restorative, and culturally resonant.
 
-The role of the contemporary curator is that of a custodian—preserving the soul and integrity of ancestral knowledge, while reimagining its expression for the spaces in which we live, work, and reflect.
+The role of the contemporary curator is that of a custodian, preserving the soul and integrity of ancestral knowledge, while reimagining its expression for the spaces in which we live, work, and reflect.
 
 ## References & Industry Citations
 
