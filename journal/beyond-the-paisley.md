@@ -51,7 +51,7 @@ Heritage curation within luxury interiors does not mean curating ethnographic de
 
 ## Dimensional Metamorphosis: Architectural Materiality
 
-The full curatorial potential of the *bīja* is unlocked when it moves beyond parchment and flat paper into permanent, three-dimensional architectural substrates. By translating the motif into physical relief, it shifts from an object to be looked at into an atmospheric presence to be felt.
+The full curatorial potential of the *bīja* emerges when it moves beyond parchment and flat paper into permanent, three-dimensional architectural substrates. By translating the motif into physical relief, it shifts from an object to be looked at into an atmospheric presence to be felt.
 
 ![Sectional diagram of a Bīja relief in cast plaster or carved wood, annotated for raking natural light, tactile depth, acoustic hush, and shadow play across the day.](assets/img/journal/beyond-the-paisley-relief.jpg)
 
