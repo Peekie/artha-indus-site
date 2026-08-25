@@ -756,7 +756,12 @@ body.overlay-open { overflow: hidden; }
 .collab { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(2rem, 6vw, 5rem); }
 .collab__intro .lead { margin-top: 1.2rem; }
 .collab__points { margin-top: 2rem; display: grid; gap: 1.1rem; }
-.collab__points div { display: grid; grid-template-columns: auto 1fr; gap: 0.9rem; align-items: start; }
+/* NOTE the child combinator: this must style only the row (dot + content).
+   Unscoped, it also hit the inner heading+paragraph wrapper, turning it into a
+   grid whose first column sized to each label — so every description started at
+   a different x (a 95px spread across the three rows). */
+.collab__points > div { display: grid; grid-template-columns: auto 1fr; gap: 0.9rem; align-items: start; }
+.collab__points h5 + p { margin-top: 0.35rem; }
 .collab__points .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--terracotta); margin-top: 0.55rem; }
 .collab__points h5 { font-size: 1rem; }
 .collab__points p { font-size: 0.9rem; color: var(--ink-mute); }
