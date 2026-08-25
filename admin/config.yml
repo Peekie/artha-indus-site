@@ -21,7 +21,6 @@ collections:
     format: "yaml-frontmatter"
     summary: "{{title}} — {{date | date('MMM D, YYYY')}}"
     sortable_fields: ["date", "title"]
-    view_filters: []
     fields:
       - { name: "title", label: "Title", widget: "string", hint: "The headline of your post." }
       - { name: "dek", label: "Subtitle", widget: "string", required: false, hint: "One line under the title. Optional." }
