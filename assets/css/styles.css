@@ -753,18 +753,84 @@ body.overlay-open { overflow: hidden; }
 /* ============================================================
    COLLABORATE
    ============================================================ */
-.collab { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(2rem, 6vw, 5rem); }
-.collab__intro .lead { margin-top: 1.2rem; }
-.collab__points { margin-top: 2rem; display: grid; gap: 1.1rem; }
-/* NOTE the child combinator: this must style only the row (dot + content).
-   Unscoped, it also hit the inner heading+paragraph wrapper, turning it into a
-   grid whose first column sized to each label — so every description started at
-   a different x (a 95px spread across the three rows). */
+/* ============================================================
+   COLLABORATE — the commission docket
+   The page's job is to get a specifier to write to the studio. So the form is
+   treated as the instrument on the page: a contained panel (Gestalt common
+   region) rather than four underlines floating in space. The opening statement
+   runs full width, the argument sits left, the ask sits right, and the Lookbook
+   — the low-commitment path — is demoted to a strip beneath both.
+   ============================================================ */
+.collab__head { margin-bottom: clamp(2.2rem, 4vw, 3.2rem); }
+/* measure set on the heading itself: `ch` on the wrapper would resolve against
+   the body size, not the display size, and collapse this to ~270px */
+.collab__head .sec-title { max-width: 17ch; }
+.collab__head .lead { margin-top: 1.2rem; max-width: 54ch; }
+
+.collab {
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  /* start, not stretch: neither column should inherit the other's height */
+  align-items: start;
+}
+
+.collab__eyebrow { margin-bottom: 1.2rem; }
+.collab__points { display: grid; gap: 2.3rem; }
 .collab__points > div { display: grid; grid-template-columns: auto 1fr; gap: 0.9rem; align-items: start; }
-.collab__points h5 + p { margin-top: 0.35rem; }
-.collab__points .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--terracotta); margin-top: 0.55rem; }
-.collab__points h5 { font-size: 1rem; }
-.collab__points p { font-size: 0.9rem; color: var(--ink-mute); }
+.collab__points .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--terracotta); margin-top: 0.6rem; }
+.collab__points h5 { font-size: 1.02rem; }
+.collab__points h5 + p { margin-top: 0.4rem; }
+.collab__points p { font-size: 0.95rem; color: var(--ink-mute); line-height: 1.65; }
+
+/* the spec-readiness line, given a hairline of its own so it reads as a
+   technical footnote rather than another paragraph */
+.collab__readiness {
+  margin-top: 2.6rem; padding-top: 1.3rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.76rem; letter-spacing: 0.12em; text-transform: uppercase;
+  line-height: 1.85; color: var(--ink-mute);
+}
+
+/* ---- the docket panel ---- */
+.form--docket {
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--gold);
+  border-radius: 2px;
+  padding: clamp(1.5rem, 3vw, 2.4rem);
+}
+.form__head { margin-bottom: 0.4rem; }
+.form__intro {
+  margin-top: 0.6rem; font-size: 0.95rem; color: var(--ink-mute);
+  line-height: 1.6; max-width: 40ch;
+}
+
+/* ---- the Lookbook, as a strip ---- */
+.lookbook--strip {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-top: clamp(2rem, 4vw, 2.8rem);
+  border-top: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 132px 1fr auto;
+  gap: clamp(1.2rem, 3vw, 2.4rem);
+  align-items: center;
+  background: none; border-radius: 0; box-shadow: none; padding-left: 0; padding-right: 0;
+}
+.lookbook--strip .lookbook__media { margin: 0; border-radius: 2px; overflow: hidden; display: block; }
+.lookbook--strip .lookbook__media img { width: 100%; height: auto; display: block; transition: transform 0.7s var(--ease); }
+.lookbook--strip .lookbook__media:hover img { transform: scale(1.04); }
+.lookbook--strip .lookbook__body { padding: 0; }
+.lookbook--strip h3 { font-size: 1.15rem; margin-top: 0.45rem; line-height: 1.25; }
+.lookbook--strip .lookbook__desc { margin-top: 0.5rem; font-size: 0.92rem; color: var(--ink-mute); max-width: 54ch; }
+.lookbook--strip .lookbook__action { text-align: right; display: grid; gap: 0.5rem; justify-items: end; }
+.lookbook--strip .lookbook__meta { margin: 0; }
+
+@media (max-width: 900px) {
+  .collab { grid-template-columns: 1fr; }
+  .lookbook--strip { grid-template-columns: 96px 1fr; }
+  .lookbook--strip .lookbook__action { grid-column: 1 / -1; text-align: left; justify-items: start; }
+}
 
 .form {
   /* align-content:start is load-bearing. .collab stretches this column to the
@@ -773,17 +839,31 @@ body.overlay-open { overflow: hidden; }
   display: grid; gap: 1.2rem; align-content: start;
 }
 .field { display: grid; gap: 0.45rem; }
-.field label { font-size: 0.64rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-mute); }
+/* 0.64rem uppercase at 0.2em tracking was below the legibility the founder asked
+   for; raised to 0.76rem with tighter tracking. */
+.field label { font-size: 0.76rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute); }
 .field input, .field select, .field textarea {
-  font: inherit; font-size: 0.95rem;
+  font: inherit; font-size: 1rem;
   background: transparent; color: var(--ink);
-  border: 0; border-bottom: 1px solid var(--rule);
-  padding: 0.6rem 0.1rem;
+  /* --rule composites to 1.38:1 against paper, failing WCAG 2.1 SC 1.4.11
+     (3:1 for the boundary of a form control). This value measures 3.25:1. */
+  border: 0; border-bottom: 1px solid rgba(28, 24, 21, 0.5);
+  padding: 0.62rem 0.1rem;
   border-radius: 0;
-  transition: border-color 0.4s var(--ease);
+  transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
-.field textarea { resize: vertical; min-height: 90px; }
-.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--gold); }
+.field textarea { resize: vertical; min-height: 92px; }
+/* --gold is 2.99:1 on paper — a hair under the 3:1 a focus indicator needs.
+   --gold-deep is 6.23:1, and the doubled rule makes focus unmistakable. */
+/* Deliberately does NOT set `outline: none`. The global rule at the top of this
+   file gives every focusable element a 2px --gold-deep outline (6.23:1 on paper);
+   suppressing it here to draw a 1px border instead would be a downgrade. This
+   only thickens the field's own rule so the active field is obvious even when a
+   pointer user clicks in and no outline is drawn. */
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--gold-deep);
+  box-shadow: 0 1px 0 0 var(--gold-deep);
+}
 .field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236f6455' fill='none' stroke-width='1.4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.2rem center; }
 .form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
 .btn {
