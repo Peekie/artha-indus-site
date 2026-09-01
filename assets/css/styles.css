@@ -1769,9 +1769,16 @@ body.has-veil .hero__meta { animation-delay: 1.75s; }
 
 /* the lineage strip glides on touch devices */
 .lineage-strip__track.is-drifting {
+  /* the marquee must be a single unbroken row: the base track wraps and
+     centers, which stacked the cloned names into a visible second line */
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  max-width: none;
   width: max-content;
+  padding-inline: 0;
   animation: stripDrift 38s linear infinite;
 }
+.lineage-strip__track.is-drifting span, .lineage-strip__track.is-drifting a { white-space: nowrap; }
 @keyframes stripDrift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* ============================================================
