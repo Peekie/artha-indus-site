@@ -1540,3 +1540,39 @@ body.has-veil .hero__meta { animation-delay: 1.75s; }
   .study-index__row::-webkit-scrollbar { display: none; }
   .study-index__row .study-index__f { flex: 0 0 auto; white-space: nowrap; }
 }
+
+/* ============================================================
+   FEVER DREAM — the living manuscript
+   ============================================================ */
+/* the provenance line: an inked rule drawn down the margin as you read */
+.prov { position: fixed; top: 0; bottom: 0; left: clamp(0.5rem, 1.4vw, 1.5rem); width: 12px; z-index: 40; pointer-events: none; }
+.prov svg { width: 100%; height: 100%; overflow: visible; }
+.prov path { fill: none; stroke: var(--gold); stroke-width: 1.4; opacity: 0.55; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+@media (max-width: 999px) { .prov { display: none; } }
+
+/* giant Devanagari watermarks: the manuscript's own script behind the page */
+.deva-mark {
+  position: absolute; right: -0.04em; bottom: -0.2em; z-index: 0;
+  font-family: "Noto Serif Devanagari", serif;
+  font-size: clamp(9rem, 24vw, 22rem); line-height: 1; font-weight: 400;
+  pointer-events: none; user-select: none;
+}
+.macro .deva-mark { z-index: 1; color: var(--paper); opacity: 0.09; }
+.proof { position: relative; overflow: hidden; }
+.proof .deva-mark { color: var(--gold-lite); opacity: 0.07; }
+.proof .wrap { position: relative; z-index: 1; }
+
+/* the card catalogue: plates sit filed and slightly askew until touched */
+#stories { counter-reset: plate; }
+#stories .plate { counter-increment: plate; transform: rotate(var(--tilt, 0deg)); transition: transform 0.5s var(--ease); }
+#stories .plate:hover, #stories .plate:focus-within { transform: rotate(0deg); }
+#stories .plate__label { position: relative; padding-right: 5rem; }
+#stories .plate__label::after {
+  content: "Plate " counter(plate, decimal-leading-zero);
+  position: absolute; top: 0.25rem; right: 0;
+  font-family: var(--sans); font-size: 0.76rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--gold-deep); opacity: 0.8;
+}
+@media (prefers-reduced-motion: reduce) {
+  #stories .plate { transform: none; }
+}

@@ -182,7 +182,14 @@
         { src: "assets/img/journal/kurma-acoustic-panel.jpg", alt: "The Kūrma motif in copper detail set into deep charcoal acoustic felt, flanked by columns of fish and vine." }
       ];
       var macroImg = document.querySelector(".macro__media img");
-      if (macroImg) { var m = pick(macros); macroImg.src = m.src; macroImg.alt = m.alt; }
+      var macroDeva = document.getElementById("macroDeva");
+      if (macroImg) {
+        var m = pick(macros);
+        macroImg.src = m.src; macroImg.alt = m.alt;
+        // the watermark glyph follows the material shown:
+        // kūrma for the turtle felt, varṇa (colour, pigment) for the pigments table
+        if (macroDeva) macroDeva.textContent = m.src.indexOf("cta-environment") > -1 ? "वर्ण" : "कूर्म";
+      }
     }
     // CTA backdrops rotate on the pages without a pinned choice
     if (current === "home" || current === "perspectives") {
@@ -199,7 +206,11 @@
         var q = Math.floor(Math.random() * (p + 1));
         var tmp = plates[p]; plates[p] = plates[q]; plates[q] = tmp;
       }
-      plates.forEach(function (pl) { grid.appendChild(pl); });
+      plates.forEach(function (pl) {
+        // filed cards sit slightly askew until touched
+        pl.style.setProperty("--tilt", ((Math.random() * 1.2) - 0.6).toFixed(2) + "deg");
+        grid.appendChild(pl);
+      });
     }
     // the lineage strip reorders itself
     var track = document.querySelector(".lineage-strip__track");
@@ -211,6 +222,41 @@
         var t = names[i]; names[i] = names[j]; names[j] = t;
       }
     }
+  }
+
+  /* ---------- Provenance line: the scribe's rule draws with the reader ----
+     A hand-wavering inked line runs down the left margin and draws itself as
+     the page is read, slightly differently on every visit. Decoration only:
+     hidden from assistive tech, absent on small screens and reduced motion. */
+  function initProvenance() {
+    if (!MOTION_OK) return;
+    if (!(window.matchMedia && window.matchMedia("(min-width: 1000px)").matches)) return;
+    var wrap = document.createElement("div");
+    wrap.className = "prov";
+    wrap.setAttribute("aria-hidden", "true");
+    var x = 6, d = "M" + x + " 0";
+    for (var y = 8; y <= 100; y += 8) {
+      var wob = (Math.random() * 3 - 1.5).toFixed(2);
+      d += " C " + (x - wob) + " " + (y - 5.5) + ", " + (+x + +wob) + " " + (y - 2.5) + ", " + x + " " + y;
+    }
+    wrap.innerHTML = '<svg viewBox="0 0 12 100" preserveAspectRatio="none"><path d="' + d + '" /></svg>';
+    document.body.appendChild(wrap);
+    var path = wrap.querySelector("path");
+    var L = path.getTotalLength();
+    path.style.strokeDasharray = L + " " + L;
+    path.style.strokeDashoffset = String(L);
+    var raf = null;
+    function draw() {
+      raf = null;
+      var doc = document.documentElement;
+      var max = Math.max(1, doc.scrollHeight - window.innerHeight);
+      var p = Math.min(1, Math.max(0, window.scrollY / max));
+      path.style.strokeDashoffset = String(L * (1 - p));
+    }
+    var kick = function () { if (!raf) raf = requestAnimationFrame(draw); };
+    window.addEventListener("scroll", kick, { passive: true });
+    window.addEventListener("resize", kick);
+    draw();
   }
 
   /* ---------- Hero torch: the pointer excavates the underdrawing ---------- */
@@ -1143,6 +1189,7 @@
   initNavScroll();
   initMobileMenu();
   initFreshness();
+  initProvenance();
   initVeil();
   initScrollHint();
   initHeroTorch();
