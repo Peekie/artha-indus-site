@@ -4,8 +4,8 @@ dek: "Why the oldest instincts of South Asian craft, relief, repetition, and fib
 date: 2026-08-24
 author: "Preeti Padaley"
 authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
-image: "assets/img/journal/kurma-acoustic-panel.jpg"
-imageAlt: "Close view of the Kūrma turtle motif rendered in copper detail on deep charcoal acoustic felt, flanked by columns of fish and vine."
+image: "assets/img/journal/kurma-acoustic-boardroom.jpg"
+imageAlt: "A conference room wrapped wall to wall in charcoal acoustic felt patterned with the Kūrma motif in copper, around a long walnut table and a wall display."
 excerpt: "We remember rooms by how they sound almost as vividly as by how they look. A curatorial argument for treating the acoustic surface as a site of heritage art rather than a technical afterthought."
 tags: ["Essay", "Acoustics", "Materiality"]
 ---
@@ -25,6 +25,8 @@ Here is the quiet coincidence at the center of this essay. The two physical stra
 
 - **Relief is diffusion.** A carved surface scatters sound the way it scatters light. The fluted timber, layered plaster, and stepped bas-relief that this atelier's lineages naturally produce break up flat reflections into softer, more even energy. Our own translatability studies noted that Gond's micro-line matrices and carved hardwood panels lend "subtle acoustic diffusion" to expansive walls; the observation began as an aside and grew into a practice.
 - **Fiber is absorption.** Wool felt, layered textile, and dense natural fiber do what stone cannot: they let sound in and decline to give it back. The *Kūrma* composition pictured above is built in exactly this register, copper-detailed motifs set into deep charcoal acoustic felt, so that the artwork and the absorber are one object rather than neighbours.
+
+![The Kūrma motif up close: copper detail set into deep charcoal acoustic felt, the artwork and the absorber as one object.](assets/img/journal/kurma-acoustic-panel.jpg)
 
 Performance in this territory is measured, not promised. Absorption is rated by the Noise Reduction Coefficient under ASTM C423, and the honest caveat belongs in every conversation: NRC values are mounting-dependent, and a panel's rating travels with its installation method, not with its photograph. We keep that caveat printed in our specification studies because a wellness suite deserves arithmetic, not adjectives.
 
