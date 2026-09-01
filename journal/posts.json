@@ -1,5 +1,56 @@
 [
   {
+    "slug": "the-guarded-threshold",
+    "title": "The Guarded Threshold: Why the Lineages Watch the Door",
+    "dek": "Cranes, parrots and lotus vines carved around a hotel entrance. On the toraṇa, and the oldest job in South Asian art.",
+    "date": "2026-08-29",
+    "author": "Preeti Padaley",
+    "authorBio": "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP.",
+    "readingTime": "3 min read",
+    "image": "assets/img/journal/carved-threshold.jpg",
+    "imageAlt": "An arched walnut doorframe densely carved with cranes, parrots, lotus buds and vines, lit by a warm halo of concealed light, standing in a bare plaster wall with a hotel lobby visible through the open doors.",
+    "excerpt": "Every wall in this picture is bare except one place. A concept study in the oldest siting decision in South Asian art: ornament belongs at the crossing.",
+    "tags": [
+      "Essay",
+      "Thresholds",
+      "Curation"
+    ]
+  },
+  {
+    "slug": "earth-as-palette",
+    "title": "Earth as Palette: The Mineral Life of Color",
+    "dek": "Lapis, ochre, marigold and crushed shell on a grinding slab. On varṇa, and why the oldest palettes still read as luxury.",
+    "date": "2026-08-28",
+    "author": "Preeti Padaley",
+    "authorBio": "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP.",
+    "readingTime": "3 min read",
+    "image": "assets/img/journal/mineral-pigments-slab.jpg",
+    "imageAlt": "Five heaps of raw pigment on a granite grinding slab: lapis blue, red ochre, marigold yellow, raw sienna and crushed shell white, beside a stone muller and a brass bowl holding a brush.",
+    "excerpt": "Before a lineage has a style, it has a geology. What sits on the grinding slab above is not a color scheme; it is a map of the ground the tradition stands on.",
+    "tags": [
+      "Essay",
+      "Materiality",
+      "Color"
+    ]
+  },
+  {
+    "slug": "the-grammar-of-the-grid",
+    "title": "The Grammar of the Grid: Proportion as a Sacred Discipline",
+    "dek": "Before a single figure is drawn, the grid is drawn. On tālamāna, the proportional systems that let sacred art survive translation.",
+    "date": "2026-08-27",
+    "author": "Preeti Padaley",
+    "authorBio": "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP.",
+    "readingTime": "3 min read",
+    "image": "assets/img/journal/talamana-grid-study.jpg",
+    "imageAlt": "An iconometry study on cream handmade paper: a seated figure drawn inside a red proportional grid annotated with measurements, with a bamboo ruler, ink pot and brush on the worn table beside it.",
+    "excerpt": "The drawing above begins not with the figure but with the measured cage around it. A curatorial argument for proportion as the most translatable thing a lineage owns.",
+    "tags": [
+      "Essay",
+      "Proportion",
+      "Thangka"
+    ]
+  },
+  {
     "slug": "romance-meets-materiality",
     "title": "Romance Meets Materiality: Sentiment, Specification, and the Commissioned Wall",
     "dek": "Every commission begins twice: once as longing, and once as a set of documents. The craft is refusing to let either erase the other.",

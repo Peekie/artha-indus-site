@@ -25,7 +25,7 @@
   }
   // Version tag for fetched resources; bumped on deploys so heuristic
   // browser caching can never pin a visitor to a stale index or essay.
-  var VER = "20260901f";
+  var VER = "20260901g";
   var MOTION_OK = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches);
 
   /* ---------- NAV ---------- */
@@ -1071,7 +1071,11 @@
     mandapa: "the pillared temple hall",
     garbhagrha: "the innermost sanctum",
     chaya: "shadow",
-    parampara: "the unbroken succession; lineage"
+    parampara: "the unbroken succession; lineage",
+    talamana: "the system of proportional measure",
+    varna: "color; pigment",
+    torana: "the ceremonial gateway",
+    anital: "the framed portal of Saura murals"
   };
   function normTerm(s) {
     return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, "");
