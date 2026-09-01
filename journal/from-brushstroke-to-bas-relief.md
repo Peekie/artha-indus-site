@@ -4,8 +4,8 @@ dek: "Translating South Asian Heritage Lineages into Restorative Architecture"
 date: 2026-08-19
 author: "Preeti Padaley"
 authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
-image: "assets/img/story-6-cloudscapes.jpg"
-imageAlt: "Sweeping Himalayan Thangka celestial cloudscapes in sage green and liquid-gold linework across a curved wellness-spa sanctuary wall."
+image: "assets/img/journal/brushstroke-medallion.jpg"
+imageAlt: "A carved bas-relief medallion in pale plaster, ringed with Warli figures and wave bands around a central sun, halo-lit on a cream gallery wall above a pale oak bench."
 excerpt: "When ancestral art moves beyond decoration, it ceases to sit passively on a wall; it becomes the architectural skin of the room, shaping light, sound, and emotional stillness."
 tags: ["Essay", "Heritage", "Architecture"]
 ---

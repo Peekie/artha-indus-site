@@ -1012,7 +1012,8 @@ body.overlay-open { overflow: hidden; }
    ============================================================ */
 .featured { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; color: inherit; }
 .featured__media { overflow: hidden; border-radius: 2px; }
-.featured__media img { width: 100%; aspect-ratio: 4/3; object-fit: cover; transition: transform 1.3s var(--ease); }
+.featured__media { background: var(--paper-3); }
+.featured__media img { width: 100%; aspect-ratio: 4/3; object-fit: contain; transition: transform 1.3s var(--ease); }
 .featured:hover .featured__media img { transform: scale(1.04); }
 .featured__body h2 { font-size: clamp(2rem, 4.5vw, 3.4rem); line-height: 1.02; margin-top: 0.8rem; }
 .featured__dek { font-family: var(--serif); font-style: italic; font-size: clamp(1.15rem, 2vw, 1.45rem); color: var(--ink-soft); margin-top: 0.8rem; line-height: 1.35; }
@@ -1023,8 +1024,8 @@ body.overlay-open { overflow: hidden; }
 .journal-more { margin-top: clamp(3.5rem, 8vw, 6rem); }
 .journal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: clamp(1.5rem, 3vw, 2.5rem); }
 .jcard { display: flex; flex-direction: column; color: inherit; border-top: 1px solid var(--rule); padding-top: 1.2rem; }
-.jcard__media { overflow: hidden; border-radius: 2px; margin-bottom: 1.1rem; }
-.jcard__media img { width: 100%; aspect-ratio: 3/2; object-fit: cover; transition: transform 1.2s var(--ease); }
+.jcard__media { overflow: hidden; border-radius: 2px; margin-bottom: 1.1rem; background: var(--paper-3); }
+.jcard__media img { width: 100%; aspect-ratio: 3/2; object-fit: contain; transition: transform 1.2s var(--ease); }
 .jcard:hover .jcard__media img { transform: scale(1.05); }
 .jcard__meta { font-size: 0.80rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep); }
 .jcard h3 { font-size: 1.4rem; margin-top: 0.4rem; }
@@ -1043,8 +1044,8 @@ body.overlay-open { overflow: hidden; }
 .post__hero h1 { font-size: clamp(2.4rem, 6vw, 4.4rem); line-height: 1.02; margin-top: 0.8rem; max-width: 20ch; }
 .post__dek { font-family: var(--serif); font-style: italic; font-size: clamp(1.25rem, 2.4vw, 1.7rem); color: var(--ink-soft); margin-top: 1.2rem; max-width: 40ch; line-height: 1.35; }
 .post__byline { margin-top: 1.6rem; font-size: 0.76rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-deep); }
-.post__cover { margin: clamp(1rem, 3vw, 2rem) 0 0; overflow: hidden; border-radius: 2px; }
-.post__cover img { width: 100%; max-height: 60vh; object-fit: cover; }
+.post__cover { margin: clamp(1rem, 3vw, 2rem) 0 0; overflow: hidden; border-radius: 2px; background: var(--paper-3); }
+.post__cover img { width: 100%; max-height: 70vh; object-fit: contain; }
 
 /* Body raised from 1.16rem for the "legible to old eyes" requirement; leading
    eased from 1.78 because larger type needs proportionally less of it. */
