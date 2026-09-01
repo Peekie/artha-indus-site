@@ -187,6 +187,8 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 350; line-height: 1.05;
   opacity: 0.72;
 }
 .nav__links { display: flex; align-items: center; gap: clamp(1rem, 2.4vw, 2.4rem); }
+.nav__links .nav__link { white-space: nowrap; }
+.brand { flex-shrink: 0; margin-right: 1.4rem; }
 .nav__link {
   position: relative;
   font-size: 0.8rem;
@@ -1716,6 +1718,12 @@ body.has-veil .hero__meta { animation-delay: 1.75s; }
 .nav__theme:hover, .nav__theme:focus-visible { opacity: 1; }
 @media (max-width: 960px) {
   .nav__theme { margin-left: 0; padding: 0.35rem 0.55rem; }
+}
+/* with five links plus the theme toggle, the bar hands over to the
+   mobile menu well before it can crowd the brand */
+@media (max-width: 1120px) {
+  .nav__links { display: none; }
+  .nav__toggle { display: block; }
 }
 
 /* ============================================================
