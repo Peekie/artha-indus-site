@@ -127,7 +127,9 @@
     var media = hero && hero.querySelector(".hero__media");
     var photo = media && media.querySelector(".hero__photo");
     if (!hero || !media || !photo || !MOTION_OK) return;
-    var fine = !!(window.matchMedia && window.matchMedia("(pointer: fine)").matches);
+    // Hover-capable fine pointers only. On touch devices the torch fired on
+    // every scroll-touch and read as flicker, so they get the plain photo.
+    if (!(window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches)) return;
     var tx = 50, ty = 40, tr = 0, cx = 50, cy = 40, cr = 0, raf = null;
     function tick() {
       cx += (tx - cx) * 0.16;
@@ -141,27 +143,15 @@
       } else { raf = null; }
     }
     function kick() { if (!raf) raf = requestAnimationFrame(tick); }
-    if (fine) {
-      hero.addEventListener("pointermove", function (e) {
-        var r = media.getBoundingClientRect();
-        tx = ((e.clientX - r.left) / r.width) * 100;
-        ty = ((e.clientY - r.top) / r.height) * 100;
-        tr = 200;
-        kick();
-      });
-      hero.addEventListener("pointerleave", function () { tr = 0; kick(); });
-    } else {
-      // touch: a single decaying pulse of the torch where the finger lands
-      hero.addEventListener("touchstart", function (e) {
-        var t = e.touches && e.touches[0];
-        if (!t) return;
-        var r = media.getBoundingClientRect();
-        cx = tx = ((t.clientX - r.left) / r.width) * 100;
-        cy = ty = ((t.clientY - r.top) / r.height) * 100;
-        cr = 170; tr = 0;
-        kick();
-      }, { passive: true });
-    }
+    hero.addEventListener("pointermove", function (e) {
+      if (e.pointerType && e.pointerType !== "mouse") return;
+      var r = media.getBoundingClientRect();
+      tx = ((e.clientX - r.left) / r.width) * 100;
+      ty = ((e.clientY - r.top) / r.height) * 100;
+      tr = 200;
+      kick();
+    });
+    hero.addEventListener("pointerleave", function () { tr = 0; kick(); });
   }
 
   /* ---------- From the index: three random studies per visit ---------- */

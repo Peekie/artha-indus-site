@@ -1417,7 +1417,7 @@ body.has-veil .hero__meta { animation-delay: 1.75s; }
   -webkit-mask-image: radial-gradient(circle var(--tr) at var(--mx) var(--my), transparent 0%, transparent 52%, black 96%);
   mask-image: radial-gradient(circle var(--tr) at var(--mx) var(--my), transparent 0%, transparent 52%, black 96%);
 }
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
   .hero__media img.hero__under { display: none; }
   .hero__media img.hero__photo { -webkit-mask-image: none; mask-image: none; }
 }
