@@ -691,6 +691,7 @@
       var set = function (v) {
         v = Math.max(0, Math.min(100, v));
         el.style.setProperty("--pos", v + "%");
+        el.style.setProperty("--posn", String(v)); // unitless twin for the tag fades
         range.value = v;
       };
       range.addEventListener("input", function () { set(parseFloat(range.value)); });
@@ -916,7 +917,10 @@
           "</div>" +
         "</a>";
 
-      var rest = posts.slice(1);
+      // the featured slot stays editorial: it is labeled Latest, and the
+      // date field is the founder's ordering control. The shelf below it
+      // deals itself in a new order on every visit.
+      var rest = posts.slice(1).sort(function () { return Math.random() - 0.5; });
       if (rest.length && grid && moreWrap) {
         moreWrap.hidden = false;
         grid.innerHTML = rest.map(function (p) { return cardMarkup(p, "jcard", "Read"); }).join("");

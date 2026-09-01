@@ -1828,3 +1828,8 @@ img {
   transition: right 1.2s var(--ease) 0.55s;
 }
 .curator__body.is-in .signature .name::after { right: 0; }
+
+/* a layer swiped fully away takes its label with it */
+.compare__tag { transition: opacity 0.25s var(--ease); }
+.compare__tag--l { opacity: clamp(0, calc((var(--posn, 50) - 4) / 14), 1); }
+.compare__tag--r { opacity: clamp(0, calc((96 - var(--posn, 50)) / 14), 1); }
