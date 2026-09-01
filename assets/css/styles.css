@@ -1511,3 +1511,7 @@ body.has-veil .hero__meta { animation-delay: 1.75s; }
   background: linear-gradient(180deg, rgba(15,20,32,0.88), rgba(15,20,32,0.82));
 }
 .cta-band--material .wrap { position: relative; z-index: 2; }
+.cta-band--material h2, .cta-band--material p { text-shadow: 0 1px 3px rgba(12,16,26,0.6), 0 3px 16px rgba(12,16,26,0.45); }
+/* variant for imagery that is already dark: lift the image, veil it gently */
+.cta-band--deep .cta-band__media img { filter: brightness(1.75) contrast(1.02); }
+.cta-band--deep::before { background: linear-gradient(180deg, rgba(15,20,32,0.42), rgba(15,20,32,0.3) 45%, rgba(15,20,32,0.52)); }
