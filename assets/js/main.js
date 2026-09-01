@@ -164,33 +164,6 @@
     }
   }
 
-  /* ---------- Studio rail: drag to browse with a mouse ---------- */
-  function initStudioRail() {
-    var rail = document.querySelector(".studio__rail");
-    if (!rail) return;
-    var down = false, startX = 0, startLeft = 0, moved = false;
-    rail.addEventListener("pointerdown", function (e) {
-      if (e.pointerType !== "mouse") return; // touch scrolls natively
-      down = true; moved = false;
-      startX = e.clientX; startLeft = rail.scrollLeft;
-      rail.setPointerCapture(e.pointerId);
-    });
-    rail.addEventListener("pointermove", function (e) {
-      if (!down) return;
-      var dx = e.clientX - startX;
-      if (Math.abs(dx) > 4) moved = true;
-      rail.scrollLeft = startLeft - dx;
-    });
-    var up = function () { down = false; };
-    rail.addEventListener("pointerup", up);
-    rail.addEventListener("pointercancel", up);
-    rail.addEventListener("click", function (e) { if (moved) e.preventDefault(); }, true);
-    rail.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowRight") { rail.scrollBy({ left: 320, behavior: MOTION_OK ? "smooth" : "auto" }); }
-      else if (e.key === "ArrowLeft") { rail.scrollBy({ left: -320, behavior: MOTION_OK ? "smooth" : "auto" }); }
-    });
-  }
-
   /* ---------- First-visit veil: the page unrolls once per session ---------- */
   function initVeil() {
     if (current !== "home" || !MOTION_OK) return;
@@ -1008,7 +981,6 @@
   initVeil();
   initScrollHint();
   initHeroTorch();
-  initStudioRail();
   initReveal();
   initForm();
   initStudyFilter();
