@@ -24,7 +24,7 @@
   }
   // Version tag for fetched resources; bumped on deploys so heuristic
   // browser caching can never pin a visitor to a stale index or essay.
-  var VER = "20260901a";
+  var VER = "20260901b";
   var MOTION_OK = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches);
 
   /* ---------- NAV ---------- */
@@ -1304,8 +1304,24 @@
     if (t && t.classList.contains("plate")) open(t);
   }
 
+  /* ---------- Image guard: deter casual saving of the artwork ----------
+     Right-click save, long-press save and drag-out are blocked on images.
+     This deters casual copying only; screenshots cannot be prevented. */
+  function initImageGuard() {
+    document.addEventListener("contextmenu", function (e) {
+      var t = e.target;
+      if (t && (t.tagName === "IMG" || (t.closest && t.closest(".hero__media, .macro__media, .cta-band__media, .study-overlay__media, .lightbox")))) {
+        e.preventDefault();
+      }
+    });
+    document.addEventListener("dragstart", function (e) {
+      if (e.target && e.target.tagName === "IMG") e.preventDefault();
+    });
+  }
+
   /* ---------- Boot ---------- */
   buildNav();
+  initImageGuard();
   buildFooter();
   initHours();
   initNavScroll();
