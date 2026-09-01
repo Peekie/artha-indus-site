@@ -64,7 +64,7 @@ The true integration of heritage design occurs when the drawn line transitions f
 
 Enduring luxury is defined by authenticity, provenance, and spatial harmony. When traditional art is curated with architectural discipline, it moves beyond visual ornamentation into an essential contributor to environmental well-being.
 
-Visual neuroscience and environmental design principles consistently highlight that balanced visual complexity, organic geometry, and tactile natural materials support cognitive ease and reduce environmental fatigue. By honoring the origins of these ancient traditions while refining their spatial expression, we create environments that feel grounded, restorative, and culturally resonant.
+Visual neuroscience and environmental design research suggests that balanced visual complexity, organic geometry, and tactile natural materials can support cognitive ease and reduce environmental fatigue. By honoring the origins of these ancient traditions while refining their spatial expression, we create environments that feel grounded, restorative, and culturally resonant.
 
 The role of the contemporary curator is that of a custodian, preserving the soul and integrity of ancestral knowledge, while reimagining its expression for the spaces in which we live, work, and reflect.
 
@@ -72,7 +72,7 @@ The role of the contemporary curator is that of a custodian, preserving the soul
 
 Coburn, A., Vartanian, O., & Chatterjee, A. (2017). Buildings, Beauty, and the Brain: A Neuroscience of Architectural Experience. Journal of Cognitive Neuroscience, 29(9), 1521–1531. (Demonstrating how natural geometric contours, spatial depth, and ceiling height influence neural and emotional states).
 
-International WELL Building Institute (IWBI). (2020). WELL v2 Building Standard: Feature M02 (Nature and Space) & Feature X01 (Materiality). (Establishing criteria for integrating biophilic patterns, organic textures, and cultural craft to support occupant well-being).
+International WELL Building Institute (IWBI). (2020). WELL v2 Building Standard: Feature M02 (Access to Nature) and related Mind-concept features. (Establishing criteria for integrating nature-derived patterns and natural materials to support occupant well-being).
 
 Frampton, K. (1983). Towards a Critical Regionalism: Six Points for an Architecture of Resistance. In H. Foster (Ed.), The Anti-Aesthetic: Essays on Postmodern Culture. Bay Press. (Outlining the tectonic integration of regional craft traditions, climate, and light as a response to placeless global minimalism).
 

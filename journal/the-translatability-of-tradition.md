@@ -33,7 +33,7 @@ To test the viability of ancestral translation, our studio established five foun
 
 - *Curatorial Potential:* Gond’s structural strength lies in its natural multi-scalar hierarchy. The macro-silhouette anchors the architectural volume, while the micro-textures catch natural raking light. This visual depth mirrors natural scene statistics, making it an ideal candidate for acoustic wall panels and CNC-fluted timber screens that provide visual focus without cognitive fatigue.
 
-**3. Madhubani (Mithila): Linear Precision and Structural Boundaries** From the Mithila region of Bihar, Madhubani is characterized by double-line boundaries filled with precise cross-hatching, stylized botanical flourishes, and stark symbolic clarity.
+**3. Madhubani (Mithila): Linear Precision and Structural Boundaries** From the Mithila region of Bihar, Madhubani is characterized, in its kachni line tradition, by double-line boundaries filled with precise cross-hatching, stylized botanical flourishes, and stark symbolic clarity.
 
 - *Curatorial Potential:* Unlike forms that depend on tonal shading, Madhubani relies on crisp, calligraphic line tension. When isolated and enlarged, its iconic botanical archetypes, such as the sacred lotus (*padma*) and the fertility grove, provide high-contrast linear anchors suited for waterjet-cut metal partitions (*jalis*) and etched bronze panels.
 

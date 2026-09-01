@@ -714,6 +714,12 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 350; line-height: 1.05;
 }
 .study-overlay__text:focus { outline: none; }
 .dossier__title { font-size: clamp(1.5rem, 2.6vw, 2.2rem); margin-top: 0.5rem; line-height: 1.06; }
+/* honest labelling: every study is a concept, and every study is available
+   both ways; saying so up front ends the concept-vs-built ambiguity */
+.dossier__status {
+  margin-top: 0.9rem; font-size: 0.76rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-deep);
+}
 .dossier__bestfor { margin-top: 0.9rem; font-size: 0.95rem; color: var(--ink-soft); }
 .dossier__bestfor span { font-size: 0.76rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-deep); margin-right: 0.45rem; }
 .dossier__copy { margin-top: 1.2rem; }
