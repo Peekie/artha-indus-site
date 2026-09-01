@@ -57,6 +57,27 @@
     if (mount) mount.outerHTML = html;
   }
 
+  /* ---------- Gold thread: a knot for every study examined ---------- */
+  function seenCount() {
+    var seen = storeGet("artha-studies-seen");
+    return Array.isArray(seen) ? seen.length : 0;
+  }
+  function goldThread() {
+    var n = seenCount();
+    if (!n) return "";
+    var shown = Math.min(n, 9);
+    var knots = "";
+    for (var i = 0; i < shown; i++) {
+      knots += '<circle cx="' + (8 + i * 12) + '" cy="5" r="2.6" />';
+    }
+    var w = 8 + (shown - 1) * 12 + 8;
+    return '<span class="footer__thread" title="' + n + (n === 1 ? " study" : " studies") + ' examined">' +
+      '<svg width="' + w + '" height="10" viewBox="0 0 ' + w + ' 10" aria-hidden="true">' +
+        '<line x1="0" y1="5" x2="' + w + '" y2="5" />' + knots +
+      "</svg>" +
+      n + (n === 1 ? " study" : " studies") + " examined</span>";
+  }
+
   /* ---------- FOOTER ---------- */
   function buildFooter() {
     var nav = PAGES.map(function (p) {
@@ -81,6 +102,7 @@
           "</div>" +
           '<div class="footer__bar">' +
             "<span>© " + new Date().getFullYear() + " Artha Indus Atelier LLC. All rights reserved.</span>" +
+            goldThread() +
             "<span>Fair-wage · Direct-from-artisan · Full ESG provenance</span>" +
           "</div>" +
         "</div>" +
@@ -119,6 +141,53 @@
       a.addEventListener("click", function () { set(false); });
     });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && open) set(false); });
+  }
+
+  /* ---------- Freshness: presentation surfaces reshuffle per visit ----------
+     Content order (essays, study index) stays editorial; only imagery and
+     ornament rotate, so a returning visitor always sees a slightly new site. */
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function initFreshness() {
+    // hero: one of three dark built-form plates, both torch layers together
+    if (current === "home") {
+      var heroes = [
+        { src: "assets/img/story-1-warli-lobby.jpg", alt: "A large-scale hand-painted Warli folk-art feature wall anchoring a modern executive lobby of dark marble and fluted oak." },
+        { src: "assets/img/story-gaja-bronze.jpg", alt: "A caparisoned Kalamkari Gaja elephant pierced through darkened bronze, glowing amber behind an upscale hotel bar." },
+        { src: "assets/img/story-12-tarpa-mandala.jpg", alt: "Oversized framed Warli Tarpa dance masterwork, white figures spiralling on a charcoal ground, above an oak bench on a travertine threshold wall." }
+      ];
+      var h = pick(heroes);
+      var under = document.querySelector(".hero__under");
+      var photo = document.querySelector(".hero__photo");
+      if (under && photo && photo.getAttribute("src") !== h.src) {
+        under.src = h.src;
+        photo.src = h.src;
+        photo.alt = h.alt;
+      }
+      // the second offering's fabrication image
+      var fab = [
+        { src: "assets/img/story-vrksa-glass.jpg", alt: "A Pattachitra Vriksha etched in white on a frosted structural glass partition in a thermal spa suite." },
+        { src: "assets/img/warli-3-relief.jpg", alt: "A Warli motif CNC-carved into a bas-relief wellness-spa feature wall." },
+        { src: "assets/img/story-2-peacock-screen.jpg", alt: "Freestanding solid walnut entryway screen CNC-milled with a multi-peacock Mithila motif." }
+      ];
+      var offerImg = document.querySelector('.offer__half[href="spatial-studies.html"] .offer__media img');
+      if (offerImg) { var f = pick(fab); offerImg.src = f.src; offerImg.alt = f.alt; }
+    }
+    // CTA backdrops rotate on the pages without a pinned choice
+    if (current === "home" || current === "perspectives") {
+      var pool = ["cta-environment.jpg", "scale-thematic.jpg", "studio-parrot-fish.jpg", "studio-landscape-pattachitra.jpg", "studio-buddha.jpg"];
+      var cta = document.querySelector(".cta-band__media img");
+      if (cta) cta.src = "assets/img/" + pick(pool);
+    }
+    // the lineage strip reorders itself
+    var track = document.querySelector(".lineage-strip__track");
+    if (track) {
+      var names = Array.prototype.slice.call(track.children);
+      for (var i = names.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        track.insertBefore(names[i], names[j]);
+        var t = names[i]; names[i] = names[j]; names[j] = t;
+      }
+    }
   }
 
   /* ---------- Hero torch: the pointer excavates the underdrawing ---------- */
@@ -262,6 +331,18 @@
       }
       var sel = document.getElementById("interest");
       if (sel) sel.value = "Bespoke Masterwork Commission";
+    }
+
+    // A soft nod to the visitor's own browsing, never a scoreboard.
+    var n = seenCount();
+    if (n > 0) {
+      var intro = form.querySelector(".form__intro");
+      if (intro) {
+        var thread = document.createElement("p");
+        thread.className = "form__threadnote";
+        thread.textContent = "You have examined " + n + (n === 1 ? " study." : " studies.") + " Bring the shortlist.";
+        intro.insertAdjacentElement("afterend", thread);
+      }
     }
     form.addEventListener("submit", function (e) {
       // On Netlify the form posts natively — just hand over the Lookbook first.
@@ -448,14 +529,29 @@
         var r = el.getBoundingClientRect();
         set(((clientX - r.left) / r.width) * 100);
       };
-      var dragging = false;
+      var dragging = false, downX = null, moved = false;
       el.addEventListener("pointerdown", function (e) {
         if (e.target === range) return; // native range handles it
-        dragging = true; el.setPointerCapture(e.pointerId); pointerFromX(e.clientX);
+        dragging = true; moved = false; downX = e.clientX;
+        el.setPointerCapture(e.pointerId); pointerFromX(e.clientX);
       });
-      el.addEventListener("pointermove", function (e) { if (dragging) pointerFromX(e.clientX); });
-      el.addEventListener("pointerup", function () { dragging = false; });
-      el.addEventListener("pointercancel", function () { dragging = false; });
+      el.addEventListener("pointermove", function (e) {
+        if (!dragging) return;
+        if (Math.abs(e.clientX - downX) > 6) moved = true;
+        pointerFromX(e.clientX);
+      });
+      var release = function (e) {
+        if (dragging && !moved && e && e.type === "pointerup") {
+          // a plain tap flips the view: paper one side, built the other.
+          // Dragging is a poor phone gesture; the tap must work on its own.
+          el.classList.add("is-snapping");
+          set(parseFloat(range.value) < 50 ? 100 : 0);
+          setTimeout(function () { el.classList.remove("is-snapping"); }, 450);
+        }
+        dragging = false;
+      };
+      el.addEventListener("pointerup", release);
+      el.addEventListener("pointercancel", release);
     });
   }
 
@@ -881,7 +977,23 @@
       if (p && p.classList.contains("plate")) p.classList.add("is-visited");
     });
 
+    var ctxEl = document.getElementById("studyCtx");
+    function updateCtx(p) {
+      if (!ctxEl) return;
+      var vis = visible();
+      var i = vis.indexOf(p);
+      if (i === -1) { ctxEl.textContent = ""; return; }
+      // name the active narrowing, so the loop is legible: "3 of 9 · Hospitality"
+      var labels = [];
+      document.querySelectorAll(".study-index__f.is-active").forEach(function (b) {
+        if (b.getAttribute("data-filter") !== "all") {
+          labels.push((b.childNodes[0] && b.childNodes[0].textContent ? b.childNodes[0].textContent : b.textContent).trim());
+        }
+      });
+      ctxEl.textContent = (i + 1) + " of " + vis.length + (labels.length ? " · " + labels.join(" · ") : "");
+    }
     function fill(p, skipHistory) {
+      updateCtx(p);
       var tpl = p.querySelector(".plate__dossier");
       var img = p.querySelector(".plate__media img");
       imgEl.src = img.getAttribute("src");
@@ -1004,6 +1116,7 @@
   buildFooter();
   initNavScroll();
   initMobileMenu();
+  initFreshness();
   initVeil();
   initScrollHint();
   initHeroTorch();

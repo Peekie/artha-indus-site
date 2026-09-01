@@ -1515,3 +1515,28 @@ body.has-veil .hero__meta { animation-delay: 1.75s; }
 /* variant for imagery that is already dark: lift the image, veil it gently */
 .cta-band--deep .cta-band__media img { filter: brightness(1.75) contrast(1.02); }
 .cta-band--deep::before { background: linear-gradient(180deg, rgba(15,20,32,0.42), rgba(15,20,32,0.3) 45%, rgba(15,20,32,0.52)); }
+
+/* ============================================================
+   REDESIGN — legible loops, gold thread, mobile function
+   ============================================================ */
+/* where am I in the index: "3 of 9 · Hospitality" in the dossier bar */
+.study-overlay__ctx { margin-left: 1rem; font-family: var(--sans); font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute); align-self: center; white-space: nowrap; }
+
+/* the gold thread: one knot per study examined */
+.footer__thread { display: inline-flex; align-items: center; gap: 0.55rem; color: var(--gold-lite); font-size: 0.78rem; letter-spacing: 0.08em; }
+.footer__thread svg line { stroke: rgba(201,166,86,0.45); stroke-width: 1; }
+.footer__thread svg circle { fill: var(--gold-lite); }
+
+/* the same thread, acknowledged on the enquiry form */
+.form__threadnote { margin-top: 0.5rem; font-size: 0.88rem; color: var(--gold-deep); }
+
+/* tap-to-toggle on the compare slider eases between the two states */
+.compare.is-snapping .compare__before { transition: clip-path 0.4s var(--ease); }
+.compare.is-snapping .compare__handle { transition: left 0.4s var(--ease); }
+
+/* the thirteen filter chips become a scroll rail on phones */
+@media (max-width: 700px) {
+  .study-index__row { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 0.35rem; }
+  .study-index__row::-webkit-scrollbar { display: none; }
+  .study-index__row .study-index__f { flex: 0 0 auto; white-space: nowrap; }
+}
