@@ -5,13 +5,13 @@ date: 2026-08-26
 author: "Preeti Padaley"
 authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
 image: "assets/img/studio-romance.jpg"
-imageAlt: "A pencil-line scroll of peacocks unrolled beside a tube of indigo paint, and at right the finished monochrome panel framed in a bright marble corridor."
+imageAlt: "A pencil-line scroll of peacocks unrolled beside a tube of indigo paint, and at right the finished monochrome panel framed on a white corridor wall above marble floors."
 excerpt: "One half of this image is a drawing on a table. The other half is an artwork passing plan review. On the two loves inside every commission, and why the atelier refuses to choose between them."
 tags: ["Essay", "Curation", "Provenance"]
 ---
-Look at the two halves of the image above. On the left, a scroll unrolled across a work table: pencil-grey peacocks, an open tube of indigo, the small disorder of a drawing still in progress. On the right, the finished panel, framed, hung, and holding its own on a marble corridor wall that has certainly passed a plan review. The distance between these two halves is the entire territory of a commission, and most of what can go wrong in heritage art happens somewhere in the crossing.
+Look at the two halves of the image above. On the left, a scroll unrolled across a work table: pencil-grey peacocks with a tube of indigo waiting beside them. On the right, the same work finished, framed, and holding its own on a white corridor wall above marble floors that have certainly passed plan review. The distance between these two halves is the entire territory of a commission, and most of what can go wrong in heritage art happens somewhere in the crossing.
 
-Every commission begins twice. It begins as longing: a motif remembered from a grandmother's sari, a lineage a client wants their lobby to honour, the simple wish for a wall that means something. And it begins again as documents: elevations, substrates, flame-spread classifications, lead times, budgets. Call the first beginning romance and the second materiality. The recurring temptation of this field is to believe one of them is the real project and the other is overhead.
+Every commission begins twice. It begins as longing: a motif remembered from a grandmother's sari, a lineage (*paramparā*) a client wants their lobby to honor, the simple wish for a wall that means something. And it begins again as documents: elevations, substrates, flame-spread classifications, lead times, budgets. Call the first beginning romance and the second materiality. The recurring temptation of this field is to believe one of them is the real project and the other is overhead.
 
 ## The Case for Romance
 
@@ -21,9 +21,9 @@ This is why we insist that the sentimental half of a commission deserves rigour 
 
 ## The Case for Materiality
 
-The other half deserves equal respect, and it rarely receives it in this industry's marketing. A wall must not burn readily. It must survive its cleaning regime. It must break safely if it is glass, hold its colour under ultraviolet light if it is pigment, and answer every question a plan reviewer asks, in the reviewer's own vocabulary. Our specification studies name their CSI sections and ASTM classifications for an unromantic reason: an artwork that cannot be specified will simply never exist in a commercial interior, whatever affection surrounds it.
+The other half deserves equal respect, and it rarely receives it in this industry's marketing. A wall must not burn readily. It must survive its cleaning regime. It must break safely if it is glass, hold its color under ultraviolet light if it is pigment, and answer every question a plan reviewer asks, in the reviewer's own vocabulary. Our specification studies name their CSI sections and material standards wherever a plan reviewer will ask for them, for an unromantic reason: an artwork that cannot be specified will simply never exist in a commercial interior, whatever affection surrounds it.
 
-The craft theorist David Pye drew a distinction that maps cleanly onto our practice. Handwork is the workmanship of risk, where the outcome hangs on judgment exercised stroke by stroke. Fabrication is the workmanship of certainty, where the outcome is fixed before the tool moves. The atelier's method is to give each its own province: the risk lives on the artisan's paper, where it produces the trembling, irreplaceable line, and the certainty lives in the panel, the vector geometry, the laser path, and the fire rating. Neither is asked to imitate the other.
+The craft theorist David Pye distinguished the workmanship of risk, where the outcome hangs on judgment exercised stroke by stroke, from the workmanship of certainty, where it is fixed before the tool moves. He was careful to note that the line does not fall simply between hand and machine; in our practice it happens to fall there, and we treat that as a discipline rather than an accident. The atelier's method is to give each its own province: the risk lives on the artisan's paper, where it produces the trembling, irreplaceable line, and the certainty lives in the panel, the vector geometry, the laser path, and the fire rating. Neither is asked to imitate the other.
 
 > The scroll on the table and the panel on the wall are the same work twice. The commission succeeds when neither half is embarrassed by the other.
 

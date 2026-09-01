@@ -181,7 +181,6 @@
     if (current === "home") {
       var heroes = [
         { src: "assets/img/story-1-warli-lobby.jpg", alt: "A large-scale hand-painted Warli folk-art feature wall anchoring a modern executive lobby of dark marble and fluted oak." },
-        { src: "assets/img/story-gaja-bronze.jpg", alt: "A caparisoned Kalamkari Gaja elephant pierced through darkened bronze, glowing amber behind an upscale hotel bar." },
         { src: "assets/img/story-12-tarpa-mandala.jpg", alt: "Oversized framed Warli Tarpa dance masterwork, white figures spiralling on a charcoal ground, above an oak bench on a travertine threshold wall." },
         { src: "assets/img/story-vanam-resin.jpg", alt: "A backlit translucent resin panel carrying hand-drawn Kalamkari flora in sepia line, glowing behind a steaming vitality pool framed in dark stone." }
       ];
@@ -203,9 +202,8 @@
       if (offerImg) { var f = pick(fab); offerImg.src = f.src; offerImg.alt = f.alt; }
       // the macro interlude alternates its material close-up
       var macros = [
-        { src: "assets/img/kurma-felt-macro.jpg", alt: "Macro detail of the Kūrma motif in layered acoustic felt, concentric ridges of warm copper brown catching raking light." },
-        { src: "assets/img/cta-environment.jpg", alt: "Raw mineral pigments in ochre and terracotta beside crushed shell, handmade paper and worn brushes on a wooden work table." },
-        { src: "assets/img/journal/kurma-acoustic-panel.jpg", alt: "The Kūrma motif in copper detail set into deep charcoal acoustic felt, flanked by columns of fish and vine." }
+        { src: "assets/img/kurma-felt-macro.jpg", alt: "Macro detail of the Kūrma motif: copper linework and stippling set into charcoal acoustic felt, catching raking light." },
+        { src: "assets/img/cta-environment.jpg", alt: "Raw mineral pigments in ochre and terracotta beside crushed shell, handmade paper and worn brushes on a wooden work table." }
       ];
       var macroImg = document.querySelector(".macro__media img");
       var macroDeva = document.getElementById("macroDeva");
@@ -1052,21 +1050,21 @@
     kairi: "the green, unripe mango",
     ambi: "the green, unripe mango",
     kalam: "the bamboo pen of Kalamkari",
-    kalka: "the sweeping architectural paisley form",
+    kalka: "the sweeping architectural form of the seed",
     vrksa: "the tree; the vertical axis",
     vriksha: "the tree; the vertical axis",
     kalpavriksa: "the wish-fulfilling tree",
     kalpavriksha: "the wish-fulfilling tree",
-    akasa: "boundless ether; active negative space",
+    akasa: "boundless ether",
     aranya: "the wild forest",
     prakrti: "primal nature",
     gaja: "the elephant",
     gajathara: "the elephant frieze of temple plinths",
     sunya: "the void; deliberate negative space",
     shunya: "the void; deliberate negative space",
-    kurma: "the turtle; the grounding curve",
+    kurma: "the tortoise; the grounding curve",
     matsya: "the fish; the fluid trajectory",
-    mayura: "the peacock",
+    mayura: "the peacock; the transmuting radiance",
     jali: "the pierced screen",
     jalis: "the pierced screens",
     tarpa: "the Warli wind instrument",
@@ -1074,7 +1072,11 @@
     buta: "the floral bouquet motif",
     mangalya: "auspiciousness",
     simha: "the lion",
-    mrga: "the deer"
+    mrga: "the deer",
+    mandapa: "the pillared temple hall",
+    garbhagrha: "the innermost sanctum",
+    chaya: "shadow",
+    parampara: "the unbroken succession; lineage"
   };
   function normTerm(s) {
     return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, "");
