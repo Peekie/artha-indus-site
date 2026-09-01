@@ -24,7 +24,7 @@
   }
   // Version tag for fetched resources; bumped on deploys so heuristic
   // browser caching can never pin a visitor to a stale index or essay.
-  var VER = "28b62f5";
+  var VER = "20260901a";
   var MOTION_OK = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches);
 
   /* ---------- NAV ---------- */
@@ -50,7 +50,7 @@
           '</span>' +
         "</a>" +
         '<nav class="nav__links" aria-label="Primary">' + links + "</nav>" +
-        '<button class="nav__theme" id="themeToggle" type="button" aria-label="Switch between day and night theme"></button>' +
+        '<button class="nav__theme" id="themeToggle" type="button">Night</button>' +
         '<button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">' +
           '<svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="0" y1="1" x2="26" y2="1"/><line x1="0" y1="7" x2="26" y2="7"/><line x1="0" y1="13" x2="26" y2="13"/></svg>' +
         "</button>" +
@@ -127,10 +127,9 @@
     function setTheme(n) {
       document.documentElement.setAttribute("data-theme", n ? "night" : "day");
       var btn = document.getElementById("themeToggle");
-      if (btn) {
-        btn.textContent = n ? "Day" : "Night";
-        btn.setAttribute("aria-pressed", String(n));
-      }
+      // the label stays "Night" so the accessible name matches the visible
+      // text; aria-pressed alone carries the state
+      if (btn) btn.setAttribute("aria-pressed", String(n));
     }
     setTheme(night);
     var btn = document.getElementById("themeToggle");
@@ -228,6 +227,11 @@
     var grid = document.getElementById("stories");
     if (grid) {
       var plates = Array.prototype.slice.call(grid.querySelectorAll(".plate"));
+      // catalogue numbers follow source order, so a plate keeps its number
+      // across shuffles, filters and visits
+      plates.forEach(function (pl, n) {
+        pl.setAttribute("data-plate", (n < 9 ? "0" : "") + (n + 1));
+      });
       for (var p = plates.length - 1; p > 0; p--) {
         var q = Math.floor(Math.random() * (p + 1));
         var tmp = plates[p]; plates[p] = plates[q]; plates[q] = tmp;
@@ -271,17 +275,20 @@
     var L = path.getTotalLength();
     path.style.strokeDasharray = L + " " + L;
     path.style.strokeDashoffset = String(L);
-    var raf = null;
+    var raf = null, max = 1;
+    function measure() {
+      max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    }
     function draw() {
       raf = null;
-      var doc = document.documentElement;
-      var max = Math.max(1, doc.scrollHeight - window.innerHeight);
       var p = Math.min(1, Math.max(0, window.scrollY / max));
       path.style.strokeDashoffset = String(L * (1 - p));
     }
     var kick = function () { if (!raf) raf = requestAnimationFrame(draw); };
     window.addEventListener("scroll", kick, { passive: true });
-    window.addEventListener("resize", kick);
+    window.addEventListener("resize", function () { measure(); kick(); });
+    window.addEventListener("load", function () { measure(); kick(); });
+    measure();
     draw();
   }
 
