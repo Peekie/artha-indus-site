@@ -1540,3 +1540,13 @@ body.has-veil .hero__meta { animation-delay: 1.75s; }
   .study-index__row::-webkit-scrollbar { display: none; }
   .study-index__row .study-index__f { flex: 0 0 auto; white-space: nowrap; }
 }
+
+/* ============================================================
+   IMAGE GUARD — deter casual saving (long-press, drag, select)
+   ============================================================ */
+img {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
