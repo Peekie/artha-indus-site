@@ -304,7 +304,7 @@
     var photo = media && media.querySelector(".hero__photo");
     if (!hero || !media || !photo || !MOTION_OK) return;
     if (!(window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches)) return;
-    var pool = ["torch", "inverse", "lamp"];
+    var pool = ["lamp"]; // torch and inverse benched by taste; still reachable via ?fx=
     var forced = null;
     try { forced = new URLSearchParams(window.location.search).get("fx"); } catch (e) {}
     var fx = pool.indexOf(forced) > -1 ? forced : pick(pool);
