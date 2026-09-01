@@ -65,7 +65,7 @@ console.log(`journal: indexed ${posts.length} post(s)`);
 // Regenerate sitemap.xml from the same source, so publishing a post from the CMS
 // keeps the sitemap current instead of quietly leaving it stale.
 const SITE = "https://arthaindus.com";
-const PAGES = ["/", "/curators-note.html", "/spatial-studies.html", "/perspectives.html", "/collaborate.html"];
+const PAGES = ["/", "/curators-note.html", "/spatial-studies.html", "/lineages.html", "/perspectives.html", "/collaborate.html"];
 const esc = (u) => u.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const urls = [
   ...PAGES.map((p) => ({ loc: SITE + p })),

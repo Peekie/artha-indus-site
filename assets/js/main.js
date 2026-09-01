@@ -9,6 +9,7 @@
   var PAGES = [
     { id: "curator",      href: "curators-note.html",   label: "Curator’s Note" },
     { id: "studies",      href: "spatial-studies.html", label: "Spatial Studies" },
+    { id: "lineages",     href: "lineages.html",        label: "Lineages" },
     { id: "perspectives", href: "perspectives.html",    label: "Perspectives" },
     { id: "collaborate",  href: "collaborate.html",     label: "Collaborate" }
   ];
@@ -428,6 +429,7 @@
     spans.forEach(function (s) {
       var c = s.cloneNode(true);
       c.setAttribute("aria-hidden", "true");
+      if (c.tagName === "A") c.setAttribute("tabindex", "-1");
       track.appendChild(c);
     });
     track.classList.add("is-drifting");
@@ -1386,6 +1388,39 @@
     });
   }
 
+  /* ---------- Lineage hub: each section pulls its studies from the index ---------- */
+  function initLineageHub() {
+    var sections = document.querySelectorAll(".lin[data-lin]");
+    if (!sections.length || !window.fetch || !window.DOMParser) return;
+    fetch("spatial-studies.html?v=" + VER).then(function (r) {
+      if (!r.ok) throw new Error("index");
+      return r.text();
+    }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, "text/html");
+      sections.forEach(function (sec) {
+        var lin = sec.getAttribute("data-lin");
+        var grid = sec.querySelector(".lin__studies");
+        if (!grid) return;
+        var plates = Array.prototype.slice.call(doc.querySelectorAll('#stories .plate[data-lineage="' + lin + '"]')).slice(0, 3);
+        grid.innerHTML = plates.map(function (p) {
+          var img = p.querySelector(".plate__media img");
+          var eb = p.querySelector(".plate__label .eyebrow");
+          var title = p.querySelector(".plate__title");
+          var bf = p.querySelector(".plate__bestfor");
+          if (!img || !title) return "";
+          return '<a class="index3__card" href="spatial-studies.html#' + escapeHtml(p.id) + '">' +
+            '<span class="index3__media"><img src="' + escapeHtml(img.getAttribute("src")) + '" alt="' + escapeHtml(img.getAttribute("alt") || "") + '" loading="lazy" /></span>' +
+            '<span class="index3__body">' +
+              (eb ? '<span class="eyebrow eyebrow--ink">' + eb.innerHTML + "</span>" : "") +
+              '<span class="index3__title">' + title.innerHTML + "</span>" +
+              (bf ? '<span class="index3__bestfor">' + bf.innerHTML + "</span>" : "") +
+              '<span class="link-arrow">Open the study <span class="arrow" aria-hidden="true">&rarr;</span></span>' +
+            "</span></a>";
+        }).join("");
+      });
+    }).catch(function () { /* the All-studies links still stand */ });
+  }
+
   /* ---------- Boot ---------- */
   buildNav();
   initImageGuard();
@@ -1401,6 +1436,7 @@
   initTapInk();
   initStripDrift();
   initIndexShuffle();
+  initLineageHub();
   initReveal();
   initForm();
   initStudyFilter();

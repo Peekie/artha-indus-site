@@ -333,12 +333,25 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 350; line-height: 1.05;
   padding-block: 1.25rem;
   max-width: var(--maxw); margin-inline: auto; padding-inline: var(--pad-x);
 }
-.lineage-strip__track span {
+.lineage-strip__track span, .lineage-strip__track a {
   font-family: var(--serif); font-size: 1.1rem; color: var(--ink-soft);
   display: inline-flex; align-items: center; gap: clamp(1.2rem, 3vw, 2.8rem);
 }
-.lineage-strip__track span::after { content: "·"; color: var(--gold-deep); }
-.lineage-strip__track span:last-child::after { content: none; }
+.lineage-strip__track span::after, .lineage-strip__track a::after { content: "·"; color: var(--gold-deep); }
+.lineage-strip__track span:last-child::after, .lineage-strip__track a:last-child::after { content: none; }
+.lineage-strip__track a { text-decoration: none; color: inherit; transition: color 0.3s var(--ease); }
+.lineage-strip__track a:hover, .lineage-strip__track a:focus-visible { color: var(--gold-deep); }
+
+/* the lineage hub sections */
+.lin { padding-block: clamp(2.2rem, 4.5vw, 3.6rem); border-top: 1px solid var(--rule); scroll-margin-top: 6rem; }
+.lin:first-of-type { border-top: 0; padding-top: 0; }
+.lin__name { font-size: clamp(1.9rem, 4vw, 2.8rem); margin: 0.5rem 0 1rem; }
+.lin > p { max-width: var(--measure); line-height: 1.7; margin-bottom: 1rem; }
+.lin__potential strong { color: var(--gold-deep); }
+.lin .lin__studies { margin: 1.6rem 0 1.2rem; }
+.lin .lin__studies:empty { display: none; }
+.lin__links { display: flex; flex-wrap: wrap; gap: 1rem 2.2rem; }
+
 
 /* ============================================================
    CURATOR'S NOTE
