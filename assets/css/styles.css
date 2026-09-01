@@ -1426,10 +1426,26 @@ body.has-veil .hero__meta { animation-delay: 1.75s; }
 .macro { position: relative; min-height: clamp(30rem, 92vh, 56rem); display: flex; align-items: flex-end; overflow: hidden; }
 .macro__media { position: absolute; inset: 0; }
 .macro__media img { width: 100%; height: 100%; object-fit: cover; }
-.macro__scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,20,32,0.28) 0%, rgba(15,20,32,0.1) 35%, rgba(15,20,32,0.62) 74%, rgba(15,20,32,0.9) 100%); }
+.macro__scrim {
+  position: absolute; inset: 0;
+  background:
+    /* text anchor: a deep pool behind the lower-left copy block */
+    radial-gradient(120% 85% at 18% 96%, rgba(15,20,32,0.82) 0%, rgba(15,20,32,0.5) 42%, transparent 70%),
+    linear-gradient(180deg, rgba(15,20,32,0.3) 0%, rgba(15,20,32,0.12) 35%, rgba(15,20,32,0.66) 74%, rgba(15,20,32,0.92) 100%);
+}
 .macro__inner { position: relative; z-index: 1; padding-block: clamp(3rem, 7vw, 5.5rem); color: var(--paper); }
-.macro__title { font-family: var(--serif); font-style: italic; font-weight: 340; font-size: clamp(2.6rem, 7.5vw, 6rem); line-height: 1.02; letter-spacing: -0.02em; margin: 1.1rem 0 1.6rem; text-shadow: 0 2px 24px rgba(12,16,26,0.55); }
-.macro__lead { font-family: var(--serif); font-size: clamp(1.1rem, 2vw, 1.35rem); line-height: 1.55; max-width: 52ch; color: rgba(248,244,236,0.94); text-shadow: 0 1px 14px rgba(12,16,26,0.5); }
+.macro .eyebrow { color: var(--gold-lite); text-shadow: 0 1px 10px rgba(12,16,26,0.85); }
+.macro__title {
+  font-family: var(--serif); font-style: italic; font-weight: 340;
+  font-size: clamp(2.6rem, 7.5vw, 6rem); line-height: 1.02; letter-spacing: -0.02em;
+  margin: 1.1rem 0 1.6rem;
+  text-shadow: 0 1px 3px rgba(12,16,26,0.8), 0 4px 18px rgba(12,16,26,0.75), 0 14px 44px rgba(12,16,26,0.55);
+}
+.macro__lead {
+  font-family: var(--serif); font-size: clamp(1.1rem, 2vw, 1.35rem); line-height: 1.55;
+  max-width: 52ch; color: rgba(248,244,236,0.97);
+  text-shadow: 0 1px 2px rgba(12,16,26,0.85), 0 3px 14px rgba(12,16,26,0.7);
+}
 
 /* Two offerings — paper and geometry, side by side */
 .offer { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.2rem, 3vw, 2.4rem); }
