@@ -9,6 +9,7 @@
   var PAGES = [
     { id: "curator",      href: "curators-note.html",   label: "Curator’s Note" },
     { id: "studies",      href: "spatial-studies.html", label: "Spatial Studies" },
+    { id: "lineages",     href: "lineages.html",        label: "Lineages" },
     { id: "perspectives", href: "perspectives.html",    label: "Perspectives" },
     { id: "collaborate",  href: "collaborate.html",     label: "Collaborate" }
   ];
@@ -50,6 +51,7 @@
           '</span>' +
         "</a>" +
         '<nav class="nav__links" aria-label="Primary">' + links + "</nav>" +
+        '<button class="nav__theme" id="themeToggle" type="button">Night</button>' +
         '<button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">' +
           '<svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="0" y1="1" x2="26" y2="1"/><line x1="0" y1="7" x2="26" y2="7"/><line x1="0" y1="13" x2="26" y2="13"/></svg>' +
         "</button>" +
@@ -115,6 +117,30 @@
     if (mount) mount.outerHTML = html;
   }
 
+  /* ---------- The atelier keeps hours: day and night themes ----------
+     A head snippet applies the theme before first paint; this wires the
+     toggle and keeps the choice. No stored choice means follow the clock. */
+  function initHours() {
+    var pref = null;
+    try { pref = window.localStorage.getItem("artha-theme"); } catch (e) {}
+    var h = new Date().getHours();
+    var night = pref ? pref === "night" : (h >= 19 || h < 6);
+    function setTheme(n) {
+      document.documentElement.setAttribute("data-theme", n ? "night" : "day");
+      var btn = document.getElementById("themeToggle");
+      // the label stays "Night" so the accessible name matches the visible
+      // text; aria-pressed alone carries the state
+      if (btn) btn.setAttribute("aria-pressed", String(n));
+    }
+    setTheme(night);
+    var btn = document.getElementById("themeToggle");
+    if (btn) btn.addEventListener("click", function () {
+      night = !night;
+      setTheme(night);
+      try { window.localStorage.setItem("artha-theme", night ? "night" : "day"); } catch (e) {}
+    });
+  }
+
   /* ---------- Scroll state on nav ---------- */
   function initNavScroll() {
     var nav = document.getElementById("nav");
@@ -155,7 +181,6 @@
     if (current === "home") {
       var heroes = [
         { src: "assets/img/story-1-warli-lobby.jpg", alt: "A large-scale hand-painted Warli folk-art feature wall anchoring a modern executive lobby of dark marble and fluted oak." },
-        { src: "assets/img/story-gaja-bronze.jpg", alt: "A caparisoned Kalamkari Gaja elephant pierced through darkened bronze, glowing amber behind an upscale hotel bar." },
         { src: "assets/img/story-12-tarpa-mandala.jpg", alt: "Oversized framed Warli Tarpa dance masterwork, white figures spiralling on a charcoal ground, above an oak bench on a travertine threshold wall." },
         { src: "assets/img/story-vanam-resin.jpg", alt: "A backlit translucent resin panel carrying hand-drawn Kalamkari flora in sepia line, glowing behind a steaming vitality pool framed in dark stone." }
       ];
@@ -177,12 +202,18 @@
       if (offerImg) { var f = pick(fab); offerImg.src = f.src; offerImg.alt = f.alt; }
       // the macro interlude alternates its material close-up
       var macros = [
-        { src: "assets/img/kurma-felt-macro.jpg", alt: "Macro detail of the Kūrma motif in layered acoustic felt, concentric ridges of warm copper brown catching raking light." },
-        { src: "assets/img/cta-environment.jpg", alt: "Raw mineral pigments in ochre and terracotta beside crushed shell, handmade paper and worn brushes on a wooden work table." },
-        { src: "assets/img/journal/kurma-acoustic-panel.jpg", alt: "The Kūrma motif in copper detail set into deep charcoal acoustic felt, flanked by columns of fish and vine." }
+        { src: "assets/img/kurma-felt-macro.jpg", alt: "Macro detail of the Kūrma motif: copper linework and stippling set into charcoal acoustic felt, catching raking light." },
+        { src: "assets/img/cta-environment.jpg", alt: "Raw mineral pigments in ochre and terracotta beside crushed shell, handmade paper and worn brushes on a wooden work table." }
       ];
       var macroImg = document.querySelector(".macro__media img");
-      if (macroImg) { var m = pick(macros); macroImg.src = m.src; macroImg.alt = m.alt; }
+      var macroDeva = document.getElementById("macroDeva");
+      if (macroImg) {
+        var m = pick(macros);
+        macroImg.src = m.src; macroImg.alt = m.alt;
+        // the watermark glyph follows the material shown:
+        // kūrma for the turtle felt, varṇa (colour, pigment) for the pigments table
+        if (macroDeva) macroDeva.textContent = m.src.indexOf("cta-environment") > -1 ? "वर्ण" : "कूर्म";
+      }
     }
     // CTA backdrops rotate on the pages without a pinned choice
     if (current === "home" || current === "perspectives") {
@@ -195,11 +226,20 @@
     var grid = document.getElementById("stories");
     if (grid) {
       var plates = Array.prototype.slice.call(grid.querySelectorAll(".plate"));
+      // catalogue numbers follow source order, so a plate keeps its number
+      // across shuffles, filters and visits
+      plates.forEach(function (pl, n) {
+        pl.setAttribute("data-plate", (n < 9 ? "0" : "") + (n + 1));
+      });
       for (var p = plates.length - 1; p > 0; p--) {
         var q = Math.floor(Math.random() * (p + 1));
         var tmp = plates[p]; plates[p] = plates[q]; plates[q] = tmp;
       }
-      plates.forEach(function (pl) { grid.appendChild(pl); });
+      plates.forEach(function (pl) {
+        // filed cards sit slightly askew until touched
+        pl.style.setProperty("--tilt", ((Math.random() * 1.2) - 0.6).toFixed(2) + "deg");
+        grid.appendChild(pl);
+      });
     }
     // the lineage strip reorders itself
     var track = document.querySelector(".lineage-strip__track");
@@ -213,16 +253,72 @@
     }
   }
 
-  /* ---------- Hero torch: the pointer excavates the underdrawing ---------- */
-  function initHeroTorch() {
+  /* ---------- Provenance line: the scribe's rule draws with the reader ----
+     A hand-wavering inked line runs down the left margin and draws itself as
+     the page is read, slightly differently on every visit. Decoration only:
+     hidden from assistive tech, absent on small screens and reduced motion. */
+  function initProvenance() {
+    if (!MOTION_OK) return;
+    if (!(window.matchMedia && window.matchMedia("(min-width: 1000px)").matches)) return;
+    var wrap = document.createElement("div");
+    wrap.className = "prov";
+    wrap.setAttribute("aria-hidden", "true");
+    var x = 6, d = "M" + x + " 0";
+    for (var y = 8; y <= 100; y += 8) {
+      var wob = (Math.random() * 3 - 1.5).toFixed(2);
+      d += " C " + (x - wob) + " " + (y - 5.5) + ", " + (+x + +wob) + " " + (y - 2.5) + ", " + x + " " + y;
+    }
+    wrap.innerHTML = '<svg viewBox="0 0 12 100" preserveAspectRatio="none"><path d="' + d + '" /></svg>';
+    document.body.appendChild(wrap);
+    var path = wrap.querySelector("path");
+    var L = path.getTotalLength();
+    path.style.strokeDasharray = L + " " + L;
+    path.style.strokeDashoffset = String(L);
+    var raf = null, max = 1;
+    function measure() {
+      max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    }
+    function draw() {
+      raf = null;
+      var p = Math.min(1, Math.max(0, window.scrollY / max));
+      path.style.strokeDashoffset = String(L * (1 - p));
+    }
+    var kick = function () { if (!raf) raf = requestAnimationFrame(draw); };
+    window.addEventListener("scroll", kick, { passive: true });
+    window.addEventListener("resize", function () { measure(); kick(); });
+    window.addEventListener("load", function () { measure(); kick(); });
+    measure();
+    draw();
+  }
+
+  /* ---------- Hero hover effect: one of three moods per visit ----------
+     torch: the pointer excavates the ink underdrawing beneath the photo.
+     inverse: the hero rests as the finished photo; on hover it fades to the
+     drawing everywhere except a pool of colour that travels with the cursor.
+     lamp: the pointer carries warm lantern light across the photograph.
+     Hover-capable fine pointers only; touch devices get the plain photo. */
+  function initHeroEffect() {
     var hero = document.querySelector(".hero");
     var media = hero && hero.querySelector(".hero__media");
     var photo = media && media.querySelector(".hero__photo");
     if (!hero || !media || !photo || !MOTION_OK) return;
-    // Hover-capable fine pointers only. On touch devices the torch fired on
-    // every scroll-touch and read as flicker, so they get the plain photo.
     if (!(window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches)) return;
-    var tx = 50, ty = 40, tr = 0, cx = 50, cy = 40, cr = 0, raf = null;
+    var pool = ["vignette", "sheen", "parallax"]; // torch, inverse and lamp stay reachable via ?fx=
+    var forced = null;
+    try { forced = new URLSearchParams(window.location.search).get("fx"); } catch (e) {}
+    var fx = ["torch", "inverse", "lamp"].indexOf(forced) > -1 || pool.indexOf(forced) > -1 ? forced : pick(pool);
+    hero.setAttribute("data-fx", fx);
+    if (fx === "lamp" || fx === "vignette" || fx === "sheen") {
+      var overlay = document.createElement("div");
+      overlay.className = "hero__" + fx;
+      overlay.setAttribute("aria-hidden", "true");
+      media.appendChild(overlay);
+    }
+
+    var restR = fx === "inverse" ? 2600 : 0;
+    var activeR = fx === "inverse" ? 260 : 200;
+    var tx = 50, ty = 40, tr = restR, cx = 50, cy = 40, cr = restR, raf = null;
+    media.style.setProperty("--tr", Math.max(0.5, restR) + "px");
     function tick() {
       cx += (tx - cx) * 0.16;
       cy += (ty - cy) * 0.16;
@@ -230,6 +326,10 @@
       media.style.setProperty("--mx", cx.toFixed(2) + "%");
       media.style.setProperty("--my", cy.toFixed(2) + "%");
       media.style.setProperty("--tr", Math.max(0.5, cr).toFixed(1) + "px");
+      var fxo = Math.min(1, cr / 170);
+      media.style.setProperty("--fxo", fxo.toFixed(3));
+      media.style.setProperty("--px", ((50 - cx) * 0.028 * fxo).toFixed(3) + "%");
+      media.style.setProperty("--py", ((40 - cy) * 0.022 * fxo).toFixed(3) + "%");
       if (Math.abs(tx - cx) > 0.05 || Math.abs(ty - cy) > 0.05 || Math.abs(tr - cr) > 0.5) {
         raf = requestAnimationFrame(tick);
       } else { raf = null; }
@@ -240,10 +340,10 @@
       var r = media.getBoundingClientRect();
       tx = ((e.clientX - r.left) / r.width) * 100;
       ty = ((e.clientY - r.top) / r.height) * 100;
-      tr = 200;
+      tr = activeR;
       kick();
     });
-    hero.addEventListener("pointerleave", function () { tr = 0; kick(); });
+    hero.addEventListener("pointerleave", function () { tr = restR; kick(); });
   }
 
   /* ---------- From the index: three random studies per visit ---------- */
@@ -280,6 +380,57 @@
           "</span></a>";
       }).join("");
     }).catch(function () { /* the static trio stays */ });
+  }
+
+  /* ---------- Kalam trail: the cursor leaves fading ink on the hero ---------- */
+
+  /* ---------- Mobile delight: old-phone-safe, transform and opacity only ---------- */
+  // A blot and ring bloom where a finger truly taps the hero. Taps are
+  // separated from scroll swipes by time and travel, so scrolling stays calm.
+  function initTapInk() {
+    var hero = document.querySelector(".hero");
+    if (!hero || !MOTION_OK) return;
+    if (!(window.matchMedia && window.matchMedia("(hover: none)").matches)) return;
+    var sx = 0, sy = 0, st = 0, live = 0;
+    hero.addEventListener("touchstart", function (e) {
+      var t = e.touches[0]; if (!t) return;
+      sx = t.clientX; sy = t.clientY; st = Date.now();
+    }, { passive: true });
+    hero.addEventListener("touchend", function (e) {
+      var t = e.changedTouches[0];
+      if (!t || live > 4) return;
+      var dx = t.clientX - sx, dy = t.clientY - sy;
+      if (Date.now() - st > 300 || dx * dx + dy * dy > 144) return;
+      var r = hero.getBoundingClientRect();
+      ["ink-blot", "ink-ring"].forEach(function (cls) {
+        var el = document.createElement("span");
+        el.className = cls;
+        el.style.left = (t.clientX - r.left) + "px";
+        el.style.top = (t.clientY - r.top) + "px";
+        hero.appendChild(el);
+        live++;
+        el.addEventListener("animationend", function () {
+          live--;
+          if (el.parentNode) el.parentNode.removeChild(el);
+        });
+      });
+    }, { passive: true });
+  }
+
+  // On touch devices the lineage strip glides instead of sitting still.
+  function initStripDrift() {
+    if (!MOTION_OK) return;
+    if (!(window.matchMedia && window.matchMedia("(hover: none)").matches)) return;
+    var track = document.querySelector(".lineage-strip__track");
+    if (!track) return;
+    var spans = Array.prototype.slice.call(track.children);
+    spans.forEach(function (s) {
+      var c = s.cloneNode(true);
+      c.setAttribute("aria-hidden", "true");
+      if (c.tagName === "A") c.setAttribute("tabindex", "-1");
+      track.appendChild(c);
+    });
+    track.classList.add("is-drifting");
   }
 
   /* ---------- First-visit veil: the page unrolls once per session ---------- */
@@ -828,7 +979,20 @@
 
       // related (share a tag)
       var tags = meta.tags || [];
-      var related = list.filter(function (p, i) { return i !== idx && (p.tags || []).some(function (t) { return tags.indexOf(t) > -1; }); })
+      // the handoff: hand a finished reader the next essay in reading order
+      var next = older || newer;
+      var handoffHtml = next ?
+        '<a class="handoff reveal" href="post.html?p=' + encodeURIComponent(next.slug) + '">' +
+          '<span class="handoff__media">' + (next.image ? '<img src="' + escapeHtml(safeUrl(next.image)) + '" alt="" loading="lazy" />' : "") + "</span>" +
+          '<span class="handoff__body">' +
+            '<span class="eyebrow eyebrow--ink">Continue the thread</span>' +
+            '<span class="handoff__title">' + escapeHtml(next.title) + "</span>" +
+            (next.dek ? '<span class="handoff__dek">' + escapeHtml(next.dek) + "</span>" : "") +
+            '<span class="link-arrow">Read on <span class="arrow" aria-hidden="true">&rarr;</span></span>' +
+          "</span>" +
+        "</a>" : "";
+
+      var related = list.filter(function (p, i) { return i !== idx && (!next || p.slug !== next.slug) && (p.tags || []).some(function (t) { return tags.indexOf(t) > -1; }); })
         .sort(function () { return Math.random() - 0.5; }) // vary the shelf on every read
         .slice(0, 3);
       var relatedHtml = related.length ?
@@ -860,10 +1024,12 @@
             '<button class="post__copy" type="button" data-anchor-url="1">Copy link</button>' +
           "</div>" +
           prevnext +
+          handoffHtml +
           relatedHtml +
         "</div>";
 
       buildToc();
+      buildGlosses(mount);
       initPostProgress();
       var copyBtn = mount.querySelector(".post__copy");
       if (copyBtn) copyBtn.addEventListener("click", function () {
@@ -875,6 +1041,78 @@
       mount.innerHTML = '<div class="wrap post__loading">This post could not be loaded. <a href="perspectives.html">Back to the Journal</a></div>';
     });
   }
+  /* ---------- Margin glosses: the manuscript annotates its own terms ----
+     Sanskrit terms in an essay get a quiet definition in the right margin
+     on wide screens. Every gloss is traceable to the atelier's own essays;
+     first occurrence only, supplemental, hidden from assistive tech. */
+  var GLOSSARY = {
+    bija: "the primordial seed",
+    kairi: "the green, unripe mango",
+    ambi: "the green, unripe mango",
+    kalam: "the bamboo pen of Kalamkari",
+    kalka: "the sweeping architectural form of the seed",
+    vrksa: "the tree; the vertical axis",
+    vriksha: "the tree; the vertical axis",
+    kalpavriksa: "the wish-fulfilling tree",
+    kalpavriksha: "the wish-fulfilling tree",
+    akasa: "boundless ether",
+    aranya: "the wild forest",
+    prakrti: "primal nature",
+    gaja: "the elephant",
+    gajathara: "the elephant frieze of temple plinths",
+    sunya: "the void; deliberate negative space",
+    shunya: "the void; deliberate negative space",
+    kurma: "the tortoise; the grounding curve",
+    matsya: "the fish; the fluid trajectory",
+    mayura: "the peacock; the transmuting radiance",
+    jali: "the pierced screen",
+    jalis: "the pierced screens",
+    tarpa: "the Warli wind instrument",
+    mandala: "the circle",
+    buta: "the floral bouquet motif",
+    mangalya: "auspiciousness",
+    simha: "the lion",
+    mrga: "the deer",
+    mandapa: "the pillared temple hall",
+    garbhagrha: "the innermost sanctum",
+    chaya: "shadow",
+    parampara: "the unbroken succession; lineage"
+  };
+  function normTerm(s) {
+    return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, "");
+  }
+  function buildGlosses(root) {
+    var body = root.querySelector(".post__body");
+    if (!body) return;
+    var seen = {}, glosses = [];
+    Array.prototype.forEach.call(body.querySelectorAll("em"), function (em) {
+      var raw = em.textContent.trim();
+      if (raw.length > 24) return;
+      var key = normTerm(raw);
+      if (!GLOSSARY[key] || seen[key]) return;
+      seen[key] = true;
+      var g = document.createElement("span");
+      g.className = "gloss";
+      g.setAttribute("aria-hidden", "true");
+      g.innerHTML = "<b>" + escapeHtml(raw) + "</b>" + escapeHtml(GLOSSARY[key]);
+      body.appendChild(g);
+      glosses.push({ el: g, ref: em });
+    });
+    if (!glosses.length) return;
+    function place() {
+      var lastBottom = -999;
+      glosses.forEach(function (item) {
+        var top = item.ref.offsetTop;
+        if (top < lastBottom + 10) top = lastBottom + 10;
+        item.el.style.top = top + "px";
+        lastBottom = top + item.el.offsetHeight;
+      });
+    }
+    place();
+    window.addEventListener("load", place);
+    window.addEventListener("resize", place);
+  }
+
   function setMeta(sel, attr, val) { var el = document.querySelector(sel); if (el && val) el.setAttribute(attr, val); }
   function buildToc() {
     var toc = document.getElementById("postToc");
@@ -1152,17 +1390,55 @@
     });
   }
 
+  /* ---------- Lineage hub: each section pulls its studies from the index ---------- */
+  function initLineageHub() {
+    var sections = document.querySelectorAll(".lin[data-lin]");
+    if (!sections.length || !window.fetch || !window.DOMParser) return;
+    fetch("spatial-studies.html?v=" + VER).then(function (r) {
+      if (!r.ok) throw new Error("index");
+      return r.text();
+    }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, "text/html");
+      sections.forEach(function (sec) {
+        var lin = sec.getAttribute("data-lin");
+        var grid = sec.querySelector(".lin__studies");
+        if (!grid) return;
+        var plates = Array.prototype.slice.call(doc.querySelectorAll('#stories .plate[data-lineage="' + lin + '"]')).slice(0, 3);
+        grid.innerHTML = plates.map(function (p) {
+          var img = p.querySelector(".plate__media img");
+          var eb = p.querySelector(".plate__label .eyebrow");
+          var title = p.querySelector(".plate__title");
+          var bf = p.querySelector(".plate__bestfor");
+          if (!img || !title) return "";
+          return '<a class="index3__card" href="spatial-studies.html#' + escapeHtml(p.id) + '">' +
+            '<span class="index3__media"><img src="' + escapeHtml(img.getAttribute("src")) + '" alt="' + escapeHtml(img.getAttribute("alt") || "") + '" loading="lazy" /></span>' +
+            '<span class="index3__body">' +
+              (eb ? '<span class="eyebrow eyebrow--ink">' + eb.innerHTML + "</span>" : "") +
+              '<span class="index3__title">' + title.innerHTML + "</span>" +
+              (bf ? '<span class="index3__bestfor">' + bf.innerHTML + "</span>" : "") +
+              '<span class="link-arrow">Open the study <span class="arrow" aria-hidden="true">&rarr;</span></span>' +
+            "</span></a>";
+        }).join("");
+      });
+    }).catch(function () { /* the All-studies links still stand */ });
+  }
+
   /* ---------- Boot ---------- */
   buildNav();
   initImageGuard();
   buildFooter();
+  initHours();
   initNavScroll();
   initMobileMenu();
   initFreshness();
+  initProvenance();
   initVeil();
   initScrollHint();
-  initHeroTorch();
+  initHeroEffect();
+  initTapInk();
+  initStripDrift();
   initIndexShuffle();
+  initLineageHub();
   initReveal();
   initForm();
   initStudyFilter();
