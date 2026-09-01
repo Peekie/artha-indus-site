@@ -121,6 +121,104 @@
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && open) set(false); });
   }
 
+  /* ---------- Hero torch: the pointer excavates the underdrawing ---------- */
+  function initHeroTorch() {
+    var hero = document.querySelector(".hero");
+    var media = hero && hero.querySelector(".hero__media");
+    var photo = media && media.querySelector(".hero__photo");
+    if (!hero || !media || !photo || !MOTION_OK) return;
+    var fine = !!(window.matchMedia && window.matchMedia("(pointer: fine)").matches);
+    var tx = 50, ty = 40, tr = 0, cx = 50, cy = 40, cr = 0, raf = null;
+    function tick() {
+      cx += (tx - cx) * 0.16;
+      cy += (ty - cy) * 0.16;
+      cr += (tr - cr) * 0.12;
+      media.style.setProperty("--mx", cx.toFixed(2) + "%");
+      media.style.setProperty("--my", cy.toFixed(2) + "%");
+      media.style.setProperty("--tr", Math.max(0.5, cr).toFixed(1) + "px");
+      if (Math.abs(tx - cx) > 0.05 || Math.abs(ty - cy) > 0.05 || Math.abs(tr - cr) > 0.5) {
+        raf = requestAnimationFrame(tick);
+      } else { raf = null; }
+    }
+    function kick() { if (!raf) raf = requestAnimationFrame(tick); }
+    if (fine) {
+      hero.addEventListener("pointermove", function (e) {
+        var r = media.getBoundingClientRect();
+        tx = ((e.clientX - r.left) / r.width) * 100;
+        ty = ((e.clientY - r.top) / r.height) * 100;
+        tr = 200;
+        kick();
+      });
+      hero.addEventListener("pointerleave", function () { tr = 0; kick(); });
+    } else {
+      // touch: a single decaying pulse of the torch where the finger lands
+      hero.addEventListener("touchstart", function (e) {
+        var t = e.touches && e.touches[0];
+        if (!t) return;
+        var r = media.getBoundingClientRect();
+        cx = tx = ((t.clientX - r.left) / r.width) * 100;
+        cy = ty = ((t.clientY - r.top) / r.height) * 100;
+        cr = 170; tr = 0;
+        kick();
+      }, { passive: true });
+    }
+  }
+
+  /* ---------- Studio rail: drag to browse with a mouse ---------- */
+  function initStudioRail() {
+    var rail = document.querySelector(".studio__rail");
+    if (!rail) return;
+    var down = false, startX = 0, startLeft = 0, moved = false;
+    rail.addEventListener("pointerdown", function (e) {
+      if (e.pointerType !== "mouse") return; // touch scrolls natively
+      down = true; moved = false;
+      startX = e.clientX; startLeft = rail.scrollLeft;
+      rail.setPointerCapture(e.pointerId);
+    });
+    rail.addEventListener("pointermove", function (e) {
+      if (!down) return;
+      var dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) moved = true;
+      rail.scrollLeft = startLeft - dx;
+    });
+    var up = function () { down = false; };
+    rail.addEventListener("pointerup", up);
+    rail.addEventListener("pointercancel", up);
+    rail.addEventListener("click", function (e) { if (moved) e.preventDefault(); }, true);
+    rail.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { rail.scrollBy({ left: 320, behavior: MOTION_OK ? "smooth" : "auto" }); }
+      else if (e.key === "ArrowLeft") { rail.scrollBy({ left: -320, behavior: MOTION_OK ? "smooth" : "auto" }); }
+    });
+  }
+
+  /* ---------- First-visit veil: the page unrolls once per session ---------- */
+  function initVeil() {
+    if (current !== "home" || !MOTION_OK) return;
+    try {
+      if (window.sessionStorage.getItem("artha-veil")) return;
+      window.sessionStorage.setItem("artha-veil", "1");
+    } catch (e) { return; }
+    document.body.classList.add("has-veil");
+    var veil = document.createElement("div");
+    veil.id = "loadVeil";
+    veil.setAttribute("aria-hidden", "true");
+    veil.innerHTML = '<span class="veil__mark">Artha Indus <em>Atelier</em></span>';
+    document.body.appendChild(veil);
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { veil.classList.add("is-off"); });
+    });
+    var gone = function () { if (veil.parentNode) veil.parentNode.removeChild(veil); };
+    veil.addEventListener("transitionend", gone);
+    setTimeout(gone, 2600);
+  }
+
+  /* ---------- The scroll hint retires after its first use ---------- */
+  function initScrollHint() {
+    var hint = document.querySelector(".hero__scroll");
+    if (!hint) return;
+    window.addEventListener("scroll", function () { hint.classList.add("is-done"); }, { passive: true, once: true });
+  }
+
   /* ---------- Scroll reveal ---------- */
   function initReveal() {
     var els = document.querySelectorAll(".reveal");
@@ -135,7 +233,9 @@
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.14, rootMargin: "0px 0px -8% 0px" });
+    // threshold 0, not 0.14: the pre-reveal clip-path leaves only a sliver of
+    // the element visible to the observer, so a ratio threshold never fires.
+    }, { threshold: 0, rootMargin: "0px 0px -12% 0px" });
     els.forEach(function (el) { io.observe(el); });
   }
 
@@ -905,6 +1005,10 @@
   buildFooter();
   initNavScroll();
   initMobileMenu();
+  initVeil();
+  initScrollHint();
+  initHeroTorch();
+  initStudioRail();
   initReveal();
   initForm();
   initStudyFilter();

@@ -30,7 +30,8 @@
   <!-- HERO -->
   <section class="hero">
     <div class="hero__media">
-      <img src="assets/img/story-1-warli-lobby.jpg" alt="A large-scale hand-painted Warli folk-art feature wall anchoring a modern executive lobby of dark marble and fluted oak." fetchpriority="high" />
+      <img class="hero__under" src="assets/img/story-1-warli-lobby.jpg" alt="" aria-hidden="true" />
+      <img class="hero__photo" src="assets/img/story-1-warli-lobby.jpg" alt="A large-scale hand-painted Warli folk-art feature wall anchoring a modern executive lobby of dark marble and fluted oak." fetchpriority="high" />
     </div>
     <div class="hero__scrim"></div>
     <div class="hero__inner wrap">
@@ -54,60 +55,164 @@
     </div>
   </aside>
 
-  <!-- INTRO -->
-  <section class="section">
-    <div class="wrap">
-      <div class="home-intro">
-        <div class="reveal">
-          <p class="eyebrow eyebrow--ink" style="margin-bottom:1.2rem">The Atelier</p>
-          <h2 class="home-intro__lead serif-italic">Ancient Heritage. Modern Resonance.</h2>
-        </div>
-        <div class="reveal" data-d="1">
-          <p class="lead">The atelier brings living master lineages into contemporary American interiors, with the sourcing, the scaling, and the specification carried by a single practice.</p>
-          <p class="body">Two core offerings: authenticated, museum-grade <strong>physical commissions</strong>, and enterprise <strong>digital-twin licensing</strong>: artwork captured at 600 DPI, rebuilt as infinitely scalable vector geometry, and engineered for wallcoverings, bas-reliefs, 3D CNC millwork, and etched architectural glass.</p>
-        </div>
-      </div>
+  <!-- MACRO INTERLUDE — material seduction before any argument -->
+  <section class="macro" aria-label="The Atelier">
+    <div class="macro__media">
+      <img src="assets/img/kurma-felt-macro.jpg" alt="Macro detail of the Kūrma motif in layered acoustic felt, concentric ridges of warm copper brown catching raking light." loading="lazy" />
+    </div>
+    <div class="macro__scrim" aria-hidden="true"></div>
+    <div class="macro__inner wrap">
+      <p class="eyebrow reveal">The Atelier</p>
+      <h2 class="macro__title reveal" data-d="1">Ancient Heritage.<br />Modern Resonance.</h2>
+      <p class="macro__lead reveal" data-d="2">The atelier brings living master lineages into contemporary American interiors, with the sourcing, the scaling, and the specification carried by a single practice.</p>
     </div>
   </section>
 
-  <!-- FOUR TILES -->
-  <section class="section section--band pad-top" style="padding-top:0">
+  <!-- THE TWO OFFERINGS -->
+  <section class="section offer-wrap" aria-label="Two core offerings">
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow eyebrow--ink">Explore the Atelier</span>
+        <span class="eyebrow eyebrow--ink">Two core offerings</span>
       </div>
-      <div class="tiles">
-        <a class="tile reveal" href="curators-note.html">
-          <span class="tile__bg"><img src="assets/img/curators-hand.jpg" alt="A heritage artisan rendering fine Madhubani linework by hand." loading="lazy" /></span>          <span class="tile__title">Curator&rsquo;s Note</span>
-          <span class="tile__desc">The philosophy of the atelier, from its founder, Preeti Padaley, MBBS, MHSA, PMP.</span>
-          <span class="tile__go">Enter <span class="arrow" aria-hidden="true">&rarr;</span></span>
+      <div class="offer">
+        <a class="offer__half reveal" href="collaborate.html">
+          <span class="offer__media"><img src="assets/img/curators-hand.jpg" alt="A heritage artisan rendering fine Madhubani linework by hand." loading="lazy" /></span>
+          <span class="offer__body">
+            <span class="offer__no">01</span>
+            <h3 class="offer__title">Commission the <em>original.</em></h3>
+            <p>Commission custom-sized original paintings from master lineage artisans tailored to your project&rsquo;s dimensions and palette.</p>
+            <span class="link-arrow">Begin a commission <span class="arrow" aria-hidden="true">&rarr;</span></span>
+          </span>
         </a>
-        <a class="tile reveal" data-d="1" href="spatial-studies.html">
-          <span class="tile__bg"><img src="assets/img/warli-3-relief.jpg" alt="A Warli motif CNC-carved into a bas-relief wellness-spa feature wall." loading="lazy" /></span>          <span class="tile__title">Spatial Studies</span>
-          <span class="tile__desc">Studies in heritage translation, from 300 GSM paper to architectural digital twin.</span>
-          <span class="tile__go">Enter <span class="arrow" aria-hidden="true">&rarr;</span></span>
-        </a>
-        <a class="tile reveal" data-d="2" href="perspectives.html">
-          <span class="tile__bg"><img src="assets/img/story-8-terracotta-medallion.jpg" alt="A backlit terracotta relief medallion for a flagship hotel foyer." loading="lazy" /></span>          <span class="tile__title">Perspectives</span>
-          <span class="tile__desc">An editorial on translating South Asian heritage lineages into restorative architecture.</span>
-          <span class="tile__go">Read <span class="arrow" aria-hidden="true">&rarr;</span></span>
-        </a>
-        <a class="tile reveal" data-d="3" href="collaborate.html">
-          <span class="tile__bg"><img src="assets/img/story-6-cloudscapes.jpg" alt="Himalayan Thangka cloudscapes in sage and gold across a curved sanctuary wall." loading="lazy" /></span>          <span class="tile__title">Collaborate</span>
-          <span class="tile__desc">Request the 2026 Executive Lookbook or open a commission conversation.</span>
-          <span class="tile__go">Begin <span class="arrow" aria-hidden="true">&rarr;</span></span>
+        <a class="offer__half reveal" data-d="1" href="spatial-studies.html">
+          <span class="offer__media"><img src="assets/img/story-vrksa-glass.jpg" alt="A Pattachitra Vriksha etched in white on a frosted structural glass partition in a thermal spa suite." loading="lazy" /></span>
+          <span class="offer__body">
+            <span class="offer__no">02</span>
+            <h3 class="offer__title">License the <em>geometry.</em></h3>
+            <p>Artwork captured at 600 DPI, rebuilt as infinitely scalable vector geometry, and engineered for wallcoverings, bas-reliefs, 3D CNC millwork, and etched architectural glass.</p>
+            <span class="link-arrow">Explore the studies <span class="arrow" aria-hidden="true">&rarr;</span></span>
+          </span>
         </a>
       </div>
     </div>
   </section>
 
+  <!-- PROOF OF SPECIFIABILITY -->
+  <section class="section section--ink proof" aria-label="Specification standards">
+    <div class="wrap">
+      <div class="proof__head reveal">
+        <p class="eyebrow">For specifiers</p>
+        <h2 class="proof__title">Built to be specified.</h2>
+        <p class="proof__sub">Every study in the index carries its full architectural specification.</p>
+      </div>
+      <ul class="proof__facts reveal" data-d="1">
+        <li>CSI-classified assemblies</li>
+        <li>Class A flame spread &middot; ASTM E84</li>
+        <li>Type II commercial wallcoverings</li>
+        <li>ANSI Z97.1 safety glazing</li>
+        <li>IP68 wet-zone lighting</li>
+        <li>NRC-rated acoustic surfaces</li>
+      </ul>
+      <p class="proof__status reveal" data-d="2">Each plate is a concept study, available as a bespoke commission or a digital-twin license. <a class="link-arrow" href="spatial-studies.html">Open the studies index <span class="arrow" aria-hidden="true">&rarr;</span></a></p>
+    </div>
+  </section>
+
+  <!-- FROM THE INDEX — three studies with their Best-for lines -->
+  <section class="section section--band" aria-label="Selected studies">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow eyebrow--ink">From the index</span>
+      </div>
+      <div class="index3">
+        <a class="index3__card reveal" href="spatial-studies.html#warli-executive-wall">
+          <span class="index3__media"><img src="assets/img/story-1-warli-lobby.jpg" alt="Custom large-scale Warli folk-art feature piece in a modern executive lobby with dark marble and fluted oak millwork." loading="lazy" /></span>
+          <span class="index3__body">
+            <span class="eyebrow eyebrow--ink">Warli &middot; Feature Wall</span>
+            <span class="index3__title">Where heritage art meets executive architecture.</span>
+            <span class="index3__bestfor"><span>Best for</span> Executive lobbies, C-suites &amp; corporate reception.</span>
+            <span class="link-arrow">Open the study <span class="arrow" aria-hidden="true">&rarr;</span></span>
+          </span>
+        </a>
+        <a class="index3__card reveal" data-d="1" href="spatial-studies.html#vanam-resin-hydrotherapy">
+          <span class="index3__media"><img src="assets/img/story-vanam-resin.jpg" alt="A backlit translucent resin panel carrying hand-drawn Kalamkari flora, glowing behind a steaming vitality pool." loading="lazy" /></span>
+          <span class="index3__body">
+            <span class="eyebrow eyebrow--ink">Kalamkari &middot; Translucent Resin Panel</span>
+            <span class="index3__title">Where the restorative presence of ancient flora meets modern aquatic architecture.</span>
+            <span class="index3__bestfor"><span>Best for</span> Hydrotherapy suites, vitality pools &amp; spa wet zones.</span>
+            <span class="link-arrow">Open the study <span class="arrow" aria-hidden="true">&rarr;</span></span>
+          </span>
+        </a>
+        <a class="index3__card reveal" data-d="2" href="spatial-studies.html#gaja-bronze-screen">
+          <span class="index3__media"><img src="assets/img/story-gaja-bronze.jpg" alt="A caparisoned Kalamkari Gaja elephant pierced through darkened bronze, glowing amber behind an upscale hotel bar." loading="lazy" /></span>
+          <span class="index3__body">
+            <span class="eyebrow eyebrow--ink">Kalamkari &middot; Architectural Bronze</span>
+            <span class="index3__title">Where monumental wildlife symbolism anchors nightlife architecture.</span>
+            <span class="index3__bestfor"><span>Best for</span> Cocktail bars, hotel arrival bars &amp; hospitality focal walls.</span>
+            <span class="link-arrow">Open the study <span class="arrow" aria-hidden="true">&rarr;</span></span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FROM THE STUDIO — the working files, shown as they are -->
+  <section class="studio" aria-label="From the studio">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow eyebrow--ink">From the studio</span>
+        <p class="studio__note">Motifs in translation, from the atelier&rsquo;s working files. Drag to browse.</p>
+      </div>
+    </div>
+    <div class="studio__rail" tabindex="0" aria-label="Studio mockups, horizontally scrollable">
+      <figure><img src="assets/img/studio-peacock-lobby.jpg" alt="A carved peacock relief spreading its tail across a dark plaster feature wall above a low bench." loading="lazy" /></figure>
+      <figure><img src="assets/img/studio-buddha.jpg" alt="A framed painting of a resting figure beneath a leafy tree, in saffron and lapis, on a slatted oak wall beside a pale armchair." loading="lazy" /></figure>
+      <figure><img src="assets/img/studio-warli-mandala.jpg" alt="A circular Warli mandala with a tree of life at its center, framed on a walnut boardroom wall above a glass table." loading="lazy" /></figure>
+      <figure><img src="assets/img/studio-parrot-fish.jpg" alt="Two square framed works on pale oak paneling: crimson parrots perched on golden blooms, and doves with fish in indigo." loading="lazy" /></figure>
+      <figure><img src="assets/img/studio-landscape-pattachitra.jpg" alt="A sepia tree panel beneath an arched ornamental border, framed on an executive boardroom wall." loading="lazy" /></figure>
+      <figure><img src="assets/img/studio-sun-elephant.jpg" alt="A black and cream composition of sun, elephant and tree within a tribal border, gold framed in a dark upholstered niche." loading="lazy" /></figure>
+      <figure><img src="assets/img/studio-owl.jpg" alt="Three ornately patterned owls within a floral border, framed above a teal sofa in a bright lounge." loading="lazy" /></figure>
+      <figure><img src="assets/img/studio-elephant-warli.jpg" alt="A large crimson elephant procession mandala on an oak wall above a busy workplace cafe." loading="lazy" /></figure>
+      <figure><img src="assets/img/studio-romance.jpg" alt="A pencil-line scroll drawing of peacocks beside a tube of indigo paint, and the finished monochrome panel framed in a marble corridor." loading="lazy" /></figure>
+      <figure><img src="assets/img/scale-thematic.jpg" alt="A gallery corridor hung with two framed works: a lotus of fish in red and black, and a monochrome fish and peacock panel." loading="lazy" /></figure>
+    </div>
+  </section>
+
+  <!-- SLIM FORK -->
+  <nav class="section fork" aria-label="Go deeper">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow eyebrow--ink">Go deeper</span>
+      </div>
+      <a class="fork__row reveal" href="curators-note.html">
+        <span class="fork__no">01</span>
+        <span class="fork__name">Curator&rsquo;s Note</span>
+        <span class="fork__desc">The philosophy of the atelier, from its founder, Preeti Padaley, MBBS, MHSA, PMP.</span>
+        <span class="fork__go arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="fork__row reveal" data-d="1" href="spatial-studies.html">
+        <span class="fork__no">02</span>
+        <span class="fork__name">Spatial Studies</span>
+        <span class="fork__desc">Studies in heritage translation, from 300 GSM paper to architectural digital twin.</span>
+        <span class="fork__go arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <a class="fork__row reveal" data-d="2" href="perspectives.html">
+        <span class="fork__no">03</span>
+        <span class="fork__name">Perspectives</span>
+        <span class="fork__desc">An editorial on translating South Asian heritage lineages into restorative architecture.</span>
+        <span class="fork__go arrow" aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+  </nav>
+
   <!-- CTA -->
-  <section class="section cta-band">
+  <section class="section cta-band cta-band--material">
+    <div class="cta-band__media" aria-hidden="true"><img src="assets/img/cta-environment.jpg" alt="" loading="lazy" /></div>
     <div class="wrap">
       <p class="eyebrow reveal" style="margin-bottom:1.4rem">Next</p>
       <h2 class="reveal">Commission the original, or license the geometry.</h2>
-      <p class="reveal">Authenticated originals and licensed digital twins, delivered with full ESG provenance and named artisan attribution.</p>
+      <p class="reveal">Authenticated originals and licensed digital twins, delivered with full ESG provenance and named artisan attribution. Preeti reads every enquiry personally.</p>
       <a class="btn reveal" href="collaborate.html">Request the Lookbook <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      <p class="cta-band__alt reveal" data-d="1"><a href="assets/downloads/Artha-Indus-Atelier-Lookbook-2026.pdf" download>Or download it directly</a> &middot; PDF &middot; 6 pages &middot; 2.7&nbsp;MB &middot; no email required</p>
     </div>
   </section>
 
