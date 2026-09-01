@@ -15,6 +15,15 @@
 
   var current = document.body.getAttribute("data-page") || "home";
 
+  /* ---------- Safe storage (private windows throw on access) ---------- */
+  function storeGet(key) {
+    try { return JSON.parse(window.localStorage.getItem(key)); } catch (e) { return null; }
+  }
+  function storeSet(key, val) {
+    try { window.localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* storage unavailable */ }
+  }
+  var MOTION_OK = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches);
+
   /* ---------- NAV ---------- */
   function buildNav() {
     var links = PAGES.map(function (p, i) {
@@ -136,6 +145,25 @@
     if (!form) return;
     var status = document.getElementById("formStatus");
     var isNetlify = form.hasAttribute("data-netlify");
+
+    // "Specify this study" carries its dossier into the form: the enquiry
+    // arrives already knowing which study it is about.
+    var q = new URLSearchParams(window.location.search);
+    var studyId = (q.get("study") || "").toLowerCase().replace(/[^a-z0-9-]/g, "");
+    var studyTitle = (q.get("t") || "").slice(0, 160);
+    if (studyId) {
+      var sf = document.getElementById("studyField");
+      if (sf) sf.value = studyId + (studyTitle ? " | " + studyTitle : "");
+      var head = form.querySelector(".form__head");
+      if (head) {
+        var about = document.createElement("p");
+        about.className = "form__about";
+        about.innerHTML = "<span>Regarding</span> " + escapeHtml(studyTitle || studyId.replace(/-/g, " "));
+        head.appendChild(about);
+      }
+      var sel = document.getElementById("interest");
+      if (sel) sel.value = "Bespoke Masterwork Commission";
+    }
     form.addEventListener("submit", function (e) {
       // On Netlify the form posts natively — just hand over the Lookbook first.
       if (isNetlify) {
@@ -201,6 +229,36 @@
     var emptyEl = document.getElementById("storiesEmpty");
     var state = { app: "all", lineage: "all" };
 
+    // Filter state lives in the URL so a narrowed view can be sent to a colleague.
+    var q = new URLSearchParams(window.location.search);
+    if (q.get("app")) state.app = q.get("app");
+    if (q.get("lineage")) state.lineage = q.get("lineage");
+
+    // Live counts on every chip, so narrowing feels like searching a real archive.
+    index.querySelectorAll(".study-index__row").forEach(function (row) {
+      var type = row.getAttribute("data-filter-type");
+      row.querySelectorAll(".study-index__f").forEach(function (btn) {
+        var f = btn.getAttribute("data-filter");
+        if (f === "all") return;
+        var c = stories.filter(function (s) {
+          return type === "app"
+            ? (s.getAttribute("data-app") || "").split(/\s+/).indexOf(f) !== -1
+            : (s.getAttribute("data-lineage") || "") === f;
+        }).length;
+        btn.innerHTML = escapeHtml(btn.textContent) + ' <span class="study-index__n">' + c + "</span>";
+      });
+    });
+
+    function syncChips() {
+      index.querySelectorAll(".study-index__row").forEach(function (row) {
+        var type = row.getAttribute("data-filter-type");
+        row.querySelectorAll(".study-index__f").forEach(function (b) {
+          b.classList.toggle("is-active", b.getAttribute("data-filter") === state[type]);
+        });
+      });
+    }
+
+    var applied = false;
     function apply() {
       var shown = 0;
       stories.forEach(function (s) {
@@ -210,9 +268,21 @@
         var okLin = state.lineage === "all" || lin === state.lineage;
         var show = okApp && okLin;
         s.classList.toggle("is-hidden", !show);
-        if (show) shown++;
+        if (show) { s.style.setProperty("--i", String(shown)); shown++; }
       });
       if (emptyEl) emptyEl.hidden = shown !== 0;
+      var qs = [];
+      if (state.app !== "all") qs.push("app=" + encodeURIComponent(state.app));
+      if (state.lineage !== "all") qs.push("lineage=" + encodeURIComponent(state.lineage));
+      history.replaceState(history.state, "",
+        window.location.pathname + (qs.length ? "?" + qs.join("&") : "") + window.location.hash);
+      // re-settle the surviving plates with a small stagger (skipped on first paint)
+      if (applied && MOTION_OK) {
+        storiesWrap.classList.remove("is-resettled");
+        void storiesWrap.offsetWidth;
+        storiesWrap.classList.add("is-resettled");
+      }
+      applied = true;
       if (countEl) {
         // Counts come from the DOM, never from a hard-coded total: adding a
         // study to the markup is all it takes for these to stay correct.
@@ -241,14 +311,26 @@
     var reset = document.getElementById("resetFilters");
     if (reset) reset.addEventListener("click", function () {
       state.app = "all"; state.lineage = "all";
-      index.querySelectorAll(".study-index__row").forEach(function (row) {
-        row.querySelectorAll(".study-index__f").forEach(function (b) {
-          b.classList.toggle("is-active", b.getAttribute("data-filter") === "all");
-        });
-      });
+      syncChips();
       apply();
     });
 
+    // "Draw a study" — pull a random unread plate from the drawer.
+    var draw = document.getElementById("studyShuffle");
+    if (draw) draw.addEventListener("click", function () {
+      var seen = storeGet("artha-studies-seen") || [];
+      var pool = stories.filter(function (s) { return !s.classList.contains("is-hidden"); });
+      var fresh = pool.filter(function (s) { return seen.indexOf(s.id) === -1; });
+      var from = fresh.length ? fresh : pool;
+      var pick = from[Math.floor(Math.random() * from.length)];
+      if (pick) {
+        pick.scrollIntoView({ behavior: MOTION_OK ? "smooth" : "auto", block: "center" });
+        var face = pick.querySelector(".plate__face");
+        if (face) setTimeout(function () { face.click(); }, MOTION_OK ? 420 : 0);
+      }
+    });
+
+    syncChips();
     apply();
   }
 
@@ -689,7 +771,18 @@
 
     function visible() { return plates.filter(function (p) { return !p.classList.contains("is-hidden"); }); }
 
-    function fill(p) {
+    function markSeen(p) {
+      p.classList.add("is-visited");
+      var seen = storeGet("artha-studies-seen") || [];
+      if (seen.indexOf(p.id) === -1) { seen.push(p.id); storeSet("artha-studies-seen", seen); }
+    }
+    // restore the visited marks from earlier browsing
+    (storeGet("artha-studies-seen") || []).forEach(function (id) {
+      var p = document.getElementById(id);
+      if (p && p.classList.contains("plate")) p.classList.add("is-visited");
+    });
+
+    function fill(p, skipHistory) {
       var tpl = p.querySelector(".plate__dossier");
       var img = p.querySelector(".plate__media img");
       imgEl.src = img.getAttribute("src");
@@ -698,31 +791,87 @@
       txtEl.appendChild(tpl.content.cloneNode(true));
       var h = txtEl.querySelector(".dossier__title");
       if (h) h.id = "studyOverlayTitle";
-      if (specify) specify.href = "collaborate.html?study=" + encodeURIComponent(p.id);
+      if (specify) specify.href = "collaborate.html?study=" + encodeURIComponent(p.id) +
+        (h ? "&t=" + encodeURIComponent(h.textContent.trim()) : "");
       txtEl.scrollTop = 0;
-      history.replaceState(null, "", "#" + p.id);
+      if (!skipHistory) history.replaceState(history.state, "", "#" + p.id);
     }
-    function open(p) {
+    // FLIP: the plate's thumbnail appears to travel into the dossier
+    function flipFrom(p) {
+      if (!MOTION_OK) return;
+      var src = p.querySelector(".plate__media img");
+      if (!src) return;
+      var a = src.getBoundingClientRect();
+      if (!a.width) return;
+      requestAnimationFrame(function () {
+        var b = imgEl.getBoundingClientRect();
+        if (!b.width) return;
+        var ghost = document.createElement("img");
+        ghost.src = imgEl.src;
+        ghost.alt = "";
+        ghost.className = "flip-ghost";
+        ghost.style.top = b.top + "px";
+        ghost.style.left = b.left + "px";
+        ghost.style.width = b.width + "px";
+        ghost.style.height = b.height + "px";
+        ghost.style.transform = "translate(" + (a.left - b.left) + "px," + (a.top - b.top) +
+          "px) scale(" + a.width / b.width + "," + a.height / b.height + ")";
+        document.body.appendChild(ghost);
+        ov.classList.add("is-flipping");
+        var done = function () {
+          clearTimeout(fallback);
+          if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+          ov.classList.remove("is-flipping");
+        };
+        var fallback = setTimeout(done, 700);
+        ghost.addEventListener("transitionend", done);
+        requestAnimationFrame(function () { ghost.style.transform = "none"; });
+      });
+    }
+    function open(p, viaPop) {
       cur = plates.indexOf(p);
       lastFocus = document.activeElement;
-      fill(p);
+      fill(p, true);
+      if (!viaPop) history.pushState({ arthaStudy: p.id }, "", "#" + p.id);
+      markSeen(p);
       ov.hidden = false;
       requestAnimationFrame(function () { ov.classList.add("is-open"); });
       document.body.classList.add("overlay-open");
+      flipFrom(p);
       txtEl.focus();
     }
-    function close() {
+    function doClose() {
       ov.classList.remove("is-open");
       document.body.classList.remove("overlay-open");
       setTimeout(function () { ov.hidden = true; }, 420);
       if (lastFocus && lastFocus.focus) lastFocus.focus();
     }
+    function close() {
+      // If this dossier pushed a history entry, Back and the close button
+      // are the same gesture: both step back and both close the overlay.
+      if (history.state && history.state.arthaStudy) { history.back(); return; }
+      doClose();
+      if (window.location.hash) {
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+    }
+    window.addEventListener("popstate", function (e) {
+      var id = e.state && e.state.arthaStudy;
+      if (id) {
+        var p = document.getElementById(id);
+        if (p && p.classList.contains("plate")) {
+          if (ov.hidden) open(p, true); else fill(p, true);
+        }
+      } else if (!ov.hidden) {
+        doClose();
+      }
+    });
     function step(d) {
       var vis = visible();
       if (!vis.length) return;
       var i = vis.indexOf(plates[cur]);
       var t = vis[(i + d + vis.length) % vis.length];
-      if (t) { cur = plates.indexOf(t); fill(t); }
+      if (t) { cur = plates.indexOf(t); fill(t); markSeen(t); }
     }
 
     plates.forEach(function (p) {

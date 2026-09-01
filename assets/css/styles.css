@@ -1341,3 +1341,36 @@ body.overlay-open { overflow: hidden; }
   font-size: clamp(1.15rem, 2vw, 1.45rem); line-height: 1.4;
 }
 .thesis .eyebrow { color: var(--gold-lite) !important; margin-bottom: 0.8rem; font-style: normal; }
+
+/* ============================================================
+   REDESIGN — wayfinding & browse mechanics
+   ============================================================ */
+/* study context carried into the enquiry form */
+.form__about { margin-top: 0.9rem; padding: 0.55rem 0.9rem; background: var(--paper-2); border-left: 2px solid var(--gold); font-size: 0.9rem; color: var(--ink-soft); }
+.form__about span { font-family: var(--sans); text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.76rem; color: var(--gold-deep); margin-right: 0.5rem; }
+
+/* live counts on filter chips */
+.study-index__n { font-size: 0.76rem; color: var(--gold-deep); margin-left: 0.3rem; font-variant-numeric: tabular-nums; }
+.study-index__f.is-active .study-index__n { color: inherit; opacity: 0.75; }
+
+/* filter footer: result count + the random draw */
+.study-index__foot { display: flex; flex-wrap: wrap; gap: 0.6rem 1.6rem; align-items: baseline; justify-content: space-between; }
+.study-index__draw { border: 0; background: none; font-family: var(--sans); font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-deep); cursor: pointer; padding: 0.2rem 0; border-bottom: 1px solid transparent; transition: border-color 0.3s var(--ease); }
+.study-index__draw:hover, .study-index__draw:focus-visible { border-bottom-color: var(--gold-deep); }
+
+/* a quiet archival mark on plates already opened */
+.plate.is-visited .plate__title::after { content: ""; display: inline-block; width: 0.4em; height: 0.4em; border-radius: 50%; background: var(--gold); margin-left: 0.55em; vertical-align: 0.15em; }
+
+/* plates re-settle with a small stagger when a filter is applied */
+#stories.is-resettled .plate:not(.is-hidden) { animation: plateSettle 0.5s var(--ease) both; animation-delay: calc(var(--i, 0) * 35ms); }
+@keyframes plateSettle { from { opacity: 0.25; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* FLIP ghost: the plate thumbnail travels into the dossier */
+.flip-ghost { position: fixed; z-index: 120; margin: 0; object-fit: cover; pointer-events: none; transform-origin: top left; transition: transform 0.42s var(--ease); will-change: transform; }
+.study-overlay__media img { transition: opacity 0.3s var(--ease); }
+.study-overlay.is-flipping .study-overlay__media img { opacity: 0; }
+
+/* the flipbook index leaf must never clip its own contents on small screens */
+@media (max-width: 700px) {
+  .leaf__face { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+}
