@@ -304,10 +304,10 @@
     var photo = media && media.querySelector(".hero__photo");
     if (!hero || !media || !photo || !MOTION_OK) return;
     if (!(window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches)) return;
-    var pool = ["lamp", "vignette", "sheen"]; // torch and inverse stay reachable via ?fx=
+    var pool = ["vignette", "sheen", "parallax"]; // torch, inverse and lamp stay reachable via ?fx=
     var forced = null;
     try { forced = new URLSearchParams(window.location.search).get("fx"); } catch (e) {}
-    var fx = ["torch", "inverse"].indexOf(forced) > -1 || pool.indexOf(forced) > -1 ? forced : pick(pool);
+    var fx = ["torch", "inverse", "lamp"].indexOf(forced) > -1 || pool.indexOf(forced) > -1 ? forced : pick(pool);
     hero.setAttribute("data-fx", fx);
     if (fx === "lamp" || fx === "vignette" || fx === "sheen") {
       var overlay = document.createElement("div");
@@ -315,7 +315,7 @@
       overlay.setAttribute("aria-hidden", "true");
       media.appendChild(overlay);
     }
-    if (fx !== "inverse") initDust(hero);
+
     var restR = fx === "inverse" ? 2600 : 0;
     var activeR = fx === "inverse" ? 260 : 200;
     var tx = 50, ty = 40, tr = restR, cx = 50, cy = 40, cr = restR, raf = null;
@@ -327,7 +327,10 @@
       media.style.setProperty("--mx", cx.toFixed(2) + "%");
       media.style.setProperty("--my", cy.toFixed(2) + "%");
       media.style.setProperty("--tr", Math.max(0.5, cr).toFixed(1) + "px");
-      media.style.setProperty("--fxo", Math.min(1, cr / 170).toFixed(3));
+      var fxo = Math.min(1, cr / 170);
+      media.style.setProperty("--fxo", fxo.toFixed(3));
+      media.style.setProperty("--px", ((50 - cx) * 0.028 * fxo).toFixed(3) + "%");
+      media.style.setProperty("--py", ((40 - cy) * 0.022 * fxo).toFixed(3) + "%");
       if (Math.abs(tx - cx) > 0.05 || Math.abs(ty - cy) > 0.05 || Math.abs(tr - cr) > 0.5) {
         raf = requestAnimationFrame(tick);
       } else { raf = null; }
@@ -381,27 +384,6 @@
   }
 
   /* ---------- Kalam trail: the cursor leaves fading ink on the hero ---------- */
-  function initDust(hero) {
-    var lastX = -99, lastY = -99, live = 0, flip = false;
-    hero.addEventListener("pointermove", function (e) {
-      if (e.pointerType && e.pointerType !== "mouse") return;
-      var dx = e.clientX - lastX, dy = e.clientY - lastY;
-      if (dx * dx + dy * dy < 1100 || live > 12) return; // one mote per ~33px, capped
-      lastX = e.clientX; lastY = e.clientY;
-      var r = hero.getBoundingClientRect();
-      var mote = document.createElement("span");
-      flip = !flip;
-      mote.className = "dust-mote" + (flip ? " dust-mote--b" : "");
-      mote.style.left = (e.clientX - r.left) + "px";
-      mote.style.top = (e.clientY - r.top) + "px";
-      hero.appendChild(mote);
-      live++;
-      mote.addEventListener("animationend", function () {
-        live--;
-        if (mote.parentNode) mote.parentNode.removeChild(mote);
-      });
-    });
-  }
 
   /* ---------- Mobile delight: old-phone-safe, transform and opacity only ---------- */
   // A blot and ring bloom where a finger truly taps the hero. Taps are
