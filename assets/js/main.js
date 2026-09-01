@@ -401,6 +401,54 @@
     });
   }
 
+  /* ---------- Mobile delight: old-phone-safe, transform and opacity only ---------- */
+  // A blot and ring bloom where a finger truly taps the hero. Taps are
+  // separated from scroll swipes by time and travel, so scrolling stays calm.
+  function initTapInk() {
+    var hero = document.querySelector(".hero");
+    if (!hero || !MOTION_OK) return;
+    if (!(window.matchMedia && window.matchMedia("(hover: none)").matches)) return;
+    var sx = 0, sy = 0, st = 0, live = 0;
+    hero.addEventListener("touchstart", function (e) {
+      var t = e.touches[0]; if (!t) return;
+      sx = t.clientX; sy = t.clientY; st = Date.now();
+    }, { passive: true });
+    hero.addEventListener("touchend", function (e) {
+      var t = e.changedTouches[0];
+      if (!t || live > 4) return;
+      var dx = t.clientX - sx, dy = t.clientY - sy;
+      if (Date.now() - st > 300 || dx * dx + dy * dy > 144) return;
+      var r = hero.getBoundingClientRect();
+      ["ink-blot", "ink-ring"].forEach(function (cls) {
+        var el = document.createElement("span");
+        el.className = cls;
+        el.style.left = (t.clientX - r.left) + "px";
+        el.style.top = (t.clientY - r.top) + "px";
+        hero.appendChild(el);
+        live++;
+        el.addEventListener("animationend", function () {
+          live--;
+          if (el.parentNode) el.parentNode.removeChild(el);
+        });
+      });
+    }, { passive: true });
+  }
+
+  // On touch devices the lineage strip glides instead of sitting still.
+  function initStripDrift() {
+    if (!MOTION_OK) return;
+    if (!(window.matchMedia && window.matchMedia("(hover: none)").matches)) return;
+    var track = document.querySelector(".lineage-strip__track");
+    if (!track) return;
+    var spans = Array.prototype.slice.call(track.children);
+    spans.forEach(function (s) {
+      var c = s.cloneNode(true);
+      c.setAttribute("aria-hidden", "true");
+      track.appendChild(c);
+    });
+    track.classList.add("is-drifting");
+  }
+
   /* ---------- First-visit veil: the page unrolls once per session ---------- */
   function initVeil() {
     if (current !== "home" || !MOTION_OK) return;
@@ -1267,6 +1315,8 @@
   initVeil();
   initScrollHint();
   initHeroEffect();
+  initTapInk();
+  initStripDrift();
   initIndexShuffle();
   initReveal();
   initForm();

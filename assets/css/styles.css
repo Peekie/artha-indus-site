@@ -1690,3 +1690,41 @@ body.has-veil .hero__meta { animation-delay: 1.75s; }
 @media (max-width: 960px) {
   .nav__theme { margin-left: 0; padding: 0.35rem 0.55rem; }
 }
+
+/* ============================================================
+   MOBILE DELIGHT — transform and opacity only, kind to old phones
+   ============================================================ */
+/* tap ink: a blot and a ring bloom where a finger truly taps the hero */
+.ink-blot, .ink-ring { position: absolute; z-index: 1; pointer-events: none; transform: translate(-50%, -50%); }
+.ink-blot { width: 10px; height: 10px; border-radius: 48% 52% 55% 45%; background: rgba(201, 166, 86, 0.85); animation: inkBlot 0.9s ease-out both; }
+.ink-ring { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid rgba(232, 207, 148, 0.8); animation: inkRing 0.9s cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+@keyframes inkBlot { 0% { opacity: 0.9; transform: translate(-50%, -50%) scale(0.6); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(3.2); } }
+@keyframes inkRing { 0% { opacity: 0.9; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(9); } }
+
+/* ambient gold sheen across the italic hero word; solid gold where unsupported */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hero__title em {
+    background: linear-gradient(100deg, var(--gold-lite) 0%, var(--gold-lite) 40%, #fff3d6 50%, var(--gold-lite) 60%, var(--gold-lite) 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: goldSheen 7s ease-in-out infinite;
+  }
+}
+@keyframes goldSheen { 0%, 55% { background-position: 120% 0; } 85%, 100% { background-position: -30% 0; } }
+
+/* press feedback under the finger */
+@media (hover: none) {
+  .plate__face:active, .index3__card:active, .offer__half:active,
+  .fork__row:active, .btn:active, .jcard:active, .featured:active {
+    transform: scale(0.985);
+    transition: transform 0.12s ease-out;
+  }
+}
+
+/* the lineage strip glides on touch devices */
+.lineage-strip__track.is-drifting {
+  width: max-content;
+  animation: stripDrift 38s linear infinite;
+}
+@keyframes stripDrift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
