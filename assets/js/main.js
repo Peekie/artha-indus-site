@@ -292,16 +292,34 @@
     draw();
   }
 
-  /* ---------- Hero torch: the pointer excavates the underdrawing ---------- */
-  function initHeroTorch() {
+  /* ---------- Hero hover effect: one of three moods per visit ----------
+     torch: the pointer excavates the ink underdrawing beneath the photo.
+     inverse: the hero rests as the finished photo; on hover it fades to the
+     drawing everywhere except a pool of colour that travels with the cursor.
+     lamp: the pointer carries warm lantern light across the photograph.
+     Hover-capable fine pointers only; touch devices get the plain photo. */
+  function initHeroEffect() {
     var hero = document.querySelector(".hero");
     var media = hero && hero.querySelector(".hero__media");
     var photo = media && media.querySelector(".hero__photo");
     if (!hero || !media || !photo || !MOTION_OK) return;
-    // Hover-capable fine pointers only. On touch devices the torch fired on
-    // every scroll-touch and read as flicker, so they get the plain photo.
     if (!(window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches)) return;
-    var tx = 50, ty = 40, tr = 0, cx = 50, cy = 40, cr = 0, raf = null;
+    var pool = ["torch", "inverse", "lamp"];
+    var forced = null;
+    try { forced = new URLSearchParams(window.location.search).get("fx"); } catch (e) {}
+    var fx = pool.indexOf(forced) > -1 ? forced : pick(pool);
+    hero.setAttribute("data-fx", fx);
+    if (fx === "lamp") {
+      var lamp = document.createElement("div");
+      lamp.className = "hero__lamp";
+      lamp.setAttribute("aria-hidden", "true");
+      media.appendChild(lamp);
+    }
+    if (fx !== "inverse") initKalam(hero);
+    var restR = fx === "inverse" ? 2600 : 0;
+    var activeR = fx === "inverse" ? 260 : 200;
+    var tx = 50, ty = 40, tr = restR, cx = 50, cy = 40, cr = restR, raf = null;
+    media.style.setProperty("--tr", Math.max(0.5, restR) + "px");
     function tick() {
       cx += (tx - cx) * 0.16;
       cy += (ty - cy) * 0.16;
@@ -319,10 +337,10 @@
       var r = media.getBoundingClientRect();
       tx = ((e.clientX - r.left) / r.width) * 100;
       ty = ((e.clientY - r.top) / r.height) * 100;
-      tr = 200;
+      tr = activeR;
       kick();
     });
-    hero.addEventListener("pointerleave", function () { tr = 0; kick(); });
+    hero.addEventListener("pointerleave", function () { tr = restR; kick(); });
   }
 
   /* ---------- From the index: three random studies per visit ---------- */
@@ -362,10 +380,7 @@
   }
 
   /* ---------- Kalam trail: the cursor leaves fading ink on the hero ---------- */
-  function initKalam() {
-    var hero = document.querySelector(".hero");
-    if (!hero || !MOTION_OK) return;
-    if (!(window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches)) return;
+  function initKalam(hero) {
     var lastX = -99, lastY = -99, live = 0;
     hero.addEventListener("pointermove", function (e) {
       if (e.pointerType && e.pointerType !== "mouse") return;
@@ -1251,8 +1266,7 @@
   initProvenance();
   initVeil();
   initScrollHint();
-  initHeroTorch();
-  initKalam();
+  initHeroEffect();
   initIndexShuffle();
   initReveal();
   initForm();
