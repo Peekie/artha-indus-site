@@ -164,6 +164,42 @@
     }
   }
 
+  /* ---------- From the index: three random studies per visit ---------- */
+  // The static cards in the markup are the fallback (file://, no JS). When we
+  // can fetch the studies index, the trio is drawn fresh from the live plates,
+  // so it never goes stale as studies are added.
+  function initIndexShuffle() {
+    var grid = document.querySelector(".index3");
+    if (!grid || !window.fetch || !window.DOMParser) return;
+    fetch("spatial-studies.html").then(function (r) {
+      if (!r.ok) throw new Error("index");
+      return r.text();
+    }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, "text/html");
+      var plates = Array.prototype.slice.call(doc.querySelectorAll("#stories .plate"));
+      if (plates.length < 3) return;
+      for (var i = plates.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = plates[i]; plates[i] = plates[j]; plates[j] = t;
+      }
+      grid.innerHTML = plates.slice(0, 3).map(function (p, k) {
+        var img = p.querySelector(".plate__media img");
+        var eb = p.querySelector(".plate__label .eyebrow");
+        var title = p.querySelector(".plate__title");
+        var bf = p.querySelector(".plate__bestfor");
+        if (!img || !title) return "";
+        return '<a class="index3__card reveal is-in" href="spatial-studies.html#' + escapeHtml(p.id) + '">' +
+          '<span class="index3__media"><img src="' + escapeHtml(img.getAttribute("src")) + '" alt="' + escapeHtml(img.getAttribute("alt") || "") + '" loading="lazy" /></span>' +
+          '<span class="index3__body">' +
+            (eb ? '<span class="eyebrow eyebrow--ink">' + eb.innerHTML + "</span>" : "") +
+            '<span class="index3__title">' + title.innerHTML + "</span>" +
+            (bf ? '<span class="index3__bestfor">' + bf.innerHTML + "</span>" : "") +
+            '<span class="link-arrow">Open the study <span class="arrow" aria-hidden="true">&rarr;</span></span>' +
+          "</span></a>";
+      }).join("");
+    }).catch(function () { /* the static trio stays */ });
+  }
+
   /* ---------- First-visit veil: the page unrolls once per session ---------- */
   function initVeil() {
     if (current !== "home" || !MOTION_OK) return;
@@ -981,6 +1017,7 @@
   initVeil();
   initScrollHint();
   initHeroTorch();
+  initIndexShuffle();
   initReveal();
   initForm();
   initStudyFilter();
