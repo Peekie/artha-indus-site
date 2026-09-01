@@ -22,6 +22,9 @@
   function storeSet(key, val) {
     try { window.localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* storage unavailable */ }
   }
+  // Version tag for fetched resources; bumped on deploys so heuristic
+  // browser caching can never pin a visitor to a stale index or essay.
+  var VER = "28b62f5";
   var MOTION_OK = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches);
 
   /* ---------- NAV ---------- */
@@ -250,7 +253,7 @@
   function initIndexShuffle() {
     var grid = document.querySelector(".index3");
     if (!grid || !window.fetch || !window.DOMParser) return;
-    fetch("spatial-studies.html").then(function (r) {
+    fetch("spatial-studies.html?v=" + VER).then(function (r) {
       if (!r.ok) throw new Error("index");
       return r.text();
     }).then(function (html) {
@@ -748,7 +751,7 @@
     var grid = document.getElementById("journalGrid");
     var fallback = document.getElementById("journalFallback");
 
-    fetch("journal/posts.json").then(function (r) {
+    fetch("journal/posts.json?v=" + VER).then(function (r) {
       if (!r.ok) throw new Error("manifest");
       return r.json();
     }).then(function (posts) {
@@ -787,8 +790,8 @@
     if (!slug) { mount.innerHTML = '<div class="wrap post__loading">Post not found. <a href="perspectives.html">Back to the Journal</a></div>'; return; }
 
     Promise.all([
-      fetch("journal/posts.json").then(function (r) { return r.json(); }).catch(function () { return []; }),
-      fetch("journal/" + slug + ".md").then(function (r) { if (!r.ok) throw new Error("404"); return r.text(); })
+      fetch("journal/posts.json?v=" + VER).then(function (r) { return r.json(); }).catch(function () { return []; }),
+      fetch("journal/" + slug + ".md?v=" + VER).then(function (r) { if (!r.ok) throw new Error("404"); return r.text(); })
     ]).then(function (res) {
       var list = Array.isArray(res[0]) ? res[0] : [];
       var idx = -1;
