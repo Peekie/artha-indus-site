@@ -25,7 +25,7 @@
   }
   // Version tag for fetched resources; bumped on deploys so heuristic
   // browser caching can never pin a visitor to a stale index or essay.
-  var VER = "20260901d";
+  var VER = "20260901g";
   var MOTION_OK = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches);
 
   /* ---------- NAV ---------- */
@@ -102,7 +102,7 @@
               '<li><a href="mailto:preeti@arthaindus.com">preeti@arthaindus.com</a></li>' +
               '<li><a href="https://arthaindus.com">www.arthaindus.com</a></li>' +
               '<li>Chicago, IL</li>' +
-              '<li><a href="collaborate.html">Request 2026 Lookbook</a></li>' +
+              '<li><a href="collaborate.html">Request the Lookbook</a></li>' +
             "</ul></div>" +
           "</div>" +
           '<div class="footer__bar">' +
@@ -226,11 +226,6 @@
     var grid = document.getElementById("stories");
     if (grid) {
       var plates = Array.prototype.slice.call(grid.querySelectorAll(".plate"));
-      // catalogue numbers follow source order, so a plate keeps its number
-      // across shuffles, filters and visits
-      plates.forEach(function (pl, n) {
-        pl.setAttribute("data-plate", (n < 9 ? "0" : "") + (n + 1));
-      });
       for (var p = plates.length - 1; p > 0; p--) {
         var q = Math.floor(Math.random() * (p + 1));
         var tmp = plates[p]; plates[p] = plates[q]; plates[q] = tmp;
@@ -373,9 +368,9 @@
         return '<a class="index3__card reveal is-in" href="spatial-studies.html#' + escapeHtml(p.id) + '">' +
           '<span class="index3__media"><img src="' + escapeHtml(img.getAttribute("src")) + '" alt="' + escapeHtml(img.getAttribute("alt") || "") + '" loading="lazy" /></span>' +
           '<span class="index3__body">' +
-            (eb ? '<span class="eyebrow eyebrow--ink">' + eb.innerHTML + "</span>" : "") +
-            '<span class="index3__title">' + title.innerHTML + "</span>" +
-            (bf ? '<span class="index3__bestfor">' + bf.innerHTML + "</span>" : "") +
+            (eb ? '<span class="eyebrow eyebrow--ink">' + escapeHtml(eb.textContent) + "</span>" : "") +
+            '<span class="index3__title">' + escapeHtml(title.textContent) + "</span>" +
+            (bf ? '<span class="index3__bestfor"><span>Best for</span> ' + escapeHtml(bf.textContent.replace(/^\s*Best for\s*/, "")) + "</span>" : "") +
             '<span class="link-arrow">Open the study <span class="arrow" aria-hidden="true">&rarr;</span></span>' +
           "</span></a>";
       }).join("");
@@ -492,7 +487,7 @@
     // arrives already knowing which study it is about.
     var q = new URLSearchParams(window.location.search);
     var studyId = (q.get("study") || "").toLowerCase().replace(/[^a-z0-9-]/g, "");
-    var studyTitle = (q.get("t") || "").slice(0, 160);
+    var studyTitle = (q.get("t") || "").replace(/[^\w\s.,;:&'()-]/g, "").slice(0, 160);
     if (studyId) {
       var sf = document.getElementById("studyField");
       if (sf) sf.value = studyId + (studyTitle ? " | " + studyTitle : "");
@@ -810,11 +805,11 @@
   }
   // Only permit safe URL schemes; everything else (javascript:, data:, etc.) is neutralised.
   function safeUrl(u) {
-    u = String(u || "").trim();
+    // strip what URL parsers strip, then allowlist by shape; never fall through
+    u = String(u || "").replace(/[\u0000-\u0020\u007f]/g, "");
     if (/^(https?:|mailto:|tel:)/i.test(u)) return u;
-    if (/^(\/|\.|#|assets\/|journal\/)/.test(u)) return u; // relative
-    if (/^[a-z][a-z0-9+.-]*:/i.test(u)) return "#";        // unknown scheme → block
-    return u;
+    if (/^(\/(?!\/)|\.\/|\.\.\/|#|assets\/|journal\/)/.test(u)) return u; // relative, not protocol-relative
+    return "#";
   }
   function inlineMd(s) {
     // protect inline code first so its contents aren't treated as markdown
@@ -1076,7 +1071,11 @@
     mandapa: "the pillared temple hall",
     garbhagrha: "the innermost sanctum",
     chaya: "shadow",
-    parampara: "the unbroken succession; lineage"
+    parampara: "the unbroken succession; lineage",
+    talamana: "the system of proportional measure",
+    varna: "color; pigment",
+    torana: "the ceremonial gateway",
+    anital: "the framed portal of Saura murals"
   };
   function normTerm(s) {
     return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, "");
@@ -1119,7 +1118,7 @@
     var heads = document.querySelectorAll(".post__body h2");
     if (!toc || heads.length < 3) { if (toc) toc.remove(); return; }
     var html = '<p class="post__toc-title">On this page</p><ul>';
-    heads.forEach(function (h) { html += '<li><a href="#' + h.id + '">' + h.textContent + "</a></li>"; });
+    heads.forEach(function (h) { html += '<li><a href="#' + h.id + '">' + escapeHtml(h.textContent) + "</a></li>"; });
     toc.innerHTML = html + "</ul>";
   }
   function initPostProgress() {
@@ -1157,6 +1156,9 @@
         var was = leaf.classList.contains("is-turned");
         leaf.classList.toggle("is-turned", turned);
         leaf.setAttribute("aria-hidden", idx === i ? "false" : "true");
+        // keep focusables inside hidden leaves out of the tab order
+        if (idx === i) leaf.removeAttribute("inert");
+        else leaf.setAttribute("inert", "");
 
         // resting stack: un-turned pages descend from the top,
         // already-turned pages pile up on the left in turn order
@@ -1211,6 +1213,32 @@
       var dx = e.clientX - x0; x0 = null;
       if (Math.abs(dx) > 45) go(dx < 0 ? 1 : -1);
     });
+
+    // the book turns its own pages while in view, pausing under the pointer
+    // and handing over for good at the visitor's first touch of any control
+    var auto = null, hovering = false;
+    function stopAuto() { if (auto) { clearInterval(auto); auto = null; } }
+    if (MOTION_OK && "IntersectionObserver" in window) {
+      book.addEventListener("pointerenter", function () { hovering = true; });
+      book.addEventListener("pointerleave", function () { hovering = false; });
+      ["pointerdown", "keydown"].forEach(function (ev) {
+        book.addEventListener(ev, stopAuto, true);
+      });
+      var bio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            if (!auto) auto = setInterval(function () {
+              if (hovering || document.hidden) return;
+              i = (i + 1) % n;
+              render(true);
+            }, 4600);
+          } else {
+            stopAuto();
+          }
+        });
+      }, { threshold: 0.5 });
+      bio.observe(book);
+    }
 
     render();
   }
@@ -1413,9 +1441,9 @@
           return '<a class="index3__card" href="spatial-studies.html#' + escapeHtml(p.id) + '">' +
             '<span class="index3__media"><img src="' + escapeHtml(img.getAttribute("src")) + '" alt="' + escapeHtml(img.getAttribute("alt") || "") + '" loading="lazy" /></span>' +
             '<span class="index3__body">' +
-              (eb ? '<span class="eyebrow eyebrow--ink">' + eb.innerHTML + "</span>" : "") +
-              '<span class="index3__title">' + title.innerHTML + "</span>" +
-              (bf ? '<span class="index3__bestfor">' + bf.innerHTML + "</span>" : "") +
+              (eb ? '<span class="eyebrow eyebrow--ink">' + escapeHtml(eb.textContent) + "</span>" : "") +
+              '<span class="index3__title">' + escapeHtml(title.textContent) + "</span>" +
+              (bf ? '<span class="index3__bestfor"><span>Best for</span> ' + escapeHtml(bf.textContent.replace(/^\s*Best for\s*/, "")) + "</span>" : "") +
               '<span class="link-arrow">Open the study <span class="arrow" aria-hidden="true">&rarr;</span></span>' +
             "</span></a>";
         }).join("");
