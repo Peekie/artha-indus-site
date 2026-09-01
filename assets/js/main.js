@@ -153,7 +153,8 @@
       var heroes = [
         { src: "assets/img/story-1-warli-lobby.jpg", alt: "A large-scale hand-painted Warli folk-art feature wall anchoring a modern executive lobby of dark marble and fluted oak." },
         { src: "assets/img/story-gaja-bronze.jpg", alt: "A caparisoned Kalamkari Gaja elephant pierced through darkened bronze, glowing amber behind an upscale hotel bar." },
-        { src: "assets/img/story-12-tarpa-mandala.jpg", alt: "Oversized framed Warli Tarpa dance masterwork, white figures spiralling on a charcoal ground, above an oak bench on a travertine threshold wall." }
+        { src: "assets/img/story-12-tarpa-mandala.jpg", alt: "Oversized framed Warli Tarpa dance masterwork, white figures spiralling on a charcoal ground, above an oak bench on a travertine threshold wall." },
+        { src: "assets/img/story-vanam-resin.jpg", alt: "A backlit translucent resin panel carrying hand-drawn Kalamkari flora in sepia line, glowing behind a steaming vitality pool framed in dark stone." }
       ];
       var h = pick(heroes);
       var under = document.querySelector(".hero__under");
@@ -171,12 +172,31 @@
       ];
       var offerImg = document.querySelector('.offer__half[href="spatial-studies.html"] .offer__media img');
       if (offerImg) { var f = pick(fab); offerImg.src = f.src; offerImg.alt = f.alt; }
+      // the macro interlude alternates its material close-up
+      var macros = [
+        { src: "assets/img/kurma-felt-macro.jpg", alt: "Macro detail of the Kūrma motif in layered acoustic felt, concentric ridges of warm copper brown catching raking light." },
+        { src: "assets/img/cta-environment.jpg", alt: "Raw mineral pigments in ochre and terracotta beside crushed shell, handmade paper and worn brushes on a wooden work table." },
+        { src: "assets/img/journal/kurma-acoustic-panel.jpg", alt: "The Kūrma motif in copper detail set into deep charcoal acoustic felt, flanked by columns of fish and vine." }
+      ];
+      var macroImg = document.querySelector(".macro__media img");
+      if (macroImg) { var m = pick(macros); macroImg.src = m.src; macroImg.alt = m.alt; }
     }
     // CTA backdrops rotate on the pages without a pinned choice
     if (current === "home" || current === "perspectives") {
       var pool = ["cta-environment.jpg", "scale-thematic.jpg", "studio-parrot-fish.jpg", "studio-landscape-pattachitra.jpg", "studio-buddha.jpg"];
       var cta = document.querySelector(".cta-band__media img");
       if (cta) cta.src = "assets/img/" + pick(pool);
+    }
+    // the studies index deals itself in a new order each visit; filters,
+    // visited marks and deep links keep every study findable regardless
+    var grid = document.getElementById("stories");
+    if (grid) {
+      var plates = Array.prototype.slice.call(grid.querySelectorAll(".plate"));
+      for (var p = plates.length - 1; p > 0; p--) {
+        var q = Math.floor(Math.random() * (p + 1));
+        var tmp = plates[p]; plates[p] = plates[q]; plates[q] = tmp;
+      }
+      plates.forEach(function (pl) { grid.appendChild(pl); });
     }
     // the lineage strip reorders itself
     var track = document.querySelector(".lineage-strip__track");
@@ -533,7 +553,8 @@
       el.addEventListener("pointerdown", function (e) {
         if (e.target === range) return; // native range handles it
         dragging = true; moved = false; downX = e.clientX;
-        el.setPointerCapture(e.pointerId); pointerFromX(e.clientX);
+        try { el.setPointerCapture(e.pointerId); } catch (err) { /* pointer already gone */ }
+        pointerFromX(e.clientX);
       });
       el.addEventListener("pointermove", function (e) {
         if (!dragging) return;
@@ -804,7 +825,9 @@
 
       // related (share a tag)
       var tags = meta.tags || [];
-      var related = list.filter(function (p, i) { return i !== idx && (p.tags || []).some(function (t) { return tags.indexOf(t) > -1; }); }).slice(0, 3);
+      var related = list.filter(function (p, i) { return i !== idx && (p.tags || []).some(function (t) { return tags.indexOf(t) > -1; }); })
+        .sort(function () { return Math.random() - 0.5; }) // vary the shelf on every read
+        .slice(0, 3);
       var relatedHtml = related.length ?
         '<section class="post__related"><div class="sec-head"><span class="eyebrow eyebrow--ink">Related musings</span></div><div class="journal-grid">' +
           related.map(function (p) { return cardMarkup(p, "jcard", "Read"); }).join("") + "</div></section>" : "";
