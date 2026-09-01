@@ -50,6 +50,7 @@
           '</span>' +
         "</a>" +
         '<nav class="nav__links" aria-label="Primary">' + links + "</nav>" +
+        '<button class="nav__theme" id="themeToggle" type="button" aria-label="Switch between day and night theme"></button>' +
         '<button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">' +
           '<svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="0" y1="1" x2="26" y2="1"/><line x1="0" y1="7" x2="26" y2="7"/><line x1="0" y1="13" x2="26" y2="13"/></svg>' +
         "</button>" +
@@ -113,6 +114,31 @@
 
     var mount = document.getElementById("site-footer");
     if (mount) mount.outerHTML = html;
+  }
+
+  /* ---------- The atelier keeps hours: day and night themes ----------
+     A head snippet applies the theme before first paint; this wires the
+     toggle and keeps the choice. No stored choice means follow the clock. */
+  function initHours() {
+    var pref = null;
+    try { pref = window.localStorage.getItem("artha-theme"); } catch (e) {}
+    var h = new Date().getHours();
+    var night = pref ? pref === "night" : (h >= 19 || h < 6);
+    function setTheme(n) {
+      document.documentElement.setAttribute("data-theme", n ? "night" : "day");
+      var btn = document.getElementById("themeToggle");
+      if (btn) {
+        btn.textContent = n ? "Day" : "Night";
+        btn.setAttribute("aria-pressed", String(n));
+      }
+    }
+    setTheme(night);
+    var btn = document.getElementById("themeToggle");
+    if (btn) btn.addEventListener("click", function () {
+      night = !night;
+      setTheme(night);
+      try { window.localStorage.setItem("artha-theme", night ? "night" : "day"); } catch (e) {}
+    });
   }
 
   /* ---------- Scroll state on nav ---------- */
@@ -326,6 +352,31 @@
           "</span></a>";
       }).join("");
     }).catch(function () { /* the static trio stays */ });
+  }
+
+  /* ---------- Kalam trail: the cursor leaves fading ink on the hero ---------- */
+  function initKalam() {
+    var hero = document.querySelector(".hero");
+    if (!hero || !MOTION_OK) return;
+    if (!(window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches)) return;
+    var lastX = -99, lastY = -99, live = 0;
+    hero.addEventListener("pointermove", function (e) {
+      if (e.pointerType && e.pointerType !== "mouse") return;
+      var dx = e.clientX - lastX, dy = e.clientY - lastY;
+      if (dx * dx + dy * dy < 900 || live > 14) return; // one drop per ~30px, capped
+      lastX = e.clientX; lastY = e.clientY;
+      var r = hero.getBoundingClientRect();
+      var drop = document.createElement("span");
+      drop.className = "kalam-drop";
+      drop.style.left = (e.clientX - r.left) + "px";
+      drop.style.top = (e.clientY - r.top) + "px";
+      hero.appendChild(drop);
+      live++;
+      drop.addEventListener("animationend", function () {
+        live--;
+        if (drop.parentNode) drop.parentNode.removeChild(drop);
+      });
+    });
   }
 
   /* ---------- First-visit veil: the page unrolls once per session ---------- */
@@ -1186,6 +1237,7 @@
   /* ---------- Boot ---------- */
   buildNav();
   buildFooter();
+  initHours();
   initNavScroll();
   initMobileMenu();
   initFreshness();
@@ -1193,6 +1245,7 @@
   initVeil();
   initScrollHint();
   initHeroTorch();
+  initKalam();
   initIndexShuffle();
   initReveal();
   initForm();
