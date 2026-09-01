@@ -1,5 +1,56 @@
 [
   {
+    "slug": "romance-meets-materiality",
+    "title": "Romance Meets Materiality: Sentiment, Specification, and the Commissioned Wall",
+    "dek": "Every commission begins twice: once as longing, and once as a set of documents. The craft is refusing to let either erase the other.",
+    "date": "2026-08-26",
+    "author": "Preeti Padaley",
+    "authorBio": "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP.",
+    "readingTime": "4 min read",
+    "image": "assets/img/studio-romance.jpg",
+    "imageAlt": "A pencil-line scroll of peacocks unrolled beside a tube of indigo paint, and at right the finished monochrome panel framed in a bright marble corridor.",
+    "excerpt": "One half of this image is a drawing on a table. The other half is an artwork passing plan review. On the two loves inside every commission, and why the atelier refuses to choose between them.",
+    "tags": [
+      "Essay",
+      "Curation",
+      "Provenance"
+    ]
+  },
+  {
+    "slug": "carved-by-light",
+    "title": "Carved by Light: Shadow, Relief, and the South Asian Wall",
+    "dek": "A relief has no colour of its own until light arrives. On shadow as the atelier's other material.",
+    "date": "2026-08-25",
+    "author": "Preeti Padaley",
+    "authorBio": "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP.",
+    "readingTime": "4 min read",
+    "image": "assets/img/studio-peacock-lobby.jpg",
+    "imageAlt": "A monochrome carved peacock relief on a dark plaster wall, its fanned tail modelled entirely by a single wash of raking light from above.",
+    "excerpt": "Pigment tells a wall what to say. Light decides whether anyone hears it. A study of the three lighting conditions under which carved heritage surfaces live: raking daylight, focused gallery light, and the long amber evening.",
+    "tags": [
+      "Essay",
+      "Light",
+      "Materiality"
+    ]
+  },
+  {
+    "slug": "the-architecture-of-quiet",
+    "title": "The Architecture of Quiet: Acoustic Craft and the Heritage Surface",
+    "dek": "Why the oldest instincts of South Asian craft, relief, repetition, and fiber, turn out to be acoustic design by another name.",
+    "date": "2026-08-24",
+    "author": "Preeti Padaley",
+    "authorBio": "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP.",
+    "readingTime": "4 min read",
+    "image": "assets/img/journal/kurma-acoustic-panel.jpg",
+    "imageAlt": "Close view of the Kūrma turtle motif rendered in copper detail on deep charcoal acoustic felt, flanked by columns of fish and vine.",
+    "excerpt": "We remember rooms by how they sound almost as vividly as by how they look. A curatorial argument for treating the acoustic surface as a site of heritage art rather than a technical afterthought.",
+    "tags": [
+      "Essay",
+      "Acoustics",
+      "Materiality"
+    ]
+  },
+  {
     "slug": "the-translatability-of-tradition",
     "title": "The Translatability of Tradition: Curating South Asian Heritage Lineages for Contemporary Architecture",
     "dek": "Which indigenous lineages carry the geometric rigour to leave the page and become permanent built surface, and which remain exploratory.",
