@@ -1617,17 +1617,9 @@ body.has-veil .hero__meta { animation-delay: 1.75s; }
 
 /* the card catalogue: plates sit filed and slightly askew until touched.
    The tilt uses the independent rotate property so it cannot collide with
-   the reveal and settle transforms; the stamp comes from a stable
-   data-plate set once in source order, so it survives shuffles and filters. */
+   the reveal and settle transforms. */
 #stories .plate { rotate: var(--tilt, 0deg); transition: rotate 0.5s var(--ease); }
 #stories .plate:hover, #stories .plate:focus-within { rotate: 0deg; }
-#stories .plate[data-plate] .plate__label { position: relative; padding-right: 5rem; }
-#stories .plate[data-plate] .plate__label::after {
-  content: "Plate " attr(data-plate);
-  position: absolute; top: 0.25rem; right: 0;
-  font-family: var(--sans); font-size: 0.76rem; letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--gold-deep);
-}
 @media (prefers-reduced-motion: reduce) {
   #stories .plate { rotate: none; }
 }

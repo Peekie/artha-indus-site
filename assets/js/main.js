@@ -25,7 +25,7 @@
   }
   // Version tag for fetched resources; bumped on deploys so heuristic
   // browser caching can never pin a visitor to a stale index or essay.
-  var VER = "20260901d";
+  var VER = "20260901f";
   var MOTION_OK = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches);
 
   /* ---------- NAV ---------- */
@@ -226,11 +226,6 @@
     var grid = document.getElementById("stories");
     if (grid) {
       var plates = Array.prototype.slice.call(grid.querySelectorAll(".plate"));
-      // catalogue numbers follow source order, so a plate keeps its number
-      // across shuffles, filters and visits
-      plates.forEach(function (pl, n) {
-        pl.setAttribute("data-plate", (n < 9 ? "0" : "") + (n + 1));
-      });
       for (var p = plates.length - 1; p > 0; p--) {
         var q = Math.floor(Math.random() * (p + 1));
         var tmp = plates[p]; plates[p] = plates[q]; plates[q] = tmp;
