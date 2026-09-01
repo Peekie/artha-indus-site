@@ -691,6 +691,7 @@
       var set = function (v) {
         v = Math.max(0, Math.min(100, v));
         el.style.setProperty("--pos", v + "%");
+        el.style.setProperty("--posn", String(v)); // unitless twin for the tag fades
         range.value = v;
       };
       range.addEventListener("input", function () { set(parseFloat(range.value)); });
