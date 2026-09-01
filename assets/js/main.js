@@ -979,7 +979,20 @@
 
       // related (share a tag)
       var tags = meta.tags || [];
-      var related = list.filter(function (p, i) { return i !== idx && (p.tags || []).some(function (t) { return tags.indexOf(t) > -1; }); })
+      // the handoff: hand a finished reader the next essay in reading order
+      var next = older || newer;
+      var handoffHtml = next ?
+        '<a class="handoff reveal" href="post.html?p=' + encodeURIComponent(next.slug) + '">' +
+          '<span class="handoff__media">' + (next.image ? '<img src="' + escapeHtml(safeUrl(next.image)) + '" alt="" loading="lazy" />' : "") + "</span>" +
+          '<span class="handoff__body">' +
+            '<span class="eyebrow eyebrow--ink">Continue the thread</span>' +
+            '<span class="handoff__title">' + escapeHtml(next.title) + "</span>" +
+            (next.dek ? '<span class="handoff__dek">' + escapeHtml(next.dek) + "</span>" : "") +
+            '<span class="link-arrow">Read on <span class="arrow" aria-hidden="true">&rarr;</span></span>' +
+          "</span>" +
+        "</a>" : "";
+
+      var related = list.filter(function (p, i) { return i !== idx && (!next || p.slug !== next.slug) && (p.tags || []).some(function (t) { return tags.indexOf(t) > -1; }); })
         .sort(function () { return Math.random() - 0.5; }) // vary the shelf on every read
         .slice(0, 3);
       var relatedHtml = related.length ?
@@ -1011,10 +1024,12 @@
             '<button class="post__copy" type="button" data-anchor-url="1">Copy link</button>' +
           "</div>" +
           prevnext +
+          handoffHtml +
           relatedHtml +
         "</div>";
 
       buildToc();
+      buildGlosses(mount);
       initPostProgress();
       var copyBtn = mount.querySelector(".post__copy");
       if (copyBtn) copyBtn.addEventListener("click", function () {
@@ -1026,6 +1041,74 @@
       mount.innerHTML = '<div class="wrap post__loading">This post could not be loaded. <a href="perspectives.html">Back to the Journal</a></div>';
     });
   }
+  /* ---------- Margin glosses: the manuscript annotates its own terms ----
+     Sanskrit terms in an essay get a quiet definition in the right margin
+     on wide screens. Every gloss is traceable to the atelier's own essays;
+     first occurrence only, supplemental, hidden from assistive tech. */
+  var GLOSSARY = {
+    bija: "the primordial seed",
+    kairi: "the green, unripe mango",
+    ambi: "the green, unripe mango",
+    kalam: "the bamboo pen of Kalamkari",
+    kalka: "the sweeping architectural paisley form",
+    vrksa: "the tree; the vertical axis",
+    vriksha: "the tree; the vertical axis",
+    kalpavriksa: "the wish-fulfilling tree",
+    kalpavriksha: "the wish-fulfilling tree",
+    akasa: "boundless ether; active negative space",
+    aranya: "the wild forest",
+    prakrti: "primal nature",
+    gaja: "the elephant",
+    gajathara: "the elephant frieze of temple plinths",
+    sunya: "the void; deliberate negative space",
+    shunya: "the void; deliberate negative space",
+    kurma: "the turtle; the grounding curve",
+    matsya: "the fish; the fluid trajectory",
+    mayura: "the peacock",
+    jali: "the pierced screen",
+    jalis: "the pierced screens",
+    tarpa: "the Warli wind instrument",
+    mandala: "the circle",
+    buta: "the floral bouquet motif",
+    mangalya: "auspiciousness",
+    simha: "the lion",
+    mrga: "the deer"
+  };
+  function normTerm(s) {
+    return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, "");
+  }
+  function buildGlosses(root) {
+    var body = root.querySelector(".post__body");
+    if (!body) return;
+    var seen = {}, glosses = [];
+    Array.prototype.forEach.call(body.querySelectorAll("em"), function (em) {
+      var raw = em.textContent.trim();
+      if (raw.length > 24) return;
+      var key = normTerm(raw);
+      if (!GLOSSARY[key] || seen[key]) return;
+      seen[key] = true;
+      var g = document.createElement("span");
+      g.className = "gloss";
+      g.setAttribute("aria-hidden", "true");
+      g.innerHTML = "<b>" + escapeHtml(raw) + "</b>" + escapeHtml(GLOSSARY[key]);
+      body.appendChild(g);
+      glosses.push({ el: g, ref: em });
+    });
+    if (!glosses.length) return;
+    function place() {
+      var lastBottom = -999;
+      glosses.forEach(function (item) {
+        var top = item.ref.offsetTop;
+        if (top < lastBottom + 10) top = lastBottom + 10;
+        item.el.style.top = top + "px";
+        lastBottom = top + item.el.offsetHeight;
+      });
+    }
+    place();
+    window.addEventListener("load", place);
+    window.addEventListener("resize", place);
+  }
+
   function setMeta(sel, attr, val) { var el = document.querySelector(sel); if (el && val) el.setAttribute(attr, val); }
   function buildToc() {
     var toc = document.getElementById("postToc");
