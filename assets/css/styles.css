@@ -1681,6 +1681,16 @@ body.has-veil .hero__meta { animation-delay: 1.75s; }
 [data-theme="night"] .btn--ghost-light:hover { background: rgba(237,228,211,0.12); color: var(--ink); }
 /* service cards: the translucent cream ground becomes a whisper of parchment */
 [data-theme="night"] .service { background: rgba(244,239,230,0.05); }
+/* surfaces whose grounds stay hardcoded need their ink pinned at night:
+   the cream stage badges and hover paper-bar keep dark text, the dark
+   pills (figcaption, compare tags, lightbox close) take light text */
+[data-theme="night"] .stage__no { color: #1c1712; }
+[data-theme="night"] .curator__media figcaption { color: var(--ink); }
+[data-theme="night"] .plate__bestfor { color: #352f28; }
+[data-theme="night"] .plate__bestfor span { color: #6f5326; }
+[data-theme="night"] .plate__more { color: #6f5326; }
+[data-theme="night"] .compare__tag { color: var(--ink); }
+[data-theme="night"] .lightbox__close { color: var(--ink); }
 [data-theme="night"] .nav.is-scrolled {
   background: rgba(28, 23, 18, 0.86);
 }
