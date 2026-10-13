@@ -26,7 +26,7 @@
   }
   // Version tag for fetched resources; bumped on deploys so heuristic
   // browser caching can never pin a visitor to a stale index or essay.
-  var VER = "20261012b";
+  var VER = "20261012c";
   var MOTION_OK = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches);
 
   /* ---------- NAV ---------- */
@@ -836,6 +836,34 @@
           ", " + (100 - pv) + "% " + (el.getAttribute("data-after-label") || "finished relief"));
       };
       range.addEventListener("input", function () { set(parseFloat(range.value)); });
+
+      // first view: one slow sweep shows the drawing becoming the built work
+      // (capsule glass and the Spatial Studies relief alike). Skipped under
+      // reduced motion, and stopped the moment the visitor touches it.
+      ["pointerdown", "keydown"].forEach(function (ev) {
+        el.addEventListener(ev, function () { el._userMoved = true; });
+      });
+      if (MOTION_OK && "IntersectionObserver" in window) {
+        var start = parseFloat(el.getAttribute("data-start") || range.value);
+        var seen = new IntersectionObserver(function (entries) {
+          if (!entries[0].isIntersecting) return;
+          seen.disconnect();
+          var t0 = null, dur = 2600;
+          var step = function (ts) {
+            if (el._userMoved) return;
+            if (t0 === null) t0 = ts;
+            var k = Math.min(1, (ts - t0) / dur);
+            var v = start + Math.sin(k * Math.PI * 2) * 22 * (1 - k * 0.15);
+            if (k === 1) v = start;
+            range.value = v;
+            range.dispatchEvent(new Event("input", { bubbles: true }));
+            if (k < 1) requestAnimationFrame(step);
+          };
+          setTimeout(function () { requestAnimationFrame(step); }, 450);
+        }, { threshold: 0.6 });
+        seen.observe(el);
+      }
+
       var pointerFromX = function (clientX) {
         var r = el.getBoundingClientRect();
         set(((clientX - r.left) / r.width) * 100);
@@ -1041,32 +1069,7 @@
         });
       });
       range.addEventListener("input", sync);
-      ["pointerdown", "keydown"].forEach(function (ev) {
-        fig.addEventListener(ev, function () { fig._userMoved = true; });
-      });
       sync();
-      // first view: one slow sweep shows that the drawing becomes the etch.
-      // Skipped under reduced motion, and stopped the moment the visitor touches it.
-      if (MOTION_OK && "IntersectionObserver" in window) {
-        var start = parseFloat(fig.getAttribute("data-start") || range.value);
-        var seen = new IntersectionObserver(function (entries) {
-          if (!entries[0].isIntersecting) return;
-          seen.disconnect();
-          var t0 = null, dur = 2600;
-          var step = function (ts) {
-            if (fig._userMoved) return;
-            if (t0 === null) t0 = ts;
-            var k = Math.min(1, (ts - t0) / dur);
-            var v = start + Math.sin(k * Math.PI * 2) * 22 * (1 - k * 0.15);
-            if (k === 1) v = start;
-            range.value = v;
-            range.dispatchEvent(new Event("input", { bubbles: true }));
-            if (k < 1) requestAnimationFrame(step);
-          };
-          setTimeout(function () { requestAnimationFrame(step); }, 450);
-        }, { threshold: 0.6 });
-        seen.observe(fig);
-      }
     });
     // five more glass studies, on request
     root.querySelectorAll(".jd-more").forEach(function (b) {
