@@ -52,26 +52,25 @@ git commit -m "docs: note the deploy workflow [skip ci]"
 Build & deploy → Branch deploys should be **"None"** (or at least not "All").
 If branch deploys are on, pushing `dev` builds too and this saves nothing.
 
-## Jala + Dharā capsule: launch rules
+## Jala + Dharā capsule: content awaiting approval
 
-The capsule page (`jala-dhara.html`) was built on the `capsule` branch. Blocks
-marked `data-gate` are hidden by CSS and shown with `?preview=all` for review.
-CSS hiding is NOT unpublishing: anything in the HTML is public once deployed.
+The capsule page launched with everything approved. Content that waits on a
+third party was deleted from the shipped HTML (CSS hiding is not
+unpublishing). It is preserved in commit `ded691d` (branch `capsule`):
 
-Before merging `capsule` toward `main`:
+- `alka`: the artist section and the "Drawn by hand by Alka Jha" credit
+  under the archetypes. Restore when Alka Jha approves being named.
+- `skyline`: the "Glazing translation" paragraph in each chapter and the
+  fabrication and specification panel. Restore when Skyline confirms in
+  writing the figures, the "Eco-Etch" name, the partnership line and the
+  CSI section. Reconcile the light-transmission ranges first; they differ
+  between chapters and the panel in the source brief.
+- `specguide`: the "Download the specification guide" link. Restore when the
+  PDF exists.
 
-1. For each `data-gate` block, either the approval is in hand (then delete the
-   `data-gate` attribute) or delete the whole block from the HTML.
-   - `alka`: Alka Jha has approved being named (blocks: artist section, credit
-     line under the archetypes).
-   - `skyline`: Skyline has confirmed in writing the figures, the "Eco-Etch"
-     name, the partnership line and the CSI section (blocks: glazing
-     translation paragraphs, fabrication and specification panel). Also
-     reconcile the light-transmission ranges, which differ between chapters
-     and the panel in the source brief.
-   - `specguide`: the specification guide PDF exists (the download link).
-2. Remove the `noindex` meta line marked DRAFT in `jala-dhara.html`.
-3. Add `jala-dhara.html` to `sitemap.xml`.
-4. When the Vault ships: it joins `.nav__utils` and the phone menu's utility
-   row, and the bar handover moves from 1260px to about 1320px (see the
-   comment in styles.css). Re-measure the bar after adding it.
+To restore one: copy the block from `git show ded691d:jala-dhara.html`,
+drop the `data-gate` attribute, check it with `?preview=all` off, and deploy.
+
+The Vault, when it ships, joins `.nav__utils` and the phone menu's utility
+row, and the bar handover moves from 1260px to about 1320px (see the comment
+in styles.css). Re-measure the bar after adding it.

@@ -1882,10 +1882,9 @@ img {
 
 /* ============================================================
    JALA + DHARĀ CAPSULE (jala-dhara.html)
-   Draft gates: [data-gate] blocks wait on an outside approval
-   (alka = Alka Jha named; skyline = Skyline's written figures and
-   wording; specguide = the PDF exists). Hidden on the live site;
-   ?preview=all shows them. Launch = delete the attribute.
+   Review gates: a [data-gate] block is hidden unless ?preview=all.
+   CSS hiding is not unpublishing, so content awaiting outside
+   approval is kept out of the shipped HTML (see DEPLOYING.md).
    ============================================================ */
 [data-gate]:not(.gate-open) { display: none !important; }
 .gate-open[data-gate] { outline: 1px dashed var(--terracotta); outline-offset: 6px; }
