@@ -58,8 +58,8 @@ The capsule page launched with everything approved. Content that waits on a
 third party was deleted from the shipped HTML (CSS hiding is not
 unpublishing). It is preserved in commit `ded691d` (branch `capsule`):
 
-- `alka`: the artist section and the "Drawn by hand by Alka Jha" credit
-  under the archetypes. Restore when Alka Jha approves being named.
+- `alka`: RESTORED 2026-10-13 after Alka Jha's approval, as her contract's
+  attribution (bio, traditions, region, Pehchan card). Her email stays private.
 - `skyline`: the "Glazing translation" paragraph in each chapter and the
   fabrication and specification panel. Restore when Skyline confirms in
   writing the figures, the "Eco-Etch" name, the partnership line and the

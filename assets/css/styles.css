@@ -2028,9 +2028,9 @@ img {
 }
 
 /* artist */
-.jd-artist__grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
+.jd-artist__grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
 .jd-artist__media { margin: 0; }
-.jd-artist__media img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 2px; box-shadow: 0 14px 40px rgba(28,24,21,0.14); }
+.jd-artist__media img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 20%; border-radius: 2px; box-shadow: 0 14px 40px rgba(28,24,21,0.14); }
 .jd-artist__text { display: flex; flex-direction: column; gap: 1rem; }
 .jd-artist__name { font-size: clamp(2.6rem, 6vw, 4.6rem); line-height: 1.05; }
 .jd-artist__text p:not(.eyebrow):not(.lead) { color: var(--ink-soft); max-width: var(--measure); }
@@ -2269,3 +2269,13 @@ img {
 .form__shortlist span { flex: 1 1 0; min-width: 0; }
 .form__shortlist + .form__shortlist-list { margin-top: -0.2rem; }
 .jd-more[hidden], .jd-toggle[hidden] { display: none; }
+/* Alka Jha attribution */
+.jd-archs__credit a { color: var(--gold-deep); border-bottom: 1px solid var(--gold); }
+.jd-artist { scroll-margin-top: 5rem; }
+.jd-artist__media { max-width: 26rem; }
+.jd-artist__facts { margin: 0.4rem 0 0; padding-top: 1rem; border-top: 1px solid var(--rule); display: grid; gap: 0.7rem; }
+.jd-artist__facts div { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 1rem; }
+.jd-artist__facts dt { font-size: 0.8rem; font-weight: 600; color: var(--ink); }
+.jd-artist__facts dd { margin: 0; font-size: 0.95rem; color: var(--ink-soft); }
+.jd-artist__note { font-family: var(--serif); font-style: italic; color: var(--ink-soft); }
+@media (max-width: 600px) { .jd-artist__facts div { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; } }

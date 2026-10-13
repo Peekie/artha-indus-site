@@ -26,7 +26,7 @@
   }
   // Version tag for fetched resources; bumped on deploys so heuristic
   // browser caching can never pin a visitor to a stale index or essay.
-  var VER = "20261012d";
+  var VER = "20261013a";
   var MOTION_OK = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches);
 
   /* ---------- NAV ---------- */
