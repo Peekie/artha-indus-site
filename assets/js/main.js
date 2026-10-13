@@ -60,13 +60,17 @@
         // utilities live together at the right edge. The private Vault, when it
         // exists, joins this group (a discreet entrance, not a menu item).
         '<div class="nav__utils">' +
-          '<button class="nav__theme" id="themeToggle" type="button"><span class="nav__theme-word">Night</span></button>' +
+          '<button class="nav__theme" id="themeToggle" type="button" data-theme-toggle><span class="nav__theme-word">Night</span></button>' +
           '<button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">' +
             '<svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="0" y1="1" x2="26" y2="1"/><line x1="0" y1="7" x2="26" y2="7"/><line x1="0" y1="13" x2="26" y2="13"/></svg>' +
           "</button>" +
         "</div>" +
       "</header>" +
-      '<nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">' + mobile + "</nav>";
+      '<nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">' + mobile +
+        '<div class="mobile-menu__utils">' +
+          '<button class="mobile-menu__theme" type="button" data-theme-toggle>Night</button>' +
+        "</div>" +
+      "</nav>";
 
     var mount = document.getElementById("site-nav");
     if (mount) mount.outerHTML = html;
@@ -137,17 +141,19 @@
     var night = pref ? pref === "night" : (h >= 19 || h < 6);
     function setTheme(n) {
       document.documentElement.setAttribute("data-theme", n ? "night" : "day");
-      var btn = document.getElementById("themeToggle");
       // the label stays "Night" so the accessible name matches the visible
-      // text; aria-pressed alone carries the state
-      if (btn) btn.setAttribute("aria-pressed", String(n));
+      // text; aria-pressed alone carries the state, on every toggle
+      document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(n));
+      });
     }
     setTheme(night);
-    var btn = document.getElementById("themeToggle");
-    if (btn) btn.addEventListener("click", function () {
-      night = !night;
-      setTheme(night);
-      try { window.localStorage.setItem("artha-theme", night ? "night" : "day"); } catch (e) {}
+    document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        night = !night;
+        setTheme(night);
+        try { window.localStorage.setItem("artha-theme", night ? "night" : "day"); } catch (e) {}
+      });
     });
   }
 
@@ -175,6 +181,8 @@
     var set = function (state) {
       open = state;
       menu.classList.toggle("is-open", open);
+      var navEl = document.getElementById("nav");
+      if (navEl) navEl.classList.toggle("menu-open", open);
       toggle.setAttribute("aria-expanded", String(open));
       toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
       document.body.style.overflow = open ? "hidden" : "";

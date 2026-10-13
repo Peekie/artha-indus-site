@@ -1766,8 +1766,10 @@ body.has-veil .hero__meta { animation-delay: 1.75s; }
   .nav__theme { margin-left: 0; padding: 0.35rem 0.55rem; }
 }
 /* with six links plus the utilities, the bar hands over to the menu button
-   well before it can crowd the brand; 1360 also leaves room for the Vault */
-@media (max-width: 1360px) {
+   before it can crowd the brand (fits with margins down to 1250 at the
+   tightened tracking). When the Vault joins .nav__utils it needs about
+   60px more: move this to about 1320 then. */
+@media (max-width: 1260px) {
   .nav__links { display: none; }
   .nav__toggle { display: block; }
 }
@@ -1951,7 +1953,7 @@ img {
 .jd-chapters { position: relative; }
 .jd-index {
   position: sticky; top: 4.4rem; z-index: 20; display: flex; justify-content: center; gap: 0.4rem;
-  width: max-content; margin: 0 auto -3.4rem; padding: 0.35rem; border-radius: 2px;
+  width: max-content; margin: 0 auto; padding: 0.35rem; border-radius: 2px;
   background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 1px 0 var(--rule-soft), 0 6px 20px rgba(28,24,21,0.08);
 }
@@ -1959,6 +1961,8 @@ img {
 .jd-index a:hover { color: var(--ink); }
 .jd-index a.is-current { background: var(--ink); color: var(--paper); }
 .jd-chapter { padding-block: clamp(4rem, 9vw, 7.5rem); scroll-margin-top: 7rem; }
+/* the index sits inside the first chapter's top space and stops with the chapters */
+.jd-index + .jd-chapter { margin-top: -3.4rem; }
 .jd-chapter + .jd-chapter { border-top: 1px solid var(--rule); }
 .jd-chapter__line { font-size: 0.9rem; color: var(--ink-mute); font-style: italic; font-family: var(--serif); }
 .jd-chapter__name { font-size: clamp(2.4rem, 5.5vw, 4.4rem); line-height: 1.08; margin-top: 0.3rem; padding-bottom: 0.08em; }
@@ -1979,7 +1983,7 @@ img {
   border: 0; border-radius: 2px; padding: 0.5rem 1.1rem; min-height: 2.75rem; min-width: 5.5rem;
   transition: background 0.3s var(--ease), color 0.3s var(--ease);
 }
-.jd-jump { box-shadow: inset 0 0 0 1px var(--rule); }
+.jd-jump { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 38%, transparent); }
 .jd-jump:hover { color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink-mute); }
 .jd-jump[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 @media (max-width: 860px) {
@@ -2046,7 +2050,7 @@ img {
 @media (max-width: 860px) { .jd-spec__groups { grid-template-columns: minmax(0, 1fr); } }
 
 /* the request: the final band, on lapis in both themes */
-.jd-trade { background: var(--lapis); color: #f4efe6; margin-bottom: clamp(2.5rem, 6vw, 4.5rem); }
+.jd-trade { background: var(--lapis); color: #f4efe6; border-bottom: 1px solid var(--gold); }
 .jd-trade .eyebrow { color: var(--gold-lite); }
 .jd-trade .sec-title, .jd-trade .lead { color: #f4efe6; }
 .jd-trade__next { color: rgba(244,239,230,0.82) !important; }
@@ -2111,7 +2115,7 @@ img {
 .nav__utils .nav__theme { margin-left: 0; }
 .brand { margin-right: 1rem; }
 @media (min-width: 1361px) { .brand { margin-right: 2.4rem; } }
-@media (max-width: 1360px) { .nav__utils { margin-left: auto; } }
+@media (max-width: 1260px) { .nav__utils { margin-left: auto; } }
 
 /* Night shows its state, not only its name */
 .nav__theme { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 2.5rem; }
@@ -2145,7 +2149,7 @@ img {
 
 /* footer: the current page reads as gold, not as a link to itself */
 .footer a.is-current { color: var(--gold-lite); }
-@media (max-width: 1360px) { .nav__toggle { display: inline-flex; } }
+@media (max-width: 1260px) { .nav__toggle { display: inline-flex; } }
 /* archetype chips: the smallest commitment on the page, made easy to take */
 .jd-pick { display: flex; flex-direction: column; gap: 0.7rem; }
 .jd-pick__lead { color: rgba(244,239,230,0.82); font-size: 0.95rem; }
@@ -2182,3 +2186,45 @@ img {
   .brand__logo { height: 1.8rem; }
   .brand__mark { font-size: 1.12rem; }
 }
+
+/* ============================================================
+   MENU, round 4
+   ============================================================ */
+/* the bar turns solid lapis while the phone menu is open, in both themes */
+.nav.menu-open { background: var(--lapis-deep); color: #f4efe6; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+[data-theme="night"] .nav.menu-open { color: var(--ink); }
+.nav.menu-open .brand__logo { filter: drop-shadow(0 0 1px rgba(244,239,230,0.55)) brightness(1.14) saturate(1.05); }
+
+/* Night's mark is a crescent, readable without its word */
+.nav__theme::before, .mobile-menu__theme::before {
+  content: ""; width: 0.75rem; height: 0.75rem; border: 0; border-radius: 50%;
+  background: transparent; box-shadow: inset -0.22rem -0.08rem 0 0 currentColor;
+  transform: rotate(-20deg); transition: box-shadow 0.3s var(--ease);
+}
+.nav__theme[aria-pressed="true"]::before, .mobile-menu__theme[aria-pressed="true"]::before {
+  background: transparent; box-shadow: inset -0.3rem -0.1rem 0 0 var(--gold-lite);
+}
+@media (max-width: 400px) { .nav__theme::before { width: 0.95rem; height: 0.95rem; } }
+
+/* the phone menu's own utility row */
+.mobile-menu__utils { display: flex; gap: 1rem; margin-top: 1.2rem; }
+.mobile-menu__theme {
+  display: inline-flex; align-items: center; gap: 0.6rem; min-height: 2.75rem; padding: 0 0.2rem;
+  background: none; border: 0; color: inherit; cursor: pointer;
+  font-family: var(--sans); font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase;
+}
+.mobile-menu__theme[aria-pressed="true"] { color: var(--gold-lite); }
+
+/* centering that scrolls in every browser: auto margins, not "safe center" */
+.mobile-menu { justify-content: flex-start; }
+.mobile-menu > a:first-child { margin-top: auto; }
+.mobile-menu > .mobile-menu__utils { margin-bottom: auto; }
+
+/* laptops keep the full bar: tighter tracking and gaps below 1440 */
+@media (max-width: 1440px) {
+  .nav__link { letter-spacing: 0.1em; }
+  .nav__links { gap: clamp(0.8rem, 1.5vw, 1.6rem); }
+  .nav__cta { letter-spacing: 0.12em; padding-inline: 0.9rem; }
+}
+.capsule-band__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.6rem; margin-top: 0.4rem; }
+.capsule-band__actions .link-arrow { margin-top: 0; }
