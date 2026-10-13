@@ -3,7 +3,7 @@ title: "Romance Meets Materiality: Sentiment, Specification, and the Commissione
 dek: "Every commission begins twice: once as longing, and once as a set of documents. The craft is refusing to let either erase the other."
 date: 2026-08-26
 author: "Preeti Padaley"
-authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
+authorBio: "Founder & Principal Curator, Artha Indus Atelier. MD, MHSA, PMP, EDAC."
 image: "assets/img/studio-romance.jpg"
 imageAlt: "A pencil-line scroll of peacocks unrolled beside a tube of indigo paint, and at right the finished monochrome panel framed on a white corridor wall above marble floors."
 excerpt: "One half of this image is a drawing on a table. The other half is an artwork passing plan review. On the two loves inside every commission, and why the atelier refuses to choose between them."

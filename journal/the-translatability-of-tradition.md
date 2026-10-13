@@ -3,7 +3,7 @@ title: "The Translatability of Tradition: Curating South Asian Heritage Lineages
 dek: "Which indigenous lineages carry the geometric rigour to leave the page and become permanent built surface, and which remain exploratory."
 date: 2026-08-23
 author: "Preeti Padaley"
-authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
+authorBio: "Founder & Principal Curator, Artha Indus Atelier. MD, MHSA, PMP, EDAC."
 image: "assets/img/journal/the-translatability-of-tradition.jpg"
 imageAlt: "Comparative study of South Asian heritage lineages assessed for architectural translatability."
 excerpt: "Authentic curatorial translation does not simply copy a heritage artform or painting onto a wall; it extracts the underlying geometric tension of the lineage and gives it structural resonance within modern space."

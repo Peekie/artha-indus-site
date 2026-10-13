@@ -25,7 +25,7 @@
   }
   // Version tag for fetched resources; bumped on deploys so heuristic
   // browser caching can never pin a visitor to a stale index or essay.
-  var VER = "20260901g";
+  var VER = "20261012c";
   var MOTION_OK = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches);
 
   /* ---------- NAV ---------- */
@@ -52,7 +52,7 @@
         "</a>" +
         '<nav class="nav__links" aria-label="Primary">' + links + "</nav>" +
         '<button class="nav__theme" id="themeToggle" type="button">Night</button>' +
-        '<button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">' +
+        '<button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">' +
           '<svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="0" y1="1" x2="26" y2="1"/><line x1="0" y1="7" x2="26" y2="7"/><line x1="0" y1="13" x2="26" y2="13"/></svg>' +
         "</button>" +
       "</header>" +
@@ -145,8 +145,11 @@
   function initNavScroll() {
     var nav = document.getElementById("nav");
     if (!nav) return;
+    // pages that open on bone paper (essays, 404) have no dark hero for the
+    // light nav to sit on, so they keep the solid ink state from the top
+    var solid = document.body.getAttribute("data-nav") === "ink";
     var onScroll = function () {
-      if (window.scrollY > 40) nav.classList.add("is-scrolled");
+      if (solid || window.scrollY > 40) nav.classList.add("is-scrolled");
       else nav.classList.remove("is-scrolled");
     };
     onScroll();
@@ -158,12 +161,16 @@
     var toggle = document.getElementById("navToggle");
     var menu = document.getElementById("mobileMenu");
     if (!toggle || !menu) return;
-    var open = false;
+    var open = false, release = null;
     var set = function (state) {
       open = state;
       menu.classList.toggle("is-open", open);
       toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
       document.body.style.overflow = open ? "hidden" : "";
+      // the open menu covers the page: keep Tab inside the header and menu
+      if (open && !release) release = isolate(menu, [document.getElementById("nav")]);
+      else if (!open && release) { release(); release = null; }
     };
     toggle.addEventListener("click", function () { set(!open); });
     menu.querySelectorAll("a").forEach(function (a) {
@@ -513,6 +520,37 @@
         intro.insertAdjacentElement("afterend", thread);
       }
     }
+    // Tie each failed field to the status message, so a screen reader hears
+    // which field is wrong, and clear the mark as soon as it is corrected.
+    var required = Array.prototype.slice.call(form.querySelectorAll("[required]"));
+    function flagInvalid() {
+      var bad = [];
+      required.forEach(function (f) {
+        var ok = f.validity.valid;
+        f.setAttribute("aria-invalid", String(!ok));
+        if (ok) f.removeAttribute("aria-describedby");
+        else {
+          f.setAttribute("aria-describedby", "formStatus");
+          var lab = form.querySelector('label[for="' + f.id + '"]');
+          bad.push(lab ? lab.childNodes[0].textContent.trim().toLowerCase() : f.name);
+        }
+      });
+      if (status) {
+        status.style.color = "var(--terracotta)";
+        status.textContent = bad.length
+          ? "Please check your " + bad.join(" and ") + (bad.indexOf("email") !== -1 ? ". Email needs a full address." : ".")
+          : "";
+      }
+    }
+    required.forEach(function (f) {
+      f.addEventListener("input", function () {
+        if (f.getAttribute("aria-invalid") === "true" && f.validity.valid) {
+          f.setAttribute("aria-invalid", "false");
+          f.removeAttribute("aria-describedby");
+        }
+      });
+    });
+
     form.addEventListener("submit", function (e) {
       // On Netlify the form posts natively — just hand over the Lookbook first.
       if (isNetlify) {
@@ -521,7 +559,7 @@
         // block invalid input either. Invalid enquiries were reaching Netlify.
         if (!form.checkValidity()) {
           e.preventDefault();
-          if (status) { status.style.color = "var(--terracotta)"; status.textContent = "Please add your name and a valid email."; }
+          flagInvalid();
           form.reportValidity();
           return;
         }
@@ -529,7 +567,7 @@
       }
       e.preventDefault();
       if (!form.checkValidity()) {
-        if (status) { status.style.color = "var(--terracotta)"; status.textContent = "Please add your name and a valid email."; }
+        flagInvalid();
         form.reportValidity();
         return;
       }
@@ -610,6 +648,10 @@
     var applied = false;
     function apply() {
       var shown = 0;
+      // the chosen filter is announced, not only styled
+      index.querySelectorAll(".study-index__f").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b.classList.contains("is-active")));
+      });
       stories.forEach(function (s) {
         var apps = (s.getAttribute("data-app") || "").split(/\s+/);
         var lin = s.getAttribute("data-lineage") || "";
@@ -693,8 +735,36 @@
         el.style.setProperty("--pos", v + "%");
         el.style.setProperty("--posn", String(v)); // unitless twin for the tag fades
         range.value = v;
+        var pv = Math.round(v);
+        range.setAttribute("aria-valuetext", pv + "% paper original, " + (100 - pv) + "% finished relief");
       };
       range.addEventListener("input", function () { set(parseFloat(range.value)); });
+
+      // first view: one slow sweep shows the drawing becoming the built work.
+      // Skipped under reduced motion, and stopped the moment the visitor touches it.
+      ["pointerdown", "keydown"].forEach(function (ev) {
+        el.addEventListener(ev, function () { el._userMoved = true; });
+      });
+      if (MOTION_OK && "IntersectionObserver" in window) {
+        var start = parseFloat(el.getAttribute("data-start") || range.value);
+        var seen = new IntersectionObserver(function (entries) {
+          if (!entries[0].isIntersecting) return;
+          seen.disconnect();
+          var t0 = null, dur = 2600;
+          var step = function (ts) {
+            if (el._userMoved) return;
+            if (t0 === null) t0 = ts;
+            var k = Math.min(1, (ts - t0) / dur);
+            var v = start + Math.sin(k * Math.PI * 2) * 22 * (1 - k * 0.15);
+            if (k === 1) v = start;
+            range.value = v;
+            range.dispatchEvent(new Event("input", { bubbles: true }));
+            if (k < 1) requestAnimationFrame(step);
+          };
+          setTimeout(function () { requestAnimationFrame(step); }, 450);
+        }, { threshold: 0.6 });
+        seen.observe(el);
+      }
       var pointerFromX = function (clientX) {
         var r = el.getBoundingClientRect();
         set(((clientX - r.left) / r.width) * 100);
@@ -726,21 +796,66 @@
     });
   }
 
+  /* ---------- Modal isolation ----------
+     While a full-screen layer is open, everything else on the page is made
+     inert so Tab cannot wander behind it. Layers can stack (the viewer opens
+     from inside the study dossier), so each body child keeps a count and is
+     only released when the last layer that needed it closes. `keep` lists
+     other elements that must stay usable (the header holds the menu's own
+     Close button). Returns the release function. */
+  // set by initLightbox so a closing dossier can shut the viewer above it first
+  var closeLightbox = null;
+
+  function isolate(layer, keep) {
+    var touched = [];
+    keep = keep || [];
+    // a layer locked by an earlier layer (the viewer, under an open dossier)
+    // must be unlocked while it is the one in front
+    var lifted = layer._isoCount > 0 && layer.hasAttribute("inert");
+    if (lifted) layer.removeAttribute("inert");
+    Array.prototype.forEach.call(document.body.children, function (c) {
+      if (c === layer || c.contains(layer) || c.tagName === "SCRIPT") return;
+      if (keep.some(function (k) { return k && (c === k || c.contains(k)); })) return;
+      if (!c._isoCount) {
+        c._isoCount = 0;
+        c._isoOwn = !c.hasAttribute("inert");
+      }
+      c._isoCount++;
+      if (c._isoOwn) c.setAttribute("inert", "");
+      touched.push(c);
+    });
+    return function release() {
+      touched.forEach(function (c) {
+        c._isoCount--;
+        if (c._isoCount <= 0) {
+          if (c._isoOwn) c.removeAttribute("inert");
+          c._isoCount = 0;
+        }
+      });
+      touched = [];
+      if (lifted && layer._isoCount > 0) layer.setAttribute("inert", "");
+    };
+  }
+
   /* ---------- Lightbox ---------- */
   function initLightbox() {
     var triggers = document.querySelectorAll(".stage__media img, .study-overlay__media img");
     if (!triggers.length) return;
     var box = document.createElement("div");
     box.className = "lightbox";
+    box.setAttribute("role", "dialog");
+    box.setAttribute("aria-modal", "true");
+    box.setAttribute("aria-label", "Image viewer");
     box.setAttribute("aria-hidden", "true");
     box.innerHTML =
       '<button class="lightbox__close" aria-label="Close">&times;</button>' +
       '<img class="lightbox__img" alt="" />' +
       '<p class="lightbox__cap"></p>';
     document.body.appendChild(box);
+    closeLightbox = function () { close(); };
     var boxImg = box.querySelector(".lightbox__img");
     var boxCap = box.querySelector(".lightbox__cap");
-    var lastFocus = null;
+    var lastFocus = null, release = null;
 
     function open(img) {
       lastFocus = document.activeElement;
@@ -757,26 +872,49 @@
         if (cap) label = cap.textContent.trim();
       }
       boxCap.textContent = label || img.alt || "";
+      box.setAttribute("aria-label", "Image viewer: " + (label || img.alt || "enlarged image"));
       box.classList.add("is-open");
       box.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
+      if (!release) release = isolate(box);
+      // .is-open flips visibility instantly (only opacity fades), so after a
+      // style flush the Close button can take focus straight away
+      void box.offsetWidth;
       box.querySelector(".lightbox__close").focus();
     }
     function close() {
+      if (!box.classList.contains("is-open")) return;
       box.classList.remove("is-open");
       box.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
+      if (release) { release(); release = null; }
       if (lastFocus && lastFocus.focus) lastFocus.focus();
     }
+    // each zoomable image sits inside a real button, so the viewer opens from
+    // the keyboard too, and the button names what it will show
     triggers.forEach(function (img) {
-      img.addEventListener("click", function () { open(img); });
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "zoom-trigger";
+      // name = hidden prefix + the image's own alt, so it stays right when
+      // the dossier swaps its picture
+      btn.innerHTML = '<span class="sr-only">View larger: </span>';
+      img.parentNode.insertBefore(btn, img);
+      btn.appendChild(img);
+      btn.addEventListener("click", function () { open(img); });
     });
     box.addEventListener("click", function (e) {
       if (e.target === box || e.target.classList.contains("lightbox__close")) close();
     });
+    // capture phase: the viewer answers Escape first and stops it there, so
+    // one press closes only the viewer, not the study dossier beneath it
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && box.classList.contains("is-open")) close();
-    });
+      if (e.key === "Escape" && box.classList.contains("is-open")) {
+        e.stopImmediatePropagation();
+        e.stopPropagation();
+        close();
+      }
+    }, true);
   }
 
   /* ---------- Copy-link on each study ---------- */
@@ -1150,6 +1288,7 @@
     var count = document.getElementById("flipCount");
     var i = 0, n = leaves.length;
     var pad = function (x) { return String(x).padStart(2, "0"); };
+    var typologies = leaves.filter(function (l) { return !l.hasAttribute("data-count-label"); }).length;
 
     var TURN_MS = 1050;   // must match the .leaf transition duration in CSS
     var Z_LIFT = 900;     // a turning page floats above the whole stack
@@ -1185,7 +1324,12 @@
         }
         // a page still in flight keeps its lift; its own timer settles it to the latest depth
       });
-      if (count) count.textContent = pad(i + 1) + " / " + pad(n);
+      // the closing index spread is not a typology: count only the typology
+      // leaves ("01 / 05") and let the index name itself ("All five")
+      if (count) {
+        var label = leaves[i].getAttribute("data-count-label");
+        count.textContent = label || (pad(i + 1) + " / " + pad(typologies));
+      }
       if (prev) prev.disabled = i === 0;
       if (next) next.disabled = i === n - 1;
     }
@@ -1258,7 +1402,7 @@
     var txtEl = document.getElementById("studyOverlayText");
     var specify = document.getElementById("studySpecify");
     var copyBtn = document.getElementById("studyCopy");
-    var cur = -1, lastFocus = null;
+    var cur = -1, lastFocus = null, release = null;
 
     function visible() { return plates.filter(function (p) { return !p.classList.contains("is-hidden"); }); }
 
@@ -1342,12 +1486,17 @@
       if (!viaPop) history.pushState({ arthaStudy: p.id }, "", "#" + p.id);
       markSeen(p);
       ov.hidden = false;
+      if (!release) release = isolate(ov);
       requestAnimationFrame(function () { ov.classList.add("is-open"); });
       document.body.classList.add("overlay-open");
       flipFrom(p);
       txtEl.focus();
     }
     function doClose() {
+      // Back can close the dossier while the viewer is still open on top:
+      // shut the viewer first so focus lands back on the plate, not on body
+      if (closeLightbox) closeLightbox();
+      if (release) { release(); release = null; }
       ov.classList.remove("is-open");
       document.body.classList.remove("overlay-open");
       setTimeout(function () { ov.hidden = true; }, 420);
@@ -1393,6 +1542,8 @@
     document.getElementById("studyPrev").addEventListener("click", function () { step(-1); });
     document.addEventListener("keydown", function (e) {
       if (ov.hidden) return;
+      // while the image viewer is open on top, its keys are its own
+      if (document.querySelector(".lightbox.is-open")) return;
       if (e.key === "Escape") close();
       else if (e.key === "ArrowRight") step(1);
       else if (e.key === "ArrowLeft") step(-1);

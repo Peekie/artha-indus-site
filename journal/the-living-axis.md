@@ -3,7 +3,7 @@ title: "The Living Axis: Translating Zoomorphic and Botanical Lineages into Cont
 dek: "Five archetypal geometries, Vṛkṣa, Kūrma, Matsya, Mayūra and Āraṇya, recovered from decorative trivialisation and returned to architectural materiality."
 date: 2026-08-20
 author: "Preeti Padaley"
-authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
+authorBio: "Founder & Principal Curator, Artha Indus Atelier. MD, MHSA, PMP, EDAC."
 image: "assets/img/journal/the-living-axis.jpg"
 imageAlt: "Curatorial diagram of the five archetypal South Asian geometries and their translation into architectural relief."
 excerpt: "In classical South Asian spatial thought, zoomorphic and botanical motifs were never decorative flourishes; they were structural equations balancing cosmic order against built space."

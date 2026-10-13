@@ -3,7 +3,7 @@ title: "Earth as Palette: The Mineral Life of Color"
 dek: "Lapis, ochre, marigold and crushed shell on a grinding slab. On varṇa, and why the oldest palettes still read as luxury."
 date: 2026-08-28
 author: "Preeti Padaley"
-authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
+authorBio: "Founder & Principal Curator, Artha Indus Atelier. MD, MHSA, PMP, EDAC."
 image: "assets/img/journal/mineral-pigments-slab.jpg"
 imageAlt: "Five heaps of raw pigment on a granite grinding slab: lapis blue, red ochre, marigold yellow, raw sienna and crushed shell white, beside a stone muller and a brass bowl holding a brush."
 excerpt: "Before a lineage has a style, it has a geology. What sits on the grinding slab above is not a color scheme; it is a map of the ground the tradition stands on."

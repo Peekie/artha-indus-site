@@ -3,7 +3,7 @@ title: "The Architecture of Quiet: Acoustic Craft and the Heritage Surface"
 dek: "Why the oldest instincts of South Asian craft, relief, repetition, and fiber, turn out to be acoustic design by another name."
 date: 2026-08-24
 author: "Preeti Padaley"
-authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
+authorBio: "Founder & Principal Curator, Artha Indus Atelier. MD, MHSA, PMP, EDAC."
 image: "assets/img/journal/kurma-acoustic-boardroom.jpg"
 imageAlt: "A conference room whose full back wall is wrapped in charcoal acoustic felt patterned with the Kūrma motif in copper, behind a long walnut table and a wall display."
 excerpt: "We remember rooms by how they sound almost as vividly as by how they look. A curatorial argument for treating the acoustic surface as a site of heritage art rather than a technical afterthought."

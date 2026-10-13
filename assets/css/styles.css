@@ -6,6 +6,28 @@
    pigments the work itself celebrates.
    ============================================================ */
 
+/* ---------- Macron fix ----------
+   Fraunces (Google Fonts) draws a/A with macron (U+0100-0101) with the
+   bar knocked sideways: "Antarāla", "Paramparā", "DHARĀ". These faces
+   take ONLY those two code points from Noto Serif (SIL OFL 1.1, see
+   assets/fonts/OFL.txt); every other letter stays Fraunces. */
+@font-face {
+  font-family: "Artha Macron";
+  font-style: normal;
+  font-weight: 300 500;
+  font-display: swap;
+  unicode-range: U+0100-0101;
+  src: url("../fonts/noto-serif-amacron.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Artha Macron";
+  font-style: italic;
+  font-weight: 300 500;
+  font-display: swap;
+  unicode-range: U+0100-0101;
+  src: url("../fonts/noto-serif-amacron-italic.woff2") format("woff2");
+}
+
 /* ---------- Design tokens ---------- */
 :root {
   /* Palette — paper & ink */
@@ -33,7 +55,7 @@
   --rule-soft:    rgba(28, 24, 21, 0.09);
 
   /* Type */
-  --serif: "Fraunces", "Times New Roman", serif;
+  --serif: "Artha Macron", "Fraunces", "Times New Roman", serif;
   --sans:  "Archivo", "Helvetica Neue", Arial, sans-serif;
 
   /* Rhythm */
@@ -724,6 +746,8 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 350; line-height: 1.05;
 }
 .study-overlay__media { margin: 0; overflow: hidden; background: var(--ink); }
 .study-overlay__media img { width: 100%; height: 100%; object-fit: cover; }
+/* the zoom button between figure and image must pass the full height on */
+.study-overlay__media .zoom-trigger { height: 100%; }
 .study-overlay__text {
   padding: clamp(1.4rem, 3vw, 2.6rem);
   overflow-y: auto; min-height: 0;
@@ -879,6 +903,8 @@ body.overlay-open { overflow: hidden; }
 /* 0.64rem uppercase at 0.2em tracking was below the legibility the founder asked
    for; raised to 0.76rem with tighter tracking. */
 .field label { font-size: 0.76rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute); }
+.field__req { letter-spacing: 0.08em; text-transform: none; font-style: italic; }
+.field [aria-invalid="true"] { border-bottom-color: var(--terracotta); }
 .field input, .field select, .field textarea {
   font: inherit; font-size: 1rem;
   background: transparent; color: var(--ink);
@@ -976,7 +1002,7 @@ body.overlay-open { overflow: hidden; }
 .page-hero__title { font-size: clamp(2.6rem, 7vw, 5.2rem); line-height: 0.98; margin-top: 1rem; max-width: 18ch; }
 .page-hero__title em { font-style: normal; font-weight: 300; color: var(--gold-lite); }
 .page-hero__stand { margin-top: 1.6rem; max-width: 54ch; font-family: var(--serif); font-size: clamp(1.2rem,2vw,1.55rem); color: rgba(248,244,236,0.94); line-height: 1.45; }
-.page-hero__meta { margin-top: 1.8rem; display: flex; gap: 0.6rem; align-items: center; font-size: 0.80rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(244,239,230,0.55); }
+.page-hero__meta { margin-top: 1.8rem; display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; overflow-wrap: anywhere; font-size: 0.80rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(244,239,230,0.55); }
 .page-hero__meta a { color: rgba(244,239,230,0.55); transition: color 0.3s var(--ease); }
 .page-hero__meta a:hover { color: var(--gold-lite); }
 .crumb-sep { opacity: 0.5; }
@@ -1156,6 +1182,11 @@ body.overlay-open { overflow: hidden; }
 }
 .compare__range:focus-visible + .compare__tag,
 .compare:focus-within .compare__divider { outline: 2px solid var(--gold-lite); outline-offset: 2px; }
+/* keyboard focus: a two-tone ring on the handle reads on both the dark
+   paper photo and the pale relief (gold alone measured about 2:1) */
+.compare:has(.compare__range:focus-visible) .compare__handle {
+  box-shadow: 0 0 0 3px var(--paper), 0 0 0 6px var(--ink), 0 2px 18px rgba(15,20,32,0.4);
+}
 .compare__hint { text-align: center; margin-top: 0.8rem; font-size: 0.76rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); }
 
 /* ============================================================
@@ -1188,7 +1219,7 @@ body.overlay-open { overflow: hidden; }
 .offer__desc { margin-top: 0.9rem; color: var(--ink-mute); }
 .offer__list { list-style: none; padding: 0; margin: 1.3rem 0 1.6rem; display: grid; gap: 0.6rem; }
 .offer__list li { position: relative; padding-left: 1.2rem; font-size: 0.95rem; color: var(--ink-soft); }
-.offer__list li::before { content: "—"; position: absolute; left: 0; color: var(--gold-deep); }
+.offer__list li::before { content: "\00B7"; font-weight: 600; position: absolute; left: 0; color: var(--gold-deep); }
 .link-arrow { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: auto; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); border-bottom: 1px solid var(--gold); padding-bottom: 0.3rem; align-self: flex-start; transition: gap 0.35s var(--ease); }
 .link-arrow:hover { gap: 0.9rem; }
 .link-arrow .arrow { transition: transform 0.35s var(--ease); }
@@ -1245,6 +1276,17 @@ body.overlay-open { overflow: hidden; }
 
 /* zoomable images */
 .story__media img, .stage__media img, .typo img { cursor: zoom-in; }
+/* the zoomable image's button: invisible as a box, so layouts are unchanged */
+.zoom-trigger { display: block; width: 100%; padding: 0; margin: 0; border: 0; background: none; color: inherit; font: inherit; cursor: zoom-in; border-radius: inherit; }
+.zoom-trigger:focus-visible { outline: none; }
+/* the button fills a frame that clips overflow, so its own ring would be cut
+   off: draw a two-tone ring on the frame instead (reads on any image) */
+.stage__media:has(.zoom-trigger:focus-visible),
+.study-overlay__media:has(.zoom-trigger:focus-visible) {
+  outline: 3px solid var(--gold-lite); outline-offset: 3px; box-shadow: 0 0 0 6px var(--ink);
+}
+.study-overlay__media:has(.zoom-trigger:focus-visible) { outline-offset: -6px; box-shadow: inset 0 0 0 3px var(--ink); }
+.sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* ============================================================
    LIGHTBOX
@@ -1256,7 +1298,7 @@ body.overlay-open { overflow: hidden; }
   padding: clamp(1rem, 5vw, 4rem);
   opacity: 0; visibility: hidden; transition: opacity 0.4s var(--ease), visibility 0.4s var(--ease);
 }
-.lightbox.is-open { opacity: 1; visibility: visible; }
+.lightbox.is-open { opacity: 1; visibility: visible; transition: opacity 0.4s var(--ease), visibility 0s; }
 .lightbox__img { max-width: 100%; max-height: 82vh; object-fit: contain; border-radius: 2px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); transform: scale(0.97); transition: transform 0.4s var(--ease); }
 .lightbox.is-open .lightbox__img { transform: scale(1); }
 .lightbox__cap { position: absolute; bottom: clamp(1rem,4vw,2.4rem); left: 50%; transform: translateX(-50%); color: rgba(244,239,230,0.85); font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; text-align: center; }
@@ -1691,6 +1733,7 @@ body.has-veil .hero__meta { animation-delay: 1.75s; }
 [data-theme="night"] .field textarea {
   border-bottom-color: rgba(237, 228, 211, 0.45);
 }
+[data-theme="night"] .field [aria-invalid="true"] { border-bottom-color: #d98a66; }
 [data-theme="night"] .field select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9bda6' fill='none' stroke-width='1.4'/%3E%3C/svg%3E");
 }

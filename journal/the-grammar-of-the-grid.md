@@ -3,7 +3,7 @@ title: "The Grammar of the Grid: Proportion as a Sacred Discipline"
 dek: "Before a single figure is drawn, the grid is drawn. On tālamāna, the proportional systems that let sacred art survive translation."
 date: 2026-08-27
 author: "Preeti Padaley"
-authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
+authorBio: "Founder & Principal Curator, Artha Indus Atelier. MD, MHSA, PMP, EDAC."
 image: "assets/img/journal/talamana-grid-study.jpg"
 imageAlt: "An iconometry study on cream handmade paper: a seated figure drawn inside a red proportional grid annotated with measurements, with a bamboo ruler, ink pot and brush on the worn table beside it."
 excerpt: "The drawing above begins not with the figure but with the measured cage around it. A curatorial argument for proportion as the most translatable thing a lineage owns."

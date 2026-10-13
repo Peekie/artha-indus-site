@@ -3,7 +3,7 @@ title: "The Guarded Threshold: Why the Lineages Watch the Door"
 dek: "Cranes, parrots and lotus vines carved around a hotel entrance. On the toraṇa, and the oldest job in South Asian art."
 date: 2026-08-29
 author: "Preeti Padaley"
-authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
+authorBio: "Founder & Principal Curator, Artha Indus Atelier. MD, MHSA, PMP, EDAC."
 image: "assets/img/journal/carved-threshold.jpg"
 imageAlt: "An arched walnut doorframe densely carved with cranes, parrots, lotus buds and vines, lit by a warm halo of concealed light, standing in a bare plaster wall with a hotel lobby visible through the open doors."
 excerpt: "Every wall in this picture is bare except one place. A concept study in the oldest siting decision in South Asian art: ornament belongs at the crossing."
