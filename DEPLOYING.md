@@ -51,3 +51,26 @@ git commit -m "docs: note the deploy workflow [skip ci]"
 
 Build & deploy → Branch deploys should be **"None"** (or at least not "All").
 If branch deploys are on, pushing `dev` builds too and this saves nothing.
+
+## Jala + Dharā capsule: content awaiting approval
+
+The capsule page launched with everything approved. Content that waits on a
+third party was deleted from the shipped HTML (CSS hiding is not
+unpublishing). It is preserved in commit `ded691d` (branch `capsule`):
+
+- `alka`: the artist section and the "Drawn by hand by Alka Jha" credit
+  under the archetypes. Restore when Alka Jha approves being named.
+- `skyline`: the "Glazing translation" paragraph in each chapter and the
+  fabrication and specification panel. Restore when Skyline confirms in
+  writing the figures, the "Eco-Etch" name, the partnership line and the
+  CSI section. Reconcile the light-transmission ranges first; they differ
+  between chapters and the panel in the source brief.
+- `specguide`: the "Download the specification guide" link. Restore when the
+  PDF exists.
+
+To restore one: copy the block from `git show ded691d:jala-dhara.html`,
+drop the `data-gate` attribute, check it with `?preview=all` off, and deploy.
+
+The Vault, when it ships, joins `.nav__utils` and the phone menu's utility
+row, and the bar handover moves from 1260px to about 1320px (see the comment
+in styles.css). Re-measure the bar after adding it.

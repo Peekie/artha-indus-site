@@ -11,6 +11,7 @@
     { id: "studies",      href: "spatial-studies.html", label: "Spatial Studies" },
     { id: "lineages",     href: "lineages.html",        label: "Lineages" },
     { id: "perspectives", href: "perspectives.html",    label: "Perspectives" },
+    { id: "capsule",      href: "jala-dhara.html",      label: "Jala + Dharā" },
     { id: "collaborate",  href: "collaborate.html",     label: "Collaborate" }
   ];
 
@@ -25,20 +26,25 @@
   }
   // Version tag for fetched resources; bumped on deploys so heuristic
   // browser caching can never pin a visitor to a stale index or essay.
-  var VER = "20261012c";
+  var VER = "20261012d";
   var MOTION_OK = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches);
 
   /* ---------- NAV ---------- */
   function buildNav() {
+    // "you are here" is announced (aria-current) as well as drawn
+    var here = function (p) { return p.id === current ? ' aria-current="page"' : ""; };
     var links = PAGES.map(function (p, i) {
       var active = p.id === current ? " is-active" : "";
       var cta = p.id === "collaborate" ? " nav__cta" : "";
-      return '<a class="nav__link' + cta + active + '" href="' + p.href + '">' + p.label + "</a>";
+      var named = p.id === "capsule" ? " nav__link--named" : "";
+      return '<a class="nav__link' + cta + named + active + '" href="' + p.href + '"' + here(p) + ">" + p.label + "</a>";
     }).join("");
 
     var mobile = PAGES.map(function (p, i) {
       var n = String(i + 1).padStart(2, "0");
-      return '<a href="' + p.href + '"><span class="m-num">' + n + "</span>" + p.label + "</a>";
+      var kicker = p.id === "capsule" ? '<span class="m-kicker">The inaugural capsule</span>' : "";
+      return '<a href="' + p.href + '"' + here(p) + (p.id === current ? ' class="is-current"' : "") + ">" +
+        '<span class="m-num" aria-hidden="true">' + n + "</span>" + kicker + '<span class="m-label">' + p.label + "</span></a>";
     }).join("");
 
     var html =
@@ -51,12 +57,20 @@
           '</span>' +
         "</a>" +
         '<nav class="nav__links" aria-label="Primary">' + links + "</nav>" +
-        '<button class="nav__theme" id="themeToggle" type="button">Night</button>' +
-        '<button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">' +
-          '<svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="0" y1="1" x2="26" y2="1"/><line x1="0" y1="7" x2="26" y2="7"/><line x1="0" y1="13" x2="26" y2="13"/></svg>' +
-        "</button>" +
+        // utilities live together at the right edge. The private Vault, when it
+        // exists, joins this group (a discreet entrance, not a menu item).
+        '<div class="nav__utils">' +
+          '<button class="nav__theme" id="themeToggle" type="button" data-theme-toggle><span class="nav__theme-word">Night</span></button>' +
+          '<button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">' +
+            '<svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="0" y1="1" x2="26" y2="1"/><line x1="0" y1="7" x2="26" y2="7"/><line x1="0" y1="13" x2="26" y2="13"/></svg>' +
+          "</button>" +
+        "</div>" +
       "</header>" +
-      '<nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">' + mobile + "</nav>";
+      '<nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">' + mobile +
+        '<div class="mobile-menu__utils">' +
+          '<button class="mobile-menu__theme" type="button" data-theme-toggle>Night</button>' +
+        "</div>" +
+      "</nav>";
 
     var mount = document.getElementById("site-nav");
     if (mount) mount.outerHTML = html;
@@ -86,7 +100,8 @@
   /* ---------- FOOTER ---------- */
   function buildFooter() {
     var nav = PAGES.map(function (p) {
-      return "<li><a href=\"" + p.href + "\">" + p.label + "</a></li>";
+      var cur = p.id === current;
+      return "<li><a href=\"" + p.href + "\"" + (cur ? ' class="is-current" aria-current="page"' : "") + ">" + p.label + "</a></li>";
     }).join("");
 
     var html =
@@ -97,12 +112,11 @@
               '<div class="footer__mark">Artha Indus Atelier<span>Ancient Heritage. Modern Resonance.</span></div>' +
               '<p class="footer__note" style="margin-top:1.4rem">A boutique curation house bridging ancient master lineages with modern corporate, hospitality, and healthcare environments, preserving the soul of the artisan’s hand.</p>' +
             "</div>" +
-            "<div><h6>Navigate</h6><ul>" + nav + "</ul></div>" +
-            '<div><h6>Connect</h6><ul>' +
+            "<div><h2 class=\"footer__h\">Navigate</h2><ul>" + nav + "</ul></div>" +
+            '<div><h2 class="footer__h">Connect</h2><ul>' +
               '<li><a href="mailto:preeti@arthaindus.com">preeti@arthaindus.com</a></li>' +
-              '<li><a href="https://arthaindus.com">www.arthaindus.com</a></li>' +
-              '<li>Chicago, IL</li>' +
-              '<li><a href="collaborate.html">Request the Lookbook</a></li>' +
+              '<li><span class="footer__plain">Chicago, IL</span></li>' +
+              '<li><a href="assets/downloads/Artha-Indus-Atelier-Lookbook-2026.pdf" download>Download the Lookbook</a></li>' +
             "</ul></div>" +
           "</div>" +
           '<div class="footer__bar">' +
@@ -127,17 +141,19 @@
     var night = pref ? pref === "night" : (h >= 19 || h < 6);
     function setTheme(n) {
       document.documentElement.setAttribute("data-theme", n ? "night" : "day");
-      var btn = document.getElementById("themeToggle");
       // the label stays "Night" so the accessible name matches the visible
-      // text; aria-pressed alone carries the state
-      if (btn) btn.setAttribute("aria-pressed", String(n));
+      // text; aria-pressed alone carries the state, on every toggle
+      document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(n));
+      });
     }
     setTheme(night);
-    var btn = document.getElementById("themeToggle");
-    if (btn) btn.addEventListener("click", function () {
-      night = !night;
-      setTheme(night);
-      try { window.localStorage.setItem("artha-theme", night ? "night" : "day"); } catch (e) {}
+    document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        night = !night;
+        setTheme(night);
+        try { window.localStorage.setItem("artha-theme", night ? "night" : "day"); } catch (e) {}
+      });
     });
   }
 
@@ -165,6 +181,8 @@
     var set = function (state) {
       open = state;
       menu.classList.toggle("is-open", open);
+      var navEl = document.getElementById("nav");
+      if (navEl) navEl.classList.toggle("menu-open", open);
       toggle.setAttribute("aria-expanded", String(open));
       toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
       document.body.style.overflow = open ? "hidden" : "";
@@ -176,7 +194,17 @@
     menu.querySelectorAll("a").forEach(function (a) {
       a.addEventListener("click", function () { set(false); });
     });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && open) set(false); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && open) { set(false); toggle.focus(); }
+    });
+    // a rotation or resize past the handover hides the menu button, so the
+    // menu must close itself rather than leave the page locked behind it
+    if (window.matchMedia) {
+      var wide = window.matchMedia("(min-width: 1261px)");
+      var onWide = function () { if (wide.matches && open) set(false); };
+      if (wide.addEventListener) wide.addEventListener("change", onWide);
+      else if (wide.addListener) wide.addListener(onWide);
+    }
   }
 
   /* ---------- Freshness: presentation surfaces reshuffle per visit ----------
@@ -493,7 +521,40 @@
     // "Specify this study" carries its dossier into the form: the enquiry
     // arrives already knowing which study it is about.
     var q = new URLSearchParams(window.location.search);
-    var studyId = (q.get("study") || "").toLowerCase().replace(/[^a-z0-9-]/g, "");
+    if (q.get("capsule") === "jala-dhara") {
+      var csel = document.getElementById("interest");
+      if (csel) csel.value = "Jala + Dharā Capsule";
+      var cf = document.getElementById("studyField");
+      if (cf) cf.value = "jala-dhara | Jala + Dharā capsule";
+      var chead = form.querySelector(".form__head");
+      if (chead) {
+        var cabout = document.createElement("p");
+        cabout.className = "form__about";
+        var archMap = { kurma: "Kūrma", matsya: "Matsya", rekha: "Rekhā" };
+        var aKey = q.get("a") || "";
+        var arch = Object.prototype.hasOwnProperty.call(archMap, aKey) ? archMap[aKey] : "";
+        cabout.innerHTML = "<span>Regarding</span> Jala + Dharā" + (arch ? ", " + arch : ", the inaugural capsule");
+        if (cf && arch) cf.value = "jala-dhara | Jala + Dharā capsule | " + arch;
+        chead.appendChild(cabout);
+      }
+    }
+    if (q.get("interest") === "private") {
+      var psel = document.getElementById("interest");
+      if (psel) psel.value = "Private Masterworks Acquisition";
+      var phead = form.querySelector(".form__head");
+      if (phead) {
+        var pabout = document.createElement("p");
+        pabout.className = "form__about";
+        pabout.innerHTML = "<span>Regarding</span> a private viewing of the originals";
+        phead.appendChild(pabout);
+      }
+    }
+    if (q.get("study") || q.get("capsule") || q.get("interest")) {
+      var eb = form.querySelector(".form__head .eyebrow");
+      if (eb) eb.textContent = "Begin an inquiry";
+    }
+    // one subject per inquiry: the capsule or a private viewing wins over a stray study param
+    var studyId = (q.get("capsule") || q.get("interest") === "private") ? "" : (q.get("study") || "").toLowerCase().replace(/[^a-z0-9-]/g, "");
     var studyTitle = (q.get("t") || "").replace(/[^\w\s.,;:&'()-]/g, "").slice(0, 160);
     if (studyId) {
       var sf = document.getElementById("studyField");
@@ -505,19 +566,46 @@
         about.innerHTML = "<span>Regarding</span> " + escapeHtml(studyTitle || studyId.replace(/-/g, " "));
         head.appendChild(about);
       }
+      // a study can be commissioned or licensed: do not decide for them
       var sel = document.getElementById("interest");
-      if (sel) sel.value = "Bespoke Masterwork Commission";
+      if (sel) sel.value = "Spatial Study (commission or license)";
+    }
+    // arriving from a study or the capsule, the form is the point: bring it into view
+    if (studyId || q.get("capsule") || q.get("interest")) {
+      setTimeout(function () {
+        form.scrollIntoView({ behavior: MOTION_OK ? "smooth" : "auto", block: "start" });
+      }, 250);
     }
 
     // A soft nod to the visitor's own browsing, never a scoreboard.
     var n = seenCount();
-    if (n > 0) {
+    var shortlist = document.getElementById("shortlistField");
+    if (n > 0 && shortlist) {
       var intro = form.querySelector(".form__intro");
-      if (intro) {
-        var thread = document.createElement("p");
-        thread.className = "form__threadnote";
-        thread.textContent = "You have examined " + n + (n === 1 ? " study." : " studies.") + " Bring the shortlist.";
-        intro.insertAdjacentElement("afterend", thread);
+      // the study already in "Regarding" is not repeated in the shortlist
+      var currentStudy = (q.get("study") || "").toLowerCase();
+      var seenIds = (storeGet("artha-studies-seen") || []).filter(function (id) { return /^[a-z0-9-]+$/.test(id) && id !== currentStudy; });
+      var titleMap = storeGet("artha-studies-titles") || {};
+      var titleList = seenIds.map(function (id) { return String(titleMap[id] || id.replace(/-/g, " ")); });
+      var names = titleList.join("; ");
+      if (intro && seenIds.length) {
+        var box = document.createElement("label");
+        box.className = "form__shortlist";
+        var other = currentStudy ? " other" : "";
+        box.innerHTML = '<input type="checkbox" checked aria-describedby="shortlistNames" /> <span>Include the ' + seenIds.length + other +
+          (seenIds.length === 1 ? " study" : " studies") + " I examined, so Preeti sees my shortlist.</span>";
+        // the list sits after the label (a label holds phrasing content only)
+        // and describes the checkbox
+        var ul = document.createElement("ul");
+        ul.className = "form__shortlist-list";
+        ul.id = "shortlistNames";
+        titleList.forEach(function (tl) { var li = document.createElement("li"); li.textContent = tl; ul.appendChild(li); });
+        intro.insertAdjacentElement("afterend", box);
+        box.insertAdjacentElement("afterend", ul);
+        var cb = box.querySelector("input");
+        var syncList = function () { shortlist.value = cb.checked ? names : ""; };
+        cb.addEventListener("change", syncList);
+        syncList();
       }
     }
     // Tie each failed field to the status message, so a screen reader hears
@@ -563,7 +651,15 @@
           form.reportValidity();
           return;
         }
-        return; // valid — let Netlify handle the POST
+        try {
+          var d = new FormData(form);
+          window.sessionStorage.setItem("artha-sent", JSON.stringify({
+            name: String(d.get("name") || "").split(" ")[0].slice(0, 40),
+            interest: String(d.get("interest") || "").slice(0, 80),
+            study: (function (v) { return v.indexOf("|") > -1 ? v.split("|").slice(-1)[0].trim() : v.replace(/-/g, " "); })(String(d.get("study") || "")).slice(0, 120)
+          }));
+        } catch (err) { /* storage unavailable: the thank-you page stays generic */ }
+        return; // valid: let Netlify handle the POST
       }
       e.preventDefault();
       if (!form.checkValidity()) {
@@ -736,12 +832,14 @@
         el.style.setProperty("--posn", String(v)); // unitless twin for the tag fades
         range.value = v;
         var pv = Math.round(v);
-        range.setAttribute("aria-valuetext", pv + "% paper original, " + (100 - pv) + "% finished relief");
+        range.setAttribute("aria-valuetext", pv + "% " + (el.getAttribute("data-before-label") || "paper original") +
+          ", " + (100 - pv) + "% " + (el.getAttribute("data-after-label") || "finished relief"));
       };
       range.addEventListener("input", function () { set(parseFloat(range.value)); });
 
-      // first view: one slow sweep shows the drawing becoming the built work.
-      // Skipped under reduced motion, and stopped the moment the visitor touches it.
+      // first view: one slow sweep shows the drawing becoming the built work
+      // (capsule glass and the Spatial Studies relief alike). Skipped under
+      // reduced motion, and stopped the moment the visitor touches it.
       ["pointerdown", "keydown"].forEach(function (ev) {
         el.addEventListener(ev, function () { el._userMoved = true; });
       });
@@ -765,6 +863,7 @@
         }, { threshold: 0.6 });
         seen.observe(el);
       }
+
       var pointerFromX = function (clientX) {
         var r = el.getBoundingClientRect();
         set(((clientX - r.left) / r.width) * 100);
@@ -839,7 +938,7 @@
 
   /* ---------- Lightbox ---------- */
   function initLightbox() {
-    var triggers = document.querySelectorAll(".stage__media img, .study-overlay__media img");
+    var triggers = document.querySelectorAll(".stage__media img, .study-overlay__media img, .jd-shot img");
     if (!triggers.length) return;
     var box = document.createElement("div");
     box.className = "lightbox";
@@ -859,11 +958,23 @@
 
     function open(img) {
       lastFocus = document.activeElement;
-      boxImg.src = img.currentSrc || img.src;
+      var best = img.currentSrc || img.src;
+      var set = img.getAttribute("srcset");
+      if (set) {
+        var widest = set.split(",").map(function (c) { var bits = c.trim().split(/\s+/); return { u: bits[0], w: parseInt(bits[1], 10) || 0 }; })
+          .sort(function (a, b) { return b.w - a.w; })[0];
+        if (widest && widest.u) best = widest.u;
+      }
+      boxImg.src = best;
       boxImg.alt = img.alt || "";
       var story = img.closest("article");
       var label = "";
-      if (story) {
+      var figcap = img.closest("figure") && img.closest("figure").querySelector("figcaption");
+      if (figcap && !story) {
+        label = Array.prototype.map.call(figcap.children.length ? figcap.children : [figcap], function (c) {
+          return c.textContent.trim();
+        }).filter(Boolean).join(" · ");
+      } else if (story) {
         var eb = story.querySelector(".eyebrow, .stage__label");
         var h = story.querySelector("h3, h4");
         label = [eb && eb.textContent.trim(), h && h.textContent.trim()].filter(Boolean).join(" · ");
@@ -915,6 +1026,105 @@
         close();
       }
     }, true);
+  }
+
+  /* ---------- Jala + Dharā capsule page ----------
+     Draft gates: blocks marked [data-gate] wait on an outside approval
+     and stay hidden; ?preview=all reveals them for review. */
+  function initCapsule() {
+    var root = document.querySelector(".jd");
+    if (!root) return;
+    if (/[?&]preview=all\b/.test(window.location.search)) {
+      var gated = document.querySelectorAll("[data-gate]");
+      gated.forEach(function (g) { g.classList.add("gate-open"); });
+      if (gated.length) {
+        var banner = document.createElement("p");
+        banner.className = "gate-banner";
+        banner.setAttribute("role", "status");
+        banner.textContent = "Preview: sections awaiting approval are shown with a dashed outline.";
+        document.body.appendChild(banner);
+      }
+    }
+    // Paper / Glass toggle: the slider without dragging (WCAG 2.5.7);
+    // each button reports whether its side is the one fully shown
+    root.querySelectorAll(".jd-chapter__compare").forEach(function (wrap) {
+      var range = wrap.querySelector(".compare__range");
+      var fig = wrap.querySelector(".compare");
+      var btns = wrap.querySelectorAll(".jd-jump");
+      if (!range || !fig) return;
+      var tg = wrap.querySelector(".jd-toggle");
+      if (tg) tg.hidden = false; // the toggle needs script, so it ships hidden
+      var sync = function () {
+        var v = parseFloat(range.value);
+        btns.forEach(function (b) {
+          var target = parseFloat(b.getAttribute("data-compare-set"));
+          b.setAttribute("aria-pressed", String(v === target));
+        });
+      };
+      btns.forEach(function (b) {
+        b.addEventListener("click", function () {
+          fig._userMoved = true;
+          range.value = b.getAttribute("data-compare-set");
+          range.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+      });
+      range.addEventListener("input", sync);
+      sync();
+    });
+    // five more glass studies, on request
+    root.querySelectorAll(".jd-more").forEach(function (b) {
+      var more = document.getElementById(b.getAttribute("aria-controls"));
+      if (!more) return;
+      // without script every study stays visible; with it, five wait behind the button
+      more.hidden = true;
+      b.hidden = false;
+      b.addEventListener("click", function () {
+        var open = b.getAttribute("aria-expanded") !== "true";
+        more.hidden = !open;
+        b.setAttribute("aria-expanded", String(open));
+        b.firstChild.textContent = open ? "Show fewer glass studies " : "Show 5 more glass studies ";
+      });
+    });
+    // the chapter index marks the chapter in view
+    var index = root.querySelector(".jd-index");
+    if (index && "IntersectionObserver" in window) {
+      var links = {};
+      index.querySelectorAll("a").forEach(function (a) { links[a.getAttribute("href").slice(1)] = a; });
+      var inView = {};
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { inView[en.target.id] = en.isIntersecting; });
+        var cur = Object.keys(links).filter(function (id) { return inView[id]; })[0] || null;
+        Object.keys(links).forEach(function (id) {
+          links[id].classList.toggle("is-current", id === cur);
+          if (id === cur) links[id].setAttribute("aria-current", "true");
+          else links[id].removeAttribute("aria-current");
+        });
+      }, { rootMargin: "-45% 0px -50% 0px" });
+      root.querySelectorAll(".jd-chapter").forEach(function (c) { io.observe(c); });
+    }
+  }
+
+  /* ---------- Thank-you page ---------- */
+  function initThanks() {
+    var about = document.getElementById("thanksAbout");
+    if (!about) return;
+    var sent = null;
+    try {
+      sent = JSON.parse(window.sessionStorage.getItem("artha-sent"));
+      window.sessionStorage.removeItem("artha-sent"); // shown once; a later visit stays generic
+    } catch (e) {}
+    if (!sent) return;
+    var who = document.getElementById("thanksName");
+    if (who && sent.name) who.textContent = ", " + sent.name;
+    var topic = sent.study || "";
+    if (topic) {
+      about.textContent = "Regarding \u201C" + String(topic).trim().replace(/\.+$/, "") + "\u201D.";
+    } else if (sent.interest === "Private Masterworks Acquisition") {
+      about.textContent = "Regarding a private viewing of the originals.";
+    } else if (sent.interest) {
+      about.textContent = "Regarding your interest in " + String(sent.interest).trim().replace(/\.+$/, "") + ".";
+    }
+    if (about.textContent) about.hidden = false;
   }
 
   /* ---------- Copy-link on each study ---------- */
@@ -1108,6 +1318,11 @@
       // prev / next (list is newest-first: next = newer = idx-1, prev = older = idx+1)
       var newer = idx > 0 ? list[idx - 1] : null;
       var older = idx > -1 && idx < list.length - 1 ? list[idx + 1] : null;
+      var handoffTo = older || newer;
+      // the "Continue the thread" card already carries that essay: the bar offers the other one
+      var barOlder = older && older !== handoffTo ? older : null;
+      var barNewer = newer && newer !== handoffTo ? newer : null;
+      older = barOlder; newer = barNewer;
       var prevnext = (newer || older) ?
         '<nav class="post__prevnext">' +
           (older ? '<a class="post__pn" href="post.html?p=' + encodeURIComponent(older.slug) + '"><span>Older</span>' + escapeHtml(older.title) + "</a>" : "<span></span>") +
@@ -1117,7 +1332,7 @@
       // related (share a tag)
       var tags = meta.tags || [];
       // the handoff: hand a finished reader the next essay in reading order
-      var next = older || newer;
+      var next = handoffTo;
       var handoffHtml = next ?
         '<a class="handoff reveal" href="post.html?p=' + encodeURIComponent(next.slug) + '">' +
           '<span class="handoff__media">' + (next.image ? '<img src="' + escapeHtml(safeUrl(next.image)) + '" alt="" loading="lazy" />' : "") + "</span>" +
@@ -1135,6 +1350,27 @@
       var relatedHtml = related.length ?
         '<section class="post__related"><div class="sec-head"><span class="eyebrow eyebrow--ink">Related musings</span></div><div class="journal-grid">' +
           related.map(function (p) { return cardMarkup(p, "jcard", "Read"); }).join("") + "</div></section>" : "";
+
+      var lineages = { warli: "Warli", madhubani: "Madhubani", mithila: "Madhubani", gond: "Gond", kalamkari: "Kalamkari", saura: "Saura", pattachitra: "Pattachitra", sohrai: "Sohrai", thangka: "Thangka" };
+      // the lineage an essay discusses most, judged from its title, dek, tags and text
+      var hay = ((meta.title || "") + " " + (meta.dek || "") + " " + tags.join(" ") + " " + String(body).replace(/<[^>]+>/g, " ")).toLowerCase();
+      var counts = {};
+      Object.keys(lineages).forEach(function (k) {
+        var key = k === "mithila" ? "madhubani" : k; // one lineage, two names
+        counts[key] = (counts[key] || 0) + (hay.match(new RegExp("\\b" + k + "\\b", "g")) || []).length;
+      });
+      var lin = Object.keys(counts).filter(function (k) { return counts[k] > 0; })
+        .sort(function (a, b) { return counts[b] - counts[a]; })[0];
+      var linKey = lin === "mithila" ? "madhubani" : lin;
+      var nextStepHtml =
+        '<aside class="post__next" aria-label="Next step">' +
+          "<p>Bring a lineage into your next project.</p>" +
+          '<div class="post__next__actions">' +
+            '<a class="btn jd-btn-light" href="collaborate.html">Begin an inquiry <span class="arrow" aria-hidden="true">&rarr;</span></a>' +
+            (linKey ? '<a class="link-arrow" href="spatial-studies.html?lineage=' + linKey + '#collection">All ' + lineages[lin] + ' studies <span class="arrow" aria-hidden="true">&rarr;</span></a>'
+                    : '<a class="link-arrow" href="spatial-studies.html#collection">Browse the studies <span class="arrow" aria-hidden="true">&rarr;</span></a>') +
+          "</div>" +
+        "</aside>";
 
       mount.setAttribute("aria-busy", "false");
       mount.innerHTML =
@@ -1163,6 +1399,7 @@
           prevnext +
           handoffHtml +
           relatedHtml +
+          nextStepHtml +
         "</div>";
 
       buildToc();
@@ -1410,6 +1647,14 @@
       p.classList.add("is-visited");
       var seen = storeGet("artha-studies-seen") || [];
       if (seen.indexOf(p.id) === -1) { seen.push(p.id); storeSet("artha-studies-seen", seen); }
+      // keep the title too, so the inquiry can name the shortlist properly
+      var tpl = p.querySelector(".plate__dossier");
+      var tt = tpl && tpl.content ? tpl.content.querySelector(".dossier__title") : null;
+      if (tt) {
+        var titles = storeGet("artha-studies-titles") || {};
+        titles[p.id] = tt.textContent.trim().replace(/\.$/, "").slice(0, 120);
+        storeSet("artha-studies-titles", titles);
+      }
     }
     // restore the visited marks from earlier browsing
     (storeGet("artha-studies-seen") || []).forEach(function (id) {
@@ -1627,6 +1872,8 @@
   initStudyFilter();
   initCompareSlider();
   initLightbox();
+  initCapsule();
+  initThanks();
   initShareLinks();
   initFlipbook();
   initStudyOverlay();

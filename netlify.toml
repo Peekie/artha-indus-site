@@ -125,6 +125,16 @@
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
 
 [[headers]]
+  for = "/jala-dhara.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
+
+[[headers]]
+  for = "/thanks.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
+
+[[headers]]
   for = "/404.html"
   [headers.values]
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
