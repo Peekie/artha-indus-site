@@ -2228,3 +2228,8 @@ img {
 }
 .capsule-band__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.6rem; margin-top: 0.4rem; }
 .capsule-band__actions .link-arrow { margin-top: 0; }
+/* safety net: the phone menu never shows on a full-bar width */
+@media (min-width: 1261px) { .mobile-menu { display: none; } }
+/* the italic capsule link holds its own over busy hero artwork */
+.nav__link--named { font-weight: 500; }
+.nav:not(.is-scrolled) .nav__link--named { text-shadow: 0 0 1px rgba(15,20,32,0.6); }

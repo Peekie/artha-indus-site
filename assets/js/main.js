@@ -197,6 +197,14 @@
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && open) { set(false); toggle.focus(); }
     });
+    // a rotation or resize past the handover hides the menu button, so the
+    // menu must close itself rather than leave the page locked behind it
+    if (window.matchMedia) {
+      var wide = window.matchMedia("(min-width: 1261px)");
+      var onWide = function () { if (wide.matches && open) set(false); };
+      if (wide.addEventListener) wide.addEventListener("change", onWide);
+      else if (wide.addListener) wide.addListener(onWide);
+    }
   }
 
   /* ---------- Freshness: presentation surfaces reshuffle per visit ----------
