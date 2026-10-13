@@ -3,7 +3,7 @@ title: "The Sūtra & the Senses: A Curatorial Inquiry into Visual Fluency, Ancie
 dek: "What visual neuroscience suggests about why ancestral geometries feel restful, and where the honest limits of that argument lie."
 date: 2026-08-22
 author: "Preeti Padaley"
-authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
+authorBio: "Founder & Principal Curator, Artha Indus Atelier. MD, MHSA, PMP, EDAC."
 image: "assets/img/journal/the-sutra-and-the-senses.jpg"
 imageAlt: "Diagram relating the grammar of ancestral form, symmetry, grouping and fractal dimension, to built architectural surfaces."
 excerpt: "To examine Indian geometry through a neuroaesthetic lens is not to reduce sacred art to biology, but to explore how ancient visual masters intuitively calibrated form to the structural architecture of human perception."

@@ -3,7 +3,7 @@ title: "Carved by Light: Shadow, Relief, and the South Asian Wall"
 dek: "A relief has no color of its own until light arrives. On shadow as the atelier's other material."
 date: 2026-08-25
 author: "Preeti Padaley"
-authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
+authorBio: "Founder & Principal Curator, Artha Indus Atelier. MD, MHSA, PMP, EDAC."
 image: "assets/img/studio-peacock-lobby.jpg"
 imageAlt: "A monochrome carved peacock relief on a dark plaster wall, its fanned tail modeled by a single wash of light from the cove above."
 excerpt: "Pigment tells a wall what to say. Light decides whether anyone hears it. A study of the light a carved surface lives under: raking daylight, gallery beams, and the long amber evening."

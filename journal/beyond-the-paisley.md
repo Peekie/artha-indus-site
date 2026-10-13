@@ -3,7 +3,7 @@ title: "Beyond the Paisley: Ancient Morphology, Architectural Materiality, and t
 dek: "The curved teardrop dismissed as “paisley” was never ornament. It is a germinating seed contour, and it carries architectural weight."
 date: 2026-08-21
 author: "Preeti Padaley"
-authorBio: "Founder & Principal Curator, Artha Indus Atelier. MBBS, MHSA, PMP."
+authorBio: "Founder & Principal Curator, Artha Indus Atelier. MD, MHSA, PMP, EDAC."
 image: "assets/img/journal/beyond-the-paisley.jpg"
 imageAlt: "Diagram titled The Morphology of the Bīja, charting the regional variants of the seed contour across Kashmir, Andhra Pradesh, Bengal, Tamil Nadu, Rajasthan and Gujarat."
 excerpt: "Long before industrial looms flattened its geometry into two-dimensional novelty, the bīja was an architectural prayer, a concentrated nucleus of life holding immense kinetic energy within an asymmetric curve."
