@@ -25,7 +25,7 @@
   }
   // Version tag for fetched resources; bumped on deploys so heuristic
   // browser caching can never pin a visitor to a stale index or essay.
-  var VER = "20261012a";
+  var VER = "20261012c";
   var MOTION_OK = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches);
 
   /* ---------- NAV ---------- */
@@ -739,6 +739,32 @@
         range.setAttribute("aria-valuetext", pv + "% paper original, " + (100 - pv) + "% finished relief");
       };
       range.addEventListener("input", function () { set(parseFloat(range.value)); });
+
+      // first view: one slow sweep shows the drawing becoming the built work.
+      // Skipped under reduced motion, and stopped the moment the visitor touches it.
+      ["pointerdown", "keydown"].forEach(function (ev) {
+        el.addEventListener(ev, function () { el._userMoved = true; });
+      });
+      if (MOTION_OK && "IntersectionObserver" in window) {
+        var start = parseFloat(el.getAttribute("data-start") || range.value);
+        var seen = new IntersectionObserver(function (entries) {
+          if (!entries[0].isIntersecting) return;
+          seen.disconnect();
+          var t0 = null, dur = 2600;
+          var step = function (ts) {
+            if (el._userMoved) return;
+            if (t0 === null) t0 = ts;
+            var k = Math.min(1, (ts - t0) / dur);
+            var v = start + Math.sin(k * Math.PI * 2) * 22 * (1 - k * 0.15);
+            if (k === 1) v = start;
+            range.value = v;
+            range.dispatchEvent(new Event("input", { bubbles: true }));
+            if (k < 1) requestAnimationFrame(step);
+          };
+          setTimeout(function () { requestAnimationFrame(step); }, 450);
+        }, { threshold: 0.6 });
+        seen.observe(el);
+      }
       var pointerFromX = function (clientX) {
         var r = el.getBoundingClientRect();
         set(((clientX - r.left) / r.width) * 100);
