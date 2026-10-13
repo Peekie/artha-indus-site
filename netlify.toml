@@ -99,8 +99,20 @@
   [headers.values]
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
 
+# Pretty URLs serve this page at /curators-note too; the policy must follow it there
+[[headers]]
+  for = "/curators-note"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
+
 [[headers]]
   for = "/spatial-studies.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
+
+# Pretty URLs serve this page at /spatial-studies too; the policy must follow it there
+[[headers]]
+  for = "/spatial-studies"
   [headers.values]
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
 
@@ -109,8 +121,20 @@
   [headers.values]
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
 
+# Pretty URLs serve this page at /lineages too; the policy must follow it there
+[[headers]]
+  for = "/lineages"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
+
 [[headers]]
   for = "/perspectives.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
+
+# Pretty URLs serve this page at /perspectives too; the policy must follow it there
+[[headers]]
+  for = "/perspectives"
   [headers.values]
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
 
@@ -119,8 +143,20 @@
   [headers.values]
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
 
+# Pretty URLs serve this page at /collaborate too; the policy must follow it there
+[[headers]]
+  for = "/collaborate"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
+
 [[headers]]
   for = "/post.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
+
+# Pretty URLs serve this page at /post too; the policy must follow it there
+[[headers]]
+  for = "/post"
   [headers.values]
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
 
@@ -129,13 +165,31 @@
   [headers.values]
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
 
+# Pretty URLs serve this page at /jala-dhara too; the policy must follow it there
+[[headers]]
+  for = "/jala-dhara"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
+
 [[headers]]
   for = "/thanks.html"
   [headers.values]
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
 
+# Pretty URLs serve this page at /thanks too; the policy must follow it there
+[[headers]]
+  for = "/thanks"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
+
 [[headers]]
   for = "/404.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
+
+# Pretty URLs serve this page at /404 too; the policy must follow it there
+[[headers]]
+  for = "/404"
   [headers.values]
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-04omDNumpe4nBrBMGZFJQdpunjKDzYTp/+4A6H1q0pI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests"
 
