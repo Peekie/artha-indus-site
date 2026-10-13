@@ -11,6 +11,7 @@
     { id: "studies",      href: "spatial-studies.html", label: "Spatial Studies" },
     { id: "lineages",     href: "lineages.html",        label: "Lineages" },
     { id: "perspectives", href: "perspectives.html",    label: "Perspectives" },
+    { id: "capsule",      href: "jala-dhara.html",      label: "Jala + Dharā" },
     { id: "collaborate",  href: "collaborate.html",     label: "Collaborate" }
   ];
 
@@ -30,15 +31,20 @@
 
   /* ---------- NAV ---------- */
   function buildNav() {
+    // "you are here" is announced (aria-current) as well as drawn
+    var here = function (p) { return p.id === current ? ' aria-current="page"' : ""; };
     var links = PAGES.map(function (p, i) {
       var active = p.id === current ? " is-active" : "";
       var cta = p.id === "collaborate" ? " nav__cta" : "";
-      return '<a class="nav__link' + cta + active + '" href="' + p.href + '">' + p.label + "</a>";
+      var named = p.id === "capsule" ? " nav__link--named" : "";
+      return '<a class="nav__link' + cta + named + active + '" href="' + p.href + '"' + here(p) + ">" + p.label + "</a>";
     }).join("");
 
     var mobile = PAGES.map(function (p, i) {
       var n = String(i + 1).padStart(2, "0");
-      return '<a href="' + p.href + '"><span class="m-num">' + n + "</span>" + p.label + "</a>";
+      var kicker = p.id === "capsule" ? '<span class="m-kicker">The inaugural capsule</span>' : "";
+      return '<a href="' + p.href + '"' + here(p) + (p.id === current ? ' class="is-current"' : "") + ">" +
+        '<span class="m-num" aria-hidden="true">' + n + "</span>" + kicker + '<span class="m-label">' + p.label + "</span></a>";
     }).join("");
 
     var html =
@@ -51,10 +57,14 @@
           '</span>' +
         "</a>" +
         '<nav class="nav__links" aria-label="Primary">' + links + "</nav>" +
-        '<button class="nav__theme" id="themeToggle" type="button">Night</button>' +
-        '<button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">' +
-          '<svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="0" y1="1" x2="26" y2="1"/><line x1="0" y1="7" x2="26" y2="7"/><line x1="0" y1="13" x2="26" y2="13"/></svg>' +
-        "</button>" +
+        // utilities live together at the right edge. The private Vault, when it
+        // exists, joins this group (a discreet entrance, not a menu item).
+        '<div class="nav__utils">' +
+          '<button class="nav__theme" id="themeToggle" type="button"><span class="nav__theme-word">Night</span></button>' +
+          '<button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">' +
+            '<svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="0" y1="1" x2="26" y2="1"/><line x1="0" y1="7" x2="26" y2="7"/><line x1="0" y1="13" x2="26" y2="13"/></svg>' +
+          "</button>" +
+        "</div>" +
       "</header>" +
       '<nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">' + mobile + "</nav>";
 
@@ -86,7 +96,8 @@
   /* ---------- FOOTER ---------- */
   function buildFooter() {
     var nav = PAGES.map(function (p) {
-      return "<li><a href=\"" + p.href + "\">" + p.label + "</a></li>";
+      var cur = p.id === current;
+      return "<li><a href=\"" + p.href + "\"" + (cur ? ' class="is-current" aria-current="page"' : "") + ">" + p.label + "</a></li>";
     }).join("");
 
     var html =
@@ -100,8 +111,7 @@
             "<div><h6>Navigate</h6><ul>" + nav + "</ul></div>" +
             '<div><h6>Connect</h6><ul>' +
               '<li><a href="mailto:preeti@arthaindus.com">preeti@arthaindus.com</a></li>' +
-              '<li><a href="https://arthaindus.com">www.arthaindus.com</a></li>' +
-              '<li>Chicago, IL</li>' +
+              '<li><span class="footer__plain">Chicago, IL</span></li>' +
               '<li><a href="collaborate.html">Request the Lookbook</a></li>' +
             "</ul></div>" +
           "</div>" +
@@ -176,7 +186,9 @@
     menu.querySelectorAll("a").forEach(function (a) {
       a.addEventListener("click", function () { set(false); });
     });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && open) set(false); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && open) { set(false); toggle.focus(); }
+    });
   }
 
   /* ---------- Freshness: presentation surfaces reshuffle per visit ----------
@@ -493,6 +505,21 @@
     // "Specify this study" carries its dossier into the form: the enquiry
     // arrives already knowing which study it is about.
     var q = new URLSearchParams(window.location.search);
+    if (q.get("capsule") === "jala-dhara") {
+      var csel = document.getElementById("interest");
+      if (csel) csel.value = "Jala + Dharā Capsule";
+      var cf = document.getElementById("studyField");
+      if (cf) cf.value = "jala-dhara | Jala + Dharā capsule";
+      var chead = form.querySelector(".form__head");
+      if (chead) {
+        var cabout = document.createElement("p");
+        cabout.className = "form__about";
+        var arch = { kurma: "Kūrma", matsya: "Matsya", rekha: "Rekhā" }[q.get("a")] || "";
+        cabout.innerHTML = "<span>Regarding</span> Jala + Dharā" + (arch ? ", " + arch : ", the inaugural capsule");
+        if (cf && arch) cf.value = "jala-dhara | Jala + Dharā capsule | " + arch;
+        chead.appendChild(cabout);
+      }
+    }
     var studyId = (q.get("study") || "").toLowerCase().replace(/[^a-z0-9-]/g, "");
     var studyTitle = (q.get("t") || "").replace(/[^\w\s.,;:&'()-]/g, "").slice(0, 160);
     if (studyId) {
@@ -736,7 +763,8 @@
         el.style.setProperty("--posn", String(v)); // unitless twin for the tag fades
         range.value = v;
         var pv = Math.round(v);
-        range.setAttribute("aria-valuetext", pv + "% paper original, " + (100 - pv) + "% finished relief");
+        range.setAttribute("aria-valuetext", pv + "% " + (el.getAttribute("data-before-label") || "paper original") +
+          ", " + (100 - pv) + "% " + (el.getAttribute("data-after-label") || "finished relief"));
       };
       range.addEventListener("input", function () { set(parseFloat(range.value)); });
       var pointerFromX = function (clientX) {
@@ -813,7 +841,7 @@
 
   /* ---------- Lightbox ---------- */
   function initLightbox() {
-    var triggers = document.querySelectorAll(".stage__media img, .study-overlay__media img");
+    var triggers = document.querySelectorAll(".stage__media img, .study-overlay__media img, .jd-shot img");
     if (!triggers.length) return;
     var box = document.createElement("div");
     box.className = "lightbox";
@@ -837,7 +865,12 @@
       boxImg.alt = img.alt || "";
       var story = img.closest("article");
       var label = "";
-      if (story) {
+      var figcap = img.closest("figure") && img.closest("figure").querySelector("figcaption");
+      if (figcap && !story) {
+        label = Array.prototype.map.call(figcap.children.length ? figcap.children : [figcap], function (c) {
+          return c.textContent.trim();
+        }).filter(Boolean).join(" · ");
+      } else if (story) {
         var eb = story.querySelector(".eyebrow, .stage__label");
         var h = story.querySelector("h3, h4");
         label = [eb && eb.textContent.trim(), h && h.textContent.trim()].filter(Boolean).join(" · ");
@@ -889,6 +922,100 @@
         close();
       }
     }, true);
+  }
+
+  /* ---------- Jala + Dharā capsule page ----------
+     Draft gates: blocks marked [data-gate] wait on an outside approval
+     and stay hidden; ?preview=all reveals them for review. */
+  function initCapsule() {
+    var root = document.querySelector(".jd");
+    if (!root) return;
+    if (/[?&]preview=all\b/.test(window.location.search)) {
+      var gated = document.querySelectorAll("[data-gate]");
+      gated.forEach(function (g) { g.classList.add("gate-open"); });
+      if (gated.length) {
+        var banner = document.createElement("p");
+        banner.className = "gate-banner";
+        banner.setAttribute("role", "status");
+        banner.textContent = "Preview: sections awaiting approval are shown with a dashed outline.";
+        document.body.appendChild(banner);
+      }
+    }
+    // Paper / Glass toggle: the slider without dragging (WCAG 2.5.7);
+    // each button reports whether its side is the one fully shown
+    root.querySelectorAll(".jd-chapter__compare").forEach(function (wrap) {
+      var range = wrap.querySelector(".compare__range");
+      var fig = wrap.querySelector(".compare");
+      var btns = wrap.querySelectorAll(".jd-jump");
+      var sync = function () {
+        var v = parseFloat(range.value);
+        btns.forEach(function (b) {
+          var target = parseFloat(b.getAttribute("data-compare-set"));
+          b.setAttribute("aria-pressed", String(v === target));
+        });
+      };
+      btns.forEach(function (b) {
+        b.addEventListener("click", function () {
+          fig._userMoved = true;
+          range.value = b.getAttribute("data-compare-set");
+          range.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+      });
+      range.addEventListener("input", sync);
+      ["pointerdown", "keydown"].forEach(function (ev) {
+        fig.addEventListener(ev, function () { fig._userMoved = true; });
+      });
+      sync();
+      // first view: one slow sweep shows that the drawing becomes the etch.
+      // Skipped under reduced motion, and stopped the moment the visitor touches it.
+      if (MOTION_OK && "IntersectionObserver" in window) {
+        var start = parseFloat(fig.getAttribute("data-start") || range.value);
+        var seen = new IntersectionObserver(function (entries) {
+          if (!entries[0].isIntersecting) return;
+          seen.disconnect();
+          var t0 = null, dur = 2600;
+          var step = function (ts) {
+            if (fig._userMoved) return;
+            if (t0 === null) t0 = ts;
+            var k = Math.min(1, (ts - t0) / dur);
+            var v = start + Math.sin(k * Math.PI * 2) * 22 * (1 - k * 0.15);
+            if (k === 1) v = start;
+            range.value = v;
+            range.dispatchEvent(new Event("input", { bubbles: true }));
+            if (k < 1) requestAnimationFrame(step);
+          };
+          setTimeout(function () { requestAnimationFrame(step); }, 450);
+        }, { threshold: 0.6 });
+        seen.observe(fig);
+      }
+    });
+    // five more glass studies, on request
+    root.querySelectorAll(".jd-more").forEach(function (b) {
+      var more = document.getElementById(b.getAttribute("aria-controls"));
+      b.addEventListener("click", function () {
+        var open = b.getAttribute("aria-expanded") !== "true";
+        more.hidden = !open;
+        b.setAttribute("aria-expanded", String(open));
+        b.firstChild.textContent = open ? "Show fewer glass studies " : "Show 5 more glass studies ";
+      });
+    });
+    // the chapter index marks the chapter in view
+    var index = root.querySelector(".jd-index");
+    if (index && "IntersectionObserver" in window) {
+      var links = {};
+      index.querySelectorAll("a").forEach(function (a) { links[a.getAttribute("href").slice(1)] = a; });
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          Object.keys(links).forEach(function (id) {
+            links[id].classList.toggle("is-current", id === en.target.id);
+            if (id === en.target.id) links[id].setAttribute("aria-current", "true");
+            else links[id].removeAttribute("aria-current");
+          });
+        });
+      }, { rootMargin: "-45% 0px -50% 0px" });
+      root.querySelectorAll(".jd-chapter").forEach(function (c) { io.observe(c); });
+    }
   }
 
   /* ---------- Copy-link on each study ---------- */
@@ -1601,6 +1728,7 @@
   initStudyFilter();
   initCompareSlider();
   initLightbox();
+  initCapsule();
   initShareLinks();
   initFlipbook();
   initStudyOverlay();
