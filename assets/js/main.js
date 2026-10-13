@@ -26,7 +26,7 @@
   }
   // Version tag for fetched resources; bumped on deploys so heuristic
   // browser caching can never pin a visitor to a stale index or essay.
-  var VER = "20261012a";
+  var VER = "20261012b";
   var MOTION_OK = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches);
 
   /* ---------- NAV ---------- */
@@ -536,6 +536,21 @@
         chead.appendChild(cabout);
       }
     }
+    if (q.get("interest") === "private") {
+      var psel = document.getElementById("interest");
+      if (psel) psel.value = "Private Masterworks Acquisition";
+      var phead = form.querySelector(".form__head");
+      if (phead) {
+        var pabout = document.createElement("p");
+        pabout.className = "form__about";
+        pabout.innerHTML = "<span>Regarding</span> a private viewing of the originals";
+        phead.appendChild(pabout);
+      }
+    }
+    if (q.get("study") || q.get("capsule") || q.get("interest")) {
+      var eb = form.querySelector(".form__head .eyebrow");
+      if (eb) eb.textContent = "Begin an inquiry";
+    }
     var studyId = (q.get("study") || "").toLowerCase().replace(/[^a-z0-9-]/g, "");
     var studyTitle = (q.get("t") || "").replace(/[^\w\s.,;:&'()-]/g, "").slice(0, 160);
     if (studyId) {
@@ -553,7 +568,7 @@
       if (sel) sel.value = "Spatial Study (commission or license)";
     }
     // arriving from a study or the capsule, the form is the point: bring it into view
-    if (studyId || q.get("capsule")) {
+    if (studyId || q.get("capsule") || q.get("interest")) {
       setTimeout(function () {
         form.scrollIntoView({ behavior: MOTION_OK ? "smooth" : "auto", block: "start" });
       }, 250);
@@ -565,12 +580,19 @@
     if (n > 0 && shortlist) {
       var intro = form.querySelector(".form__intro");
       var seenIds = (storeGet("artha-studies-seen") || []).filter(function (id) { return /^[a-z0-9-]+$/.test(id); });
-      var names = seenIds.map(function (id) { return id.replace(/-/g, " "); }).join("; ");
+      var titleMap = storeGet("artha-studies-titles") || {};
+      var titleList = seenIds.map(function (id) { return String(titleMap[id] || id.replace(/-/g, " ")); });
+      var names = titleList.join("; ");
       if (intro && seenIds.length) {
         var box = document.createElement("label");
         box.className = "form__shortlist";
         box.innerHTML = '<input type="checkbox" checked /> <span>Include the ' + seenIds.length +
           (seenIds.length === 1 ? " study" : " studies") + " I examined, so Preeti sees my shortlist.</span>";
+        var ul = document.createElement("ul");
+        ul.className = "form__shortlist-list";
+        titleList.forEach(function (tl) { var li = document.createElement("li"); li.textContent = tl; ul.appendChild(li); });
+        box.appendChild(ul);
+        box.style.flexWrap = "wrap";
         intro.insertAdjacentElement("afterend", box);
         var cb = box.querySelector("input");
         var syncList = function () { shortlist.value = cb.checked ? names : ""; };
@@ -1067,7 +1089,7 @@
     var who = document.getElementById("thanksName");
     if (who && sent.name) who.textContent = ", " + sent.name;
     var topic = sent.study || sent.interest;
-    if (topic) { about.textContent = "Regarding " + topic + "."; about.hidden = false; }
+    if (topic) { about.textContent = "Regarding \u201C" + String(topic).trim().replace(/\.+$/, "") + "\u201D."; about.hidden = false; }
   }
 
   /* ---------- Copy-link on each study ---------- */
@@ -1294,7 +1316,7 @@
         '<section class="post__related"><div class="sec-head"><span class="eyebrow eyebrow--ink">Related musings</span></div><div class="journal-grid">' +
           related.map(function (p) { return cardMarkup(p, "jcard", "Read"); }).join("") + "</div></section>" : "";
 
-      var lineages = { warli: "Warli", madhubani: "Madhubani", mithila: "Madhubani", gond: "Gond", kalamkari: "Kalamkari", saura: "Saura", pattachitra: "Pattachitra" };
+      var lineages = { warli: "Warli", madhubani: "Madhubani", mithila: "Madhubani", gond: "Gond", kalamkari: "Kalamkari", saura: "Saura", pattachitra: "Pattachitra", sohrai: "Sohrai", thangka: "Thangka" };
       // the lineage an essay discusses most, judged from its title, dek, tags and text
       var hay = ((meta.title || "") + " " + (meta.dek || "") + " " + tags.join(" ") + " " + String(body).replace(/<[^>]+>/g, " ")).toLowerCase();
       var lin = Object.keys(lineages).map(function (k) {
@@ -1586,6 +1608,14 @@
       p.classList.add("is-visited");
       var seen = storeGet("artha-studies-seen") || [];
       if (seen.indexOf(p.id) === -1) { seen.push(p.id); storeSet("artha-studies-seen", seen); }
+      // keep the title too, so the inquiry can name the shortlist properly
+      var tpl = p.querySelector(".plate__dossier");
+      var tt = tpl && tpl.content ? tpl.content.querySelector(".dossier__title") : null;
+      if (tt) {
+        var titles = storeGet("artha-studies-titles") || {};
+        titles[p.id] = tt.textContent.trim().replace(/\.$/, "").slice(0, 120);
+        storeSet("artha-studies-titles", titles);
+      }
     }
     // restore the visited marks from earlier browsing
     (storeGet("artha-studies-seen") || []).forEach(function (id) {
