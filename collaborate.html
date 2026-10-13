@@ -52,20 +52,21 @@
         <div class="collab__intro reveal">
           <p class="eyebrow eyebrow--ink collab__eyebrow">Who we work with</p>
           <div class="collab__points">
-            <div><span class="dot"></span><div><h5>Architects &amp; Designers</h5><p>High-resolution vector assets licensed for wallcoverings, bas-reliefs, millwork, and etched architectural glass.</p></div></div>
-            <div><span class="dot"></span><div><h5>Hospitality &amp; Corporate</h5><p>Signature feature walls, screens, and medallions with full ESG provenance and named artisan attribution.</p></div></div>
-            <div><span class="dot"></span><div><h5>Collectors</h5><p>Authenticated, museum-grade physical originals, float-mounted for executive and gallery collections.</p></div></div>
+            <div><span class="dot"></span><div><h3 class="collab__h">Architects &amp; Designers</h3><p>High-resolution vector assets licensed for wallcoverings, bas-reliefs, millwork, and etched architectural glass.</p></div></div>
+            <div><span class="dot"></span><div><h3 class="collab__h">Hospitality &amp; Corporate</h3><p>Signature feature walls, screens, and medallions with full ESG provenance and named artisan attribution.</p></div></div>
+            <div><span class="dot"></span><div><h3 class="collab__h">Collectors</h3><p>Authenticated, museum-grade physical originals, float-mounted for executive and gallery collections.</p></div></div>
           </div>
         </div>
 
         <form class="form form--docket reveal" id="inquiryForm" data-d="1" novalidate
-              name="collaborate" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+              name="collaborate" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="bot-field">
           <div class="form__head">
             <p class="eyebrow eyebrow--ink">Begin a commission</p>
             <p class="form__intro">Tell us about the space. Preeti reads every inquiry personally.</p>
           </div>
           <input type="hidden" name="form-name" value="collaborate" />
           <input type="hidden" name="study" id="studyField" value="" />
+          <input type="hidden" name="shortlist" id="shortlistField" value="" />
           <p hidden><label>Leave this empty: <input name="bot-field" /></label></p>
           <div class="form__row">
             <div class="field"><label for="name">Name <span class="field__req">(required)</span></label><input id="name" name="name" type="text" autocomplete="name" required /></div>
@@ -81,6 +82,7 @@
                 <option>Private Masterworks Acquisition</option>
                 <option>Studio Material Sample Box</option>
                 <option>Enterprise Digital Twin Licensing</option>
+                <option>Spatial Study (commission or license)</option>
                 <option>Jala + Dharā Capsule</option>
                 <option>General Inquiry</option>
               </select>

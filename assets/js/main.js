@@ -112,11 +112,11 @@
               '<div class="footer__mark">Artha Indus Atelier<span>Ancient Heritage. Modern Resonance.</span></div>' +
               '<p class="footer__note" style="margin-top:1.4rem">A boutique curation house bridging ancient master lineages with modern corporate, hospitality, and healthcare environments, preserving the soul of the artisan’s hand.</p>' +
             "</div>" +
-            "<div><h6>Navigate</h6><ul>" + nav + "</ul></div>" +
-            '<div><h6>Connect</h6><ul>' +
+            "<div><h2 class=\"footer__h\">Navigate</h2><ul>" + nav + "</ul></div>" +
+            '<div><h2 class="footer__h">Connect</h2><ul>' +
               '<li><a href="mailto:preeti@arthaindus.com">preeti@arthaindus.com</a></li>' +
               '<li><span class="footer__plain">Chicago, IL</span></li>' +
-              '<li><a href="collaborate.html">Request the Lookbook</a></li>' +
+              '<li><a href="assets/downloads/Artha-Indus-Atelier-Lookbook-2026.pdf" download>Download the Lookbook</a></li>' +
             "</ul></div>" +
           "</div>" +
           '<div class="footer__bar">' +
@@ -548,19 +548,34 @@
         about.innerHTML = "<span>Regarding</span> " + escapeHtml(studyTitle || studyId.replace(/-/g, " "));
         head.appendChild(about);
       }
+      // a study can be commissioned or licensed: do not decide for them
       var sel = document.getElementById("interest");
-      if (sel) sel.value = "Bespoke Masterwork Commission";
+      if (sel) sel.value = "Spatial Study (commission or license)";
+    }
+    // arriving from a study or the capsule, the form is the point: bring it into view
+    if (studyId || q.get("capsule")) {
+      setTimeout(function () {
+        form.scrollIntoView({ behavior: MOTION_OK ? "smooth" : "auto", block: "start" });
+      }, 250);
     }
 
     // A soft nod to the visitor's own browsing, never a scoreboard.
     var n = seenCount();
-    if (n > 0) {
+    var shortlist = document.getElementById("shortlistField");
+    if (n > 0 && shortlist) {
       var intro = form.querySelector(".form__intro");
-      if (intro) {
-        var thread = document.createElement("p");
-        thread.className = "form__threadnote";
-        thread.textContent = "You have examined " + n + (n === 1 ? " study." : " studies.") + " Bring the shortlist.";
-        intro.insertAdjacentElement("afterend", thread);
+      var seenIds = (storeGet("artha-studies-seen") || []).filter(function (id) { return /^[a-z0-9-]+$/.test(id); });
+      var names = seenIds.map(function (id) { return id.replace(/-/g, " "); }).join("; ");
+      if (intro && seenIds.length) {
+        var box = document.createElement("label");
+        box.className = "form__shortlist";
+        box.innerHTML = '<input type="checkbox" checked /> <span>Include the ' + seenIds.length +
+          (seenIds.length === 1 ? " study" : " studies") + " I examined, so Preeti sees my shortlist.</span>";
+        intro.insertAdjacentElement("afterend", box);
+        var cb = box.querySelector("input");
+        var syncList = function () { shortlist.value = cb.checked ? names : ""; };
+        cb.addEventListener("change", syncList);
+        syncList();
       }
     }
     // Tie each failed field to the status message, so a screen reader hears
@@ -606,7 +621,15 @@
           form.reportValidity();
           return;
         }
-        return; // valid — let Netlify handle the POST
+        try {
+          var d = new FormData(form);
+          window.sessionStorage.setItem("artha-sent", JSON.stringify({
+            name: String(d.get("name") || "").split(" ")[0].slice(0, 40),
+            interest: String(d.get("interest") || "").slice(0, 80),
+            study: String(d.get("study") || "").split("|").slice(-1)[0].trim().slice(0, 120)
+          }));
+        } catch (err) { /* storage unavailable: the thank-you page stays generic */ }
+        return; // valid: let Netlify handle the POST
       }
       e.preventDefault();
       if (!form.checkValidity()) {
@@ -1034,6 +1057,19 @@
     }
   }
 
+  /* ---------- Thank-you page ---------- */
+  function initThanks() {
+    var about = document.getElementById("thanksAbout");
+    if (!about) return;
+    var sent = null;
+    try { sent = JSON.parse(window.sessionStorage.getItem("artha-sent")); } catch (e) {}
+    if (!sent) return;
+    var who = document.getElementById("thanksName");
+    if (who && sent.name) who.textContent = ", " + sent.name;
+    var topic = sent.study || sent.interest;
+    if (topic) { about.textContent = "Regarding " + topic + "."; about.hidden = false; }
+  }
+
   /* ---------- Copy-link on each study ---------- */
   function initShareLinks() {
     document.querySelectorAll(".story__link").forEach(function (btn) {
@@ -1225,6 +1261,11 @@
       // prev / next (list is newest-first: next = newer = idx-1, prev = older = idx+1)
       var newer = idx > 0 ? list[idx - 1] : null;
       var older = idx > -1 && idx < list.length - 1 ? list[idx + 1] : null;
+      var handoffTo = older || newer;
+      // the "Continue the thread" card already carries that essay: the bar offers the other one
+      var barOlder = older && older !== handoffTo ? older : null;
+      var barNewer = newer && newer !== handoffTo ? newer : null;
+      older = barOlder; newer = barNewer;
       var prevnext = (newer || older) ?
         '<nav class="post__prevnext">' +
           (older ? '<a class="post__pn" href="post.html?p=' + encodeURIComponent(older.slug) + '"><span>Older</span>' + escapeHtml(older.title) + "</a>" : "<span></span>") +
@@ -1234,7 +1275,7 @@
       // related (share a tag)
       var tags = meta.tags || [];
       // the handoff: hand a finished reader the next essay in reading order
-      var next = older || newer;
+      var next = handoffTo;
       var handoffHtml = next ?
         '<a class="handoff reveal" href="post.html?p=' + encodeURIComponent(next.slug) + '">' +
           '<span class="handoff__media">' + (next.image ? '<img src="' + escapeHtml(safeUrl(next.image)) + '" alt="" loading="lazy" />' : "") + "</span>" +
@@ -1252,6 +1293,23 @@
       var relatedHtml = related.length ?
         '<section class="post__related"><div class="sec-head"><span class="eyebrow eyebrow--ink">Related musings</span></div><div class="journal-grid">' +
           related.map(function (p) { return cardMarkup(p, "jcard", "Read"); }).join("") + "</div></section>" : "";
+
+      var lineages = { warli: "Warli", madhubani: "Madhubani", mithila: "Madhubani", gond: "Gond", kalamkari: "Kalamkari", saura: "Saura", pattachitra: "Pattachitra" };
+      // the lineage an essay discusses most, judged from its title, dek, tags and text
+      var hay = ((meta.title || "") + " " + (meta.dek || "") + " " + tags.join(" ") + " " + String(body).replace(/<[^>]+>/g, " ")).toLowerCase();
+      var lin = Object.keys(lineages).map(function (k) {
+        return { k: k, n: (hay.match(new RegExp("\\b" + k + "\\b", "g")) || []).length };
+      }).filter(function (x) { return x.n > 0; }).sort(function (a, b) { return b.n - a.n; }).map(function (x) { return x.k; })[0];
+      var linKey = lin === "mithila" ? "madhubani" : lin;
+      var nextStepHtml =
+        '<aside class="post__next" aria-label="Next step">' +
+          "<p>Bring a lineage into your next project.</p>" +
+          '<div class="post__next__actions">' +
+            '<a class="btn jd-btn-light" href="collaborate.html">Begin an inquiry <span class="arrow" aria-hidden="true">&rarr;</span></a>' +
+            (linKey ? '<a class="link-arrow" href="spatial-studies.html?lineage=' + linKey + '#collection">All ' + lineages[lin] + ' studies <span class="arrow" aria-hidden="true">&rarr;</span></a>'
+                    : '<a class="link-arrow" href="spatial-studies.html#collection">Browse the studies <span class="arrow" aria-hidden="true">&rarr;</span></a>') +
+          "</div>" +
+        "</aside>";
 
       mount.setAttribute("aria-busy", "false");
       mount.innerHTML =
@@ -1280,6 +1338,7 @@
           prevnext +
           handoffHtml +
           relatedHtml +
+          nextStepHtml +
         "</div>";
 
       buildToc();
@@ -1745,6 +1804,7 @@
   initCompareSlider();
   initLightbox();
   initCapsule();
+  initThanks();
   initShareLinks();
   initFlipbook();
   initStudyOverlay();

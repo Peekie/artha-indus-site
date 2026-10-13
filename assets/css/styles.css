@@ -840,8 +840,8 @@ body.overlay-open { overflow: hidden; }
 .collab__points { display: grid; gap: 2.3rem; }
 .collab__points > div { display: grid; grid-template-columns: auto 1fr; gap: 0.9rem; align-items: start; }
 .collab__points .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--terracotta); margin-top: 0.6rem; }
-.collab__points h5 { font-size: 1.02rem; }
-.collab__points h5 + p { margin-top: 0.4rem; }
+.collab__points .collab__h { font-family: var(--sans); font-weight: 700; font-size: 1.02rem; line-height: 1.3; letter-spacing: normal; }
+.collab__points .collab__h + p { margin-top: 0.4rem; }
 .collab__points p { font-size: 0.95rem; color: var(--ink-mute); line-height: 1.65; }
 
 /* the spec-readiness line, given a hairline of its own so it reads as a
@@ -950,7 +950,7 @@ body.overlay-open { overflow: hidden; }
 .footer__top { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 2.5rem; padding-block: clamp(3.5rem, 8vw, 5.5rem); }
 .footer__mark { font-family: var(--serif); font-size: clamp(2rem, 5vw, 3rem); line-height: 1; }
 .footer__mark span { display:block; font-family: var(--sans); font-size: 0.76rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold-lite); margin-top: 0.8rem; }
-.footer h6 { font-family: var(--sans); font-size: 0.76rem; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(244,239,230,0.55); margin-bottom: 1.1rem; }
+.footer h6, .footer .footer__h { font-family: var(--sans); font-weight: 600; line-height: 1.4; font-size: 0.76rem; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(244,239,230,0.55); margin-bottom: 1.1rem; }
 .footer ul { list-style: none; padding: 0; display: grid; gap: 0.55rem; }
 .footer a { font-size: 0.9rem; color: rgba(244,239,230,0.82); transition: color 0.3s var(--ease); }
 .footer a:hover { color: var(--gold-lite); }
@@ -2233,3 +2233,32 @@ img {
 /* the italic capsule link holds its own over busy hero artwork */
 .nav__link--named { font-weight: 500; }
 .nav:not(.is-scrolled) .nav__link--named { text-shadow: 0 0 1px rgba(15,20,32,0.6); }
+
+/* ============================================================
+   SITE UX, round 1
+   ============================================================ */
+.page-hero__jump { margin-top: 1.4rem; }
+.page-hero__jump .link-arrow { color: var(--paper); border-bottom-color: var(--gold-lite); }
+[data-theme="night"] .page-hero__jump .link-arrow { color: var(--ink); }
+/* lineages: a jump index, so the sixth tradition is one tap away */
+.lin-index { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; padding-bottom: 1.6rem; margin-bottom: 1rem; border-bottom: 1px solid var(--rule); }
+.lin-index a { font-family: var(--serif); font-style: italic; font-size: 1.1rem; color: var(--ink-soft); min-height: 2.75rem; display: inline-flex; align-items: center; }
+.lin-index a:hover { color: var(--gold-deep); }
+.lin { scroll-margin-top: 6rem; }
+/* collaborate: the studies a visitor examined can travel with the inquiry */
+.form__shortlist { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.88rem; color: var(--ink-soft); }
+.form__shortlist input { width: 1.1rem; height: 1.1rem; margin-top: 0.15rem; accent-color: var(--gold-deep); flex: none; }
+/* essays end with a way forward */
+.post__next { margin-top: clamp(3rem, 6vw, 4.5rem); padding: clamp(2rem, 4vw, 3rem); background: var(--lapis); color: #f4efe6; border-radius: 2px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.2rem 2rem; }
+.post__next p { font-family: var(--serif); font-size: clamp(1.2rem, 2vw, 1.5rem); max-width: 34ch; color: #f4efe6; }
+.post__next__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.6rem; }
+.post__next .link-arrow { color: #f4efe6; border-bottom-color: var(--gold-lite); margin-top: 0; }
+/* thank-you page */
+.thanks__about { margin-top: 1.2rem; font-family: var(--serif); font-size: 1.2rem; color: var(--paper); }
+[data-theme="night"] .thanks__about { color: var(--ink); }
+.thanks__next { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.2rem, 3vw, 2.4rem); margin-top: 2rem; }
+.thanks__next a { display: flex; flex-direction: column; gap: 0.4rem; padding-top: 1rem; border-top: 2px solid var(--gold); }
+.thanks__next strong { font-family: var(--serif); font-weight: 400; font-size: 1.25rem; color: var(--ink); }
+.thanks__next span { color: var(--ink-soft); font-size: 0.95rem; }
+@media (max-width: 760px) { .thanks__next { grid-template-columns: minmax(0, 1fr); } }
+#inquiryForm { scroll-margin-top: 6rem; }
