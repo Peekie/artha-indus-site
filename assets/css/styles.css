@@ -2269,3 +2269,4 @@ img {
 .field select { width: 100%; }
 .form__shortlist span { flex: 1 1 0; min-width: 0; }
 .form__shortlist + .form__shortlist-list { margin-top: -0.2rem; }
+.jd-more[hidden], .jd-toggle[hidden] { display: none; }

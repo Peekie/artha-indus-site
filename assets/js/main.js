@@ -530,7 +530,9 @@
       if (chead) {
         var cabout = document.createElement("p");
         cabout.className = "form__about";
-        var arch = { kurma: "Kūrma", matsya: "Matsya", rekha: "Rekhā" }[q.get("a")] || "";
+        var archMap = { kurma: "Kūrma", matsya: "Matsya", rekha: "Rekhā" };
+        var aKey = q.get("a") || "";
+        var arch = Object.prototype.hasOwnProperty.call(archMap, aKey) ? archMap[aKey] : "";
         cabout.innerHTML = "<span>Regarding</span> Jala + Dharā" + (arch ? ", " + arch : ", the inaugural capsule");
         if (cf && arch) cf.value = "jala-dhara | Jala + Dharā capsule | " + arch;
         chead.appendChild(cabout);
@@ -551,7 +553,8 @@
       var eb = form.querySelector(".form__head .eyebrow");
       if (eb) eb.textContent = "Begin an inquiry";
     }
-    var studyId = (q.get("study") || "").toLowerCase().replace(/[^a-z0-9-]/g, "");
+    // one subject per inquiry: the capsule or a private viewing wins over a stray study param
+    var studyId = (q.get("capsule") || q.get("interest") === "private") ? "" : (q.get("study") || "").toLowerCase().replace(/[^a-z0-9-]/g, "");
     var studyTitle = (q.get("t") || "").replace(/[^\w\s.,;:&'()-]/g, "").slice(0, 160);
     if (studyId) {
       var sf = document.getElementById("studyField");
@@ -653,7 +656,7 @@
           window.sessionStorage.setItem("artha-sent", JSON.stringify({
             name: String(d.get("name") || "").split(" ")[0].slice(0, 40),
             interest: String(d.get("interest") || "").slice(0, 80),
-            study: String(d.get("study") || "").split("|").slice(-1)[0].trim().slice(0, 120)
+            study: (function (v) { return v.indexOf("|") > -1 ? v.split("|").slice(-1)[0].trim() : v.replace(/-/g, " "); })(String(d.get("study") || "")).slice(0, 120)
           }));
         } catch (err) { /* storage unavailable: the thank-you page stays generic */ }
         return; // valid: let Netlify handle the POST
@@ -927,7 +930,14 @@
 
     function open(img) {
       lastFocus = document.activeElement;
-      boxImg.src = img.currentSrc || img.src;
+      var best = img.currentSrc || img.src;
+      var set = img.getAttribute("srcset");
+      if (set) {
+        var widest = set.split(",").map(function (c) { var bits = c.trim().split(/\s+/); return { u: bits[0], w: parseInt(bits[1], 10) || 0 }; })
+          .sort(function (a, b) { return b.w - a.w; })[0];
+        if (widest && widest.u) best = widest.u;
+      }
+      boxImg.src = best;
       boxImg.alt = img.alt || "";
       var story = img.closest("article");
       var label = "";
@@ -1013,6 +1023,9 @@
       var range = wrap.querySelector(".compare__range");
       var fig = wrap.querySelector(".compare");
       var btns = wrap.querySelectorAll(".jd-jump");
+      if (!range || !fig) return;
+      var tg = wrap.querySelector(".jd-toggle");
+      if (tg) tg.hidden = false; // the toggle needs script, so it ships hidden
       var sync = function () {
         var v = parseFloat(range.value);
         btns.forEach(function (b) {
@@ -1058,6 +1071,10 @@
     // five more glass studies, on request
     root.querySelectorAll(".jd-more").forEach(function (b) {
       var more = document.getElementById(b.getAttribute("aria-controls"));
+      if (!more) return;
+      // without script every study stays visible; with it, five wait behind the button
+      more.hidden = true;
+      b.hidden = false;
       b.addEventListener("click", function () {
         var open = b.getAttribute("aria-expanded") !== "true";
         more.hidden = !open;
@@ -1070,14 +1087,14 @@
     if (index && "IntersectionObserver" in window) {
       var links = {};
       index.querySelectorAll("a").forEach(function (a) { links[a.getAttribute("href").slice(1)] = a; });
+      var inView = {};
       var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (en) {
-          if (!en.isIntersecting) return;
-          Object.keys(links).forEach(function (id) {
-            links[id].classList.toggle("is-current", id === en.target.id);
-            if (id === en.target.id) links[id].setAttribute("aria-current", "true");
-            else links[id].removeAttribute("aria-current");
-          });
+        entries.forEach(function (en) { inView[en.target.id] = en.isIntersecting; });
+        var cur = Object.keys(links).filter(function (id) { return inView[id]; })[0] || null;
+        Object.keys(links).forEach(function (id) {
+          links[id].classList.toggle("is-current", id === cur);
+          if (id === cur) links[id].setAttribute("aria-current", "true");
+          else links[id].removeAttribute("aria-current");
         });
       }, { rootMargin: "-45% 0px -50% 0px" });
       root.querySelectorAll(".jd-chapter").forEach(function (c) { io.observe(c); });
@@ -1089,7 +1106,10 @@
     var about = document.getElementById("thanksAbout");
     if (!about) return;
     var sent = null;
-    try { sent = JSON.parse(window.sessionStorage.getItem("artha-sent")); } catch (e) {}
+    try {
+      sent = JSON.parse(window.sessionStorage.getItem("artha-sent"));
+      window.sessionStorage.removeItem("artha-sent"); // shown once; a later visit stays generic
+    } catch (e) {}
     if (!sent) return;
     var who = document.getElementById("thanksName");
     if (who && sent.name) who.textContent = ", " + sent.name;
@@ -1331,9 +1351,13 @@
       var lineages = { warli: "Warli", madhubani: "Madhubani", mithila: "Madhubani", gond: "Gond", kalamkari: "Kalamkari", saura: "Saura", pattachitra: "Pattachitra", sohrai: "Sohrai", thangka: "Thangka" };
       // the lineage an essay discusses most, judged from its title, dek, tags and text
       var hay = ((meta.title || "") + " " + (meta.dek || "") + " " + tags.join(" ") + " " + String(body).replace(/<[^>]+>/g, " ")).toLowerCase();
-      var lin = Object.keys(lineages).map(function (k) {
-        return { k: k, n: (hay.match(new RegExp("\\b" + k + "\\b", "g")) || []).length };
-      }).filter(function (x) { return x.n > 0; }).sort(function (a, b) { return b.n - a.n; }).map(function (x) { return x.k; })[0];
+      var counts = {};
+      Object.keys(lineages).forEach(function (k) {
+        var key = k === "mithila" ? "madhubani" : k; // one lineage, two names
+        counts[key] = (counts[key] || 0) + (hay.match(new RegExp("\\b" + k + "\\b", "g")) || []).length;
+      });
+      var lin = Object.keys(counts).filter(function (k) { return counts[k] > 0; })
+        .sort(function (a, b) { return counts[b] - counts[a]; })[0];
       var linKey = lin === "mithila" ? "madhubani" : lin;
       var nextStepHtml =
         '<aside class="post__next" aria-label="Next step">' +
