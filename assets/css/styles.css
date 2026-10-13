@@ -2267,3 +2267,5 @@ img {
 .form__shortlist-list { margin: 0.3rem 0 0 1.7rem; padding: 0; list-style: none; font-size: 0.85rem; color: var(--ink-mute); display: grid; gap: 0.15rem; }
 .form__row > * { min-width: 0; }
 .field select { width: 100%; }
+.form__shortlist span { flex: 1 1 0; min-width: 0; }
+.form__shortlist + .form__shortlist-list { margin-top: -0.2rem; }

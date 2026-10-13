@@ -579,21 +579,26 @@
     var shortlist = document.getElementById("shortlistField");
     if (n > 0 && shortlist) {
       var intro = form.querySelector(".form__intro");
-      var seenIds = (storeGet("artha-studies-seen") || []).filter(function (id) { return /^[a-z0-9-]+$/.test(id); });
+      // the study already in "Regarding" is not repeated in the shortlist
+      var currentStudy = (q.get("study") || "").toLowerCase();
+      var seenIds = (storeGet("artha-studies-seen") || []).filter(function (id) { return /^[a-z0-9-]+$/.test(id) && id !== currentStudy; });
       var titleMap = storeGet("artha-studies-titles") || {};
       var titleList = seenIds.map(function (id) { return String(titleMap[id] || id.replace(/-/g, " ")); });
       var names = titleList.join("; ");
       if (intro && seenIds.length) {
         var box = document.createElement("label");
         box.className = "form__shortlist";
-        box.innerHTML = '<input type="checkbox" checked /> <span>Include the ' + seenIds.length +
+        var other = currentStudy ? " other" : "";
+        box.innerHTML = '<input type="checkbox" checked aria-describedby="shortlistNames" /> <span>Include the ' + seenIds.length + other +
           (seenIds.length === 1 ? " study" : " studies") + " I examined, so Preeti sees my shortlist.</span>";
+        // the list sits after the label (a label holds phrasing content only)
+        // and describes the checkbox
         var ul = document.createElement("ul");
         ul.className = "form__shortlist-list";
+        ul.id = "shortlistNames";
         titleList.forEach(function (tl) { var li = document.createElement("li"); li.textContent = tl; ul.appendChild(li); });
-        box.appendChild(ul);
-        box.style.flexWrap = "wrap";
         intro.insertAdjacentElement("afterend", box);
+        box.insertAdjacentElement("afterend", ul);
         var cb = box.querySelector("input");
         var syncList = function () { shortlist.value = cb.checked ? names : ""; };
         cb.addEventListener("change", syncList);
@@ -1088,8 +1093,15 @@
     if (!sent) return;
     var who = document.getElementById("thanksName");
     if (who && sent.name) who.textContent = ", " + sent.name;
-    var topic = sent.study || sent.interest;
-    if (topic) { about.textContent = "Regarding \u201C" + String(topic).trim().replace(/\.+$/, "") + "\u201D."; about.hidden = false; }
+    var topic = sent.study || "";
+    if (topic) {
+      about.textContent = "Regarding \u201C" + String(topic).trim().replace(/\.+$/, "") + "\u201D.";
+    } else if (sent.interest === "Private Masterworks Acquisition") {
+      about.textContent = "Regarding a private viewing of the originals.";
+    } else if (sent.interest) {
+      about.textContent = "Regarding your interest in " + String(sent.interest).trim().replace(/\.+$/, "") + ".";
+    }
+    if (about.textContent) about.hidden = false;
   }
 
   /* ---------- Copy-link on each study ---------- */
